@@ -1,7 +1,7 @@
 ---
-title: "web"
+title: "Introduction"
 ---
 
-This is a Quarto website.
+Learning coding should be easy by visualizing the output
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+This module is made by me and my 8-year-old son

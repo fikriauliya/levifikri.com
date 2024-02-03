@@ -1,10 +1,9 @@
 ---
+title: Variable
 format:
   html:
     code-fold: true
 ---
-
-# Variable
 
 ## Constant
 
@@ -236,6 +235,17 @@ Agar lebih menarik, kita bisa memasukkan Emoji. Explore [https://emojipedia.org/
 ```javascript
 text("🐶", 100, 20);
 ```
+
+<iframe src="01-variable/9-text.html" width="400px" height="400px"></iframe>
+
+Wah, kecil sekali, mari perbesar dengan `textSize`:
+
+```javascript
+textSize(60);
+text("🐶", 100, 100);
+```
+
+<iframe src="01-variable/10-text-larger.html" width="400px" height="400px"></iframe>
 
 ## Task 5 📝
 

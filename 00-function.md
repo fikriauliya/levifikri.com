@@ -1,10 +1,9 @@
 ---
+title: Function
 format:
   html:
     code-fold: true
 ---
-
-# Function
 
 Di programming, kita tidak ingin membuat semuanya dari awal/nol.
 
@@ -66,7 +65,7 @@ Apa yang berubah?
 
 <iframe src="00-function/1-circle.html" width="400px" height="400px"></iframe>
 
-## Checkpoint
+## Task 1 📝
 
 Coba ubah nilai x, y, dan d. Apa yang terjadi?
 
@@ -81,7 +80,7 @@ Di P5.js, koordinat dimulai dari kiri atas. Sehingga pojok kiri atas adalah titi
 
 TODO: tambah visualisasi
 
-## Checkpoint
+## Task 2 📝
 
 Buatlah bentuk seperti ini (Hint: bisa gunakan fungsi `square` atau `rect`)
 
@@ -95,7 +94,7 @@ Ada apa lagi? Mari kita cek dokumentasi
 
 [https://p5js.org/reference/](https://p5js.org/reference/)
 
-## Checkpoint
+## Task 3 📝
 
 Lihat bagian "Shape", dan coba buat lah bentuk `triangle`, `point`, dan `line`
 
@@ -145,7 +144,7 @@ di sini, `10` adalah nilai `tl`, dan nilai `tr`, `br`, dan `bl` akan menggunakan
 
 <iframe src="00-function/4-square-with-optional-param.html" width="400px" height="400px"></iframe>
 
-## Checkpoint
+## Task 4 📝
 
 Coba ubah nilai `tl`, `tr`, `br`, dan `bl`. Apa yang terjadi?
 
@@ -198,7 +197,7 @@ rect(200, 100, 50, 50);
 
 <iframe src="00-function/5-fill.html" width="400px" height="400px"></iframe>
 
-## Checkpoint
+## Task 5 📝
 
 Gambarlah bentuk Doraemon/kucing dengan menggunakan fungsi-fungsi yang sudah ada di P5.js
 
