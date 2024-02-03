@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
+    <script>
+        function setup() {
+            createCanvas(400, 400);
+        }
+
+        function draw() {
+            background(220);
+        
+            // doraemon face
+
+            // head
+            fill(255, 255, 0);
+            ellipse(200, 200, 200, 200);
+
+            // eyes
+            fill(255);
+            ellipse(150, 150, 50, 50);
+            ellipse(250, 150, 50, 50);
+
+            // pupils
+            fill(0);
+            ellipse(150, 150, 20, 20);
+            ellipse(250, 150, 20, 20);
+
+            // nose
+            fill(255, 0, 0);
+            triangle(200, 200, 200, 220, 180, 210);
+
+            // mouth
+            fill(255);
+            arc(200, 250, 100, 100, 0, PI);
+        }
+    </script>
+  </head>
+  <body>
+    <main>
+    </main>
+  </body>
+</html>
