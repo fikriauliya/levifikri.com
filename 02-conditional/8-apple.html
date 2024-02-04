@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
+    <script>
+      let appleX;
+      let appleY;
+
+      let robotX = 200;
+      let robotY = 200;
+
+      function setup() {
+        createCanvas(400, 400);
+        // math calculation di sini untuk membuat posisi apel acak tapi kelipatan 10
+        appleX = Math.floor(random(width / 10)) * 10;
+        appleY = Math.floor(random(height / 10)) * 10;
+      }
+
+      function draw() {
+        background(220);
+        textSize(60);
+        text("🤖", robotX, robotY);
+        text("🍎", appleX, appleY);
+      }
+
+      function keyPressed() {
+        if (keyCode === LEFT_ARROW) {
+          robotX = robotX - 10;
+        } else if (keyCode === RIGHT_ARROW) {
+          robotX = robotX + 10;
+        } else if (keyCode === UP_ARROW) {
+          robotY = robotY - 10;
+        } else if (keyCode === DOWN_ARROW) {
+          robotY = robotY + 10;
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main></main>
+  </body>
+</html>

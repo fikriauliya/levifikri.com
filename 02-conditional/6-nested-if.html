@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
+    <script>
+      function setup() {
+        createCanvas(400, 400);
+      }
+
+      let x = 0;
+      let y = 100;
+      let emoji = "🤖";
+
+      function draw() {
+        background(220);
+        textSize(60);
+        text(emoji, x, y);
+      }
+
+      function keyPressed() {
+        if (keyCode === 37) {
+          x = x - 10;
+        } else if (keyCode === 39) {
+          x = x + 10;
+        } else if (keyCode === 38) {
+          y = y - 10;
+        } else if (keyCode === 40) {
+          y = y + 10;
+        } else {
+          if (emoji === "🤖") {
+            emoji = "👾";
+          } else {
+            emoji = "🤖";
+          }
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main></main>
+  </body>
+</html>

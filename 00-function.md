@@ -197,6 +197,10 @@ rect(200, 100, 50, 50);
 
 <iframe src="00-function/5-fill.html" width="400px" height="400px"></iframe>
 
+## Declaring Function
+
+TODO: fill in
+
 ## Task 5 📝
 
 Gambarlah bentuk Doraemon/kucing dengan menggunakan fungsi-fungsi yang sudah ada di P5.js
