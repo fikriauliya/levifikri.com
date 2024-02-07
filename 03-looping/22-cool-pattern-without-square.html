@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
+    <script>
+      function setup() {
+        createCanvas(400, 400);
+      }
+
+      function draw() {
+        background(220);
+        noLoop();
+
+        for (let i = 0; i < 20; i++) {
+          for (let j = 0; j < 20; j++) {
+            let topLeftX = j * 20;
+            let topLeftY = i * 20;
+            let bottomRightX = j * 20 + 20;
+            let bottomRightY = i * 20 + 20;
+
+            let topRightX = j * 20 + 20;
+            let topRightY = i * 20;
+            let bottomLeftX = j * 20;
+            let bottomLeftY = i * 20 + 20;
+
+            line(topLeftX, topLeftY, bottomRightX, bottomRightY);
+            line(topRightX, topRightY, bottomLeftX, bottomLeftY);
+          }
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main></main>
+  </body>
+</html>

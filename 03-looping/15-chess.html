@@ -1,0 +1,28 @@
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
+    <script>
+      function setup() {
+        createCanvas(400, 400);
+      }
+
+      function draw() {
+        background(220);
+
+        for (let i = 0; i < 10; i++) {
+          for (let j = 1; j <= 10; j++) {
+            if ((i + j) % 2 == 0) {
+              fill("black");
+            } else {
+              fill("white");
+            }
+            square(j * 20, 100 + i * 20, 20);
+          }
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main></main>
+  </body>
+</html>

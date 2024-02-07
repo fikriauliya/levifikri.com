@@ -1,0 +1,47 @@
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
+    <script>
+      function setup() {
+        createCanvas(400, 400);
+      }
+
+      let radius = 40;
+      function draw() {
+        background(220);
+
+        let rndX = random(-5, 5);
+        let rndY = random(-5, 5);
+
+        for (let i = 0; i < 20; i++) {
+          for (let j = 0; j < 20; j++) {
+            let centerX = j * 20 + 10;
+            let centerY = i * 20 + 10;
+            if (
+              (mouseX - centerX) ** 2 + (mouseY - centerY) ** 2 <=
+              radius ** 2
+            ) {
+              centerX += rndX;
+              centerY += rndY;
+              fill("red");
+            } else {
+              fill("white");
+            }
+            circle(centerX, centerY, 10);
+          }
+        }
+      }
+
+      function mouseClicked() {
+        radius += 20;
+      }
+
+      function keyPressed() {
+        radius -= 20;
+      }
+    </script>
+  </head>
+  <body>
+    <main></main>
+  </body>
+</html>

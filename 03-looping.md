@@ -296,4 +296,168 @@ function draw() {
 
 <iframe src="03-looping/13-animated.html" width="400px" height="400px"></iframe>
 
-TODO: add much more fun tasks
+## Task 8 📝
+
+Buatlah agar lingkaran bergerak ke kanan dan ke kiri saja
+
+<iframe src="03-looping/14-animated-horizontal.html" width="400px" height="400px"></iframe>
+
+## Task 9 📝
+
+Buatlah papan catur seperti ini:
+
+<iframe src="03-looping/15-chess.html" width="400px" height="400px"></iframe>
+
+## `mouseX` dan `mouseY`
+
+Yuk sekarang kita buat interaktif dengan menggunakan `mouseX` dan `mouseY`.
+
+[https://p5js.org/reference/#/p5/mouseX](https://p5js.org/reference/#/p5/mouseX)
+
+`mouseX` adalah variable yang menyimpan posisi x dari mouse, dan `mouseY` adalah variable yang menyimpan posisi y dari mouse.
+
+```javascript
+function draw() {
+  background(220);
+
+  circle(mouseX, mouseY, 100);
+}
+```
+
+Perhatikan bahwa lingkaran akan mengikuti posisi mouse.
+
+<iframe src="03-looping/16-mouse-pos.html" width="400px" height="400px"></iframe>
+
+Oh, ya apa yang terjadi jika `background(220)` dihapus?
+
+## Task 10 📝
+
+Hapus `background(220)` dan lihat apa yang terjadi.
+
+## Task 11 📝
+
+Buatlah animasi seperti ini
+
+<iframe src="03-looping/17-mouse.html" width="400px" height="400px"></iframe>
+
+## Task 12 📝
+
+Buat agar ketika mouse-nya diclick, lingkaran akan membesar. Dan ketika keyboard-nya ditekan, lingkaran akan mengecil.
+
+<iframe src="03-looping/18-mouse-expanded.html" width="400px" height="400px"></iframe>
+
+## Bonus: Cool Pattern
+
+Pertama-tama, yuk bikin persegi 20x20
+
+```javascript
+function draw() {
+  background(220);
+  noLoop();
+
+  for (let i = 0; i < 20; i++) {
+    for (let j = 0; j < 20; j++) {
+      square(j * 20, i * 20, 20);
+    }
+  }
+}
+```
+
+<iframe src="03-looping/19-cool-pattern-square.html" width="400px" height="400px"></iframe>
+
+Kemudian, kita buat garis diagonal dari kiri atas ke kanan bawah
+
+```javascript
+function draw() {
+  background(220);
+  noLoop();
+
+  for (let i = 0; i < 20; i++) {
+    for (let j = 0; j < 20; j++) {
+      square(j * 20, i * 20, 20);
+
+      let topLeftX = j * 20;
+      let topLeftY = i * 20;
+      let bottomRightX = j * 20 + 20;
+      let bottomRightY = i * 20 + 20;
+
+      line(topLeftX, topLeftY, bottomRightX, bottomRightY);
+    }
+  }
+}
+```
+
+<iframe src="03-looping/20-cool-pattern-diagonal-1.html" width="400px" height="400px"></iframe>
+
+Satu lagi diagonal dari kanan atas ke kiri bawah
+
+```javascript
+function draw() {
+  background(220);
+  noLoop();
+
+  for (let i = 0; i < 20; i++) {
+    for (let j = 0; j < 20; j++) {
+      square(j * 20, i * 20, 20);
+
+      let topLeftX = j * 20;
+      let topLeftY = i * 20;
+      let bottomRightX = j * 20 + 20;
+      let bottomRightY = i * 20 + 20;
+
+      let topRightX = j * 20 + 20;
+      let topRightY = i * 20;
+      let bottomLeftX = j * 20;
+      let bottomLeftY = i * 20 + 20;
+
+      line(topLeftX, topLeftY, bottomRightX, bottomRightY);
+      line(topRightX, topRightY, bottomLeftX, bottomLeftY);
+    }
+  }
+}
+```
+
+<iframe src="03-looping/21-cool-pattern-diagonal-2.html" width="400px" height="400px"></iframe>
+
+Sekarang kita hapus persegi dan biarkan garisnya saja
+
+<iframe src="03-looping/22-cool-pattern-without-square.html" width="400px" height="400px"></iframe>
+
+Terakhir, decision untuk membuat diagonal-nya kita randomize. Kadang kita buat diagonal dari kiri atas ke kanan bawah, kadang kita buat diagonal dari kanan atas ke kiri bawah.
+
+```javascript
+function draw() {
+  background(220);
+  noLoop();
+
+  for (let i = 0; i < 20; i++) {
+    for (let j = 0; j < 20; j++) {
+      let topLeftX = j * 20;
+      let topLeftY = i * 20;
+      let bottomRightX = j * 20 + 20;
+      let bottomRightY = i * 20 + 20;
+
+      let topRightX = j * 20 + 20;
+      let topRightY = i * 20;
+      let bottomLeftX = j * 20;
+      let bottomLeftY = i * 20 + 20;
+
+      let rnd = random(2);
+
+      if (rnd < 1) {
+        line(topLeftX, topLeftY, bottomRightX, bottomRightY);
+      } else {
+        line(topRightX, topRightY, bottomLeftX, bottomLeftY);
+      }
+    }
+  }
+}
+```
+
+<iframe src="03-looping/23-cool-pattern-randomized.html" width="400px" height="400px"></iframe>
+
+## Task 13 📝
+
+Buatlah pattern seperti ini
+
+<iframe src="03-looping/24-cool-pattern-with-vertical-horizontal.html" width="400px" height="400px"></iframe>
