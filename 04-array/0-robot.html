@@ -1,0 +1,39 @@
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
+    <script>
+      let grid;
+      let robotX;
+      let robotY;
+
+      function setup() {
+        createCanvas(400, 400);
+        grid = 20;
+
+        robotX = 0;
+        robotY = grid;
+      }
+
+      function draw() {
+        background(220);
+        textSize(20);
+        text("🤖", robotX, robotY);
+      }
+
+      function keyPressed() {
+        if (keyCode === LEFT_ARROW) {
+          robotX -= grid;
+        } else if (keyCode === RIGHT_ARROW) {
+          robotX += grid;
+        } else if (keyCode === UP_ARROW) {
+          robotY -= grid;
+        } else if (keyCode === DOWN_ARROW) {
+          robotY += grid;
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main></main>
+  </body>
+</html>
