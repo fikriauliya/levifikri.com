@@ -262,7 +262,7 @@ for (let i = 0; i < numOfAliens; i++) {
 
 <iframe src="04-array/4-moving-aliens.html" width="400px" height="400px"></iframe>
 
-## Task 1 📝
+## Task 1 📝: Avoid Off Grid
 
 Waduh, aliens bisa keluar dari layar, lantas menghilang
 
@@ -272,7 +272,7 @@ Tenang, karena pakai array, kita bisa tingga looping
 
 <iframe src="04-array/5-avoid-off-grid.html" width="400px" height="400px"></iframe>
 
-## Task 2 📝
+## Task 2 📝: Slower Aliens
 
 Aliens terlalu cepat, kita perbaiki dengan menambahkan delay
 
@@ -282,42 +282,63 @@ Aliens terlalu cepat, kita perbaiki dengan menambahkan delay
 
 Kita ingin robot harus kabur dari aliens, jika robot bertabrakan dengan alien, game over.
 
-Nah, kita perlu buat fungsi untuk mendeteksi tabrakan.
+Nah, kita perlu buat fungsi untuk mendeteksi tabrakan. Sekaligus tampilkan score, jika bertabrakan, score berkurang. Biar lebih sulit, tambahkan jumlah alien juga.
 
-TODO
+Bagaimana untuk mengecek tabrakan dengan **semua** alien? Kan ada for loop untuk itu!
+
+```javascript
+for (let i = 0; i < numOfAliens; i++) {
+  if (robotX === aliensX[i] && robotY === aliensY[i]) {
+    score -= 1;
+    robotX = 20 * Math.floor(random(0, 20));
+    robotY = 20 * Math.floor(random(1, 20));
+  }
+}
+```
+
+<iframe src="04-array/7-collision-detection.html" width="400px" height="400px"></iframe>
 
 ## Attack
 
 Wah, ini sih sulit, kalau robot tidak bisa menyerang, gimana caranya menang?
 
-Ok, kita buat! Ketika tombol space ditekan, robot akan mengalahkan semua alien yang berada di sekitarnya.
+Ok, kita buat! Ketika tombol space ditekan, robot akan mengalahkan semua alien yang berada di sekitarnya. Sekaligus ubah gambar robot jadi api.
 
-TODO
+Supaya tidak terlalu mudah (ntar attack2 terus saja kan :P), ketika attack score berkurang 0.5 ya. Jadi pastikan attacknya kena ya
 
-## Teleport
+Untuk menghapus alien, kita bisa menggunakan `splice` untuk menghapus elemen array
 
-Tambah satu lagi biar seru! Robot bisa teleport!
+Hint: untuk mendetect collision bisa menggunakan:
 
-Jika tombol T ditekan, robot akan berpindah ke posisi random. Sehingga kalau robot terjebak, bisa kabur deh
+```javascript
+if (
+  Math.abs(robotX - aliensX[i]) <= grid &&
+  Math.abs(robotY - aliensY[i]) <= grid
+) {
+  // remove the alien from the array
+  aliensX.splice(i, 1);
+  aliensY.splice(i, 1);
 
-TODO
+  score += 1;
+}
+```
 
-## Challenge: Smarter Alien
+## Task 3 📝: Attack Mode
+
+Implementasikan attack mode
+
+<iframe src="04-array/8-attack.html" width="400px" height="400px"></iframe>
+
+## Task 4 📝: Smarter Aliens
 
 Alien terlalu bodoh, karena gerakannya random, kita buat alien lebih pintar yuk!
 
-Jadi alien akan bergerak ke arah robot!
+Jadi alien akan bergerak ke arah robot! Tapi kalau alien terlalu smart, akan terlalu sulit, jadi kita buat supaya 80% chance alien bergerak ke arah robot, 20% chance alien bergerak random.
 
-TODO
+<iframe src="04-array/9-smarter-aliens.html" width="400px" height="400px"></iframe>
 
-## Treasure
+## Task 5 📝: Treasure
 
-Masa game tanpa hadiah? Kita tambahkan hadiah di layar, jika robot berhasil mengambilnya, robot menang!
+Masa game tanpa hadiah? Kita tambahkan hadiah di layar, jika robot berhasil mengambilnya, robot menang! Score bertambah 5 dan game diulangi (naik ke level berikutnya) dengan jumlah alien bertambah 1.
 
-TODO
-
-## Level Up
-
-Setelah ambil hadiah, kita tambahkan level. Ketika naik level, jumlah alien bertambah, dan jumlah hadiahnya lebih banyak.
-
-TODO
+<iframe src="04-array/10-treasure.html" width="400px" height="400px"></iframe>
