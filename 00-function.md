@@ -65,7 +65,7 @@ Apa yang berubah?
 
 <iframe src="00-function/1-circle.html" width="400px" height="400px"></iframe>
 
-## Task 1 📝
+## Task 1 📝: Playing with Variables
 
 Coba ubah nilai x, y, dan d. Apa yang terjadi?
 
@@ -80,7 +80,7 @@ Di P5.js, koordinat dimulai dari kiri atas. Sehingga pojok kiri atas adalah titi
 
 TODO: tambah visualisasi
 
-## Task 2 📝
+## Task 2 📝: Square
 
 Buatlah bentuk seperti ini (Hint: bisa gunakan fungsi `square` atau `rect`)
 
@@ -94,7 +94,7 @@ Ada apa lagi? Mari kita cek dokumentasi
 
 [https://p5js.org/reference/](https://p5js.org/reference/)
 
-## Task 3 📝
+## Task 3 📝: Other Shapes
 
 Lihat bagian "Shape", dan coba buat lah bentuk `triangle`, `point`, dan `line`
 
@@ -144,7 +144,7 @@ di sini, `10` adalah nilai `tl`, dan nilai `tr`, `br`, dan `bl` akan menggunakan
 
 <iframe src="00-function/4-square-with-optional-param.html" width="400px" height="400px"></iframe>
 
-## Task 4 📝
+## Task 4 📝: Rounded
 
 Coba ubah nilai `tl`, `tr`, `br`, dan `bl`. Apa yang terjadi?
 
@@ -201,7 +201,7 @@ rect(200, 100, 50, 50);
 
 TODO: fill in
 
-## Task 5 📝
+## Task 5 📝: Nice Drawing
 
 Gambarlah bentuk Doraemon/kucing dengan menggunakan fungsi-fungsi yang sudah ada di P5.js
 

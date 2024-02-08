@@ -106,7 +106,7 @@ function keyPressed() {
 
 <iframe src="02-conditional/3-left-right.html" width="400px" height="400px"></iframe>
 
-## Task 1 📝
+## Task 1 📝: Moving Up & Down
 
 Buat supaya bisa gerak ke atas dan ke bawah juga
 
@@ -183,7 +183,7 @@ function keyPressed() {
 }
 ```
 
-## Task 2 📝
+## Task 2 📝: Handling Other
 
 Lengkapi program di atas supaya bisa bergerak ke atas, ke bawah, ke kiri, dan ke kanan, dan ubah emoji jadi 👾 jika tombol lainnya ditekan.
 
@@ -252,11 +252,11 @@ Biarkan robot keluar dari boundary, tapi kembalikan ke boundary
 
 ![Corrective](02-conditional/boundary-corrective.svg)
 
-## Task 3 📝
+## Task 3 📝: Off-grid Prevention
 
 Buatlah program supaya robot tidak bisa keluar dari layar menggunakan cara preventif
 
-## Task 4 📝
+## Task 4 📝: Off-grid Correction
 
 Buatlah program supaya robot tidak bisa keluar dari layar menggunakan cara corrective
 
@@ -303,7 +303,7 @@ function keyPressed() {
 
 <iframe src="02-conditional/8-apple.html" width="400px" height="400px"></iframe>
 
-## Task 5 📝
+## Task 5 📝: Eating Apple
 
 Buat supaya apelnya bisa dimakan oleh robot. Jika robot menyentuh apel, apel akan pindah ke posisi acak.
 
@@ -340,7 +340,7 @@ function draw() {
 
 <iframe src="02-conditional/10-apple-move.html" width="400px" height="400px"></iframe>
 
-## Task 6 📝
+## Task 6 📝: On-grid Apple
 
 Waduh, apelnya bisa keluar dari layar. Bagaimana jika kita ingin apelnya tidak bisa keluar dari layar?
 
@@ -348,7 +348,7 @@ Dan coba main-main, buat apelnya bisa bergerak lebih cepat
 
 <iframe src="02-conditional/11-apple-boundary.html" width="400px" height="400px"></iframe>
 
-## Task 7 📝
+## Task 7 📝: Non-diagonal Apple
 
 Wah apelnya curang, bisa bergerak diagonal. Buat supaya apelnya hanya bisa bergerak ke atas, ke bawah, ke kiri, atau ke kanan saja.
 

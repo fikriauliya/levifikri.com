@@ -19,7 +19,7 @@ function draw() {
 }
 ```
 
-## Task 1 📝
+## Task 1 📝: Ten Circles
 
 Sekarang buatlah 10 lingkaran yang bersampingan.
 
@@ -65,19 +65,19 @@ Mari kita pahami isi `for` loop di atas.
 
 `circle(i * 10, 100, 10);` -> kita mengalikan nilai `i` dengan 10, sehingga lingkaran akan tergambar di posisi `i * 10`. Jadi lingkaran pertama akan tergambar di posisi 10, kedua di posisi 20, ketiga di posisi 30, dan seterusnya.
 
-## Task 2 📝
+## Task 2 📝: 20 Circles
 
 Buatlah 20 lingkaran yang bersampingan.
 
 <iframe src="03-looping/3-20-loop.html" width="400px" height="400px"></iframe>
 
-## Task 3 📝
+## Task 3 📝: Shift to Right
 
 Geser semua lingkaran 10 pixel ke kanan, i.e. lingkaran dimulai dari posisi 20 (bukan 10) dan berakhir di posisi 210.
 
 <iframe src="03-looping/4-20-loop-shifted.html" width="400px" height="400px"></iframe>
 
-## Task 4 📝
+## Task 4 📝: Add Space
 
 Letakkan lingkaran di posisi 10, 30, 50, 70, 90, 110, 130, 150, 170, 190.
 
@@ -121,7 +121,7 @@ function draw() {
 
 Perhatikan bahwa nilai modulo-nya bergantian antara 0 dan 1, sehingga bisa digunakan untuk membuat pola warna yang menarik.
 
-## Task 5 📝
+## Task 5 📝: Alternating Colors
 
 Buatlah 10 lingkaran dengan pola warna merah - hijau - biru
 
@@ -240,7 +240,7 @@ function draw() {
 }
 ```
 
-## Task 6 📝
+## Task 6 📝: Three Colors
 
 Buatlah 10 baris pola di atas
 
@@ -267,7 +267,7 @@ for (let i = 0; i < 10; i++) {
 
 <iframe src="03-looping/11-nested-loop-triangle.html" width="400px" height="400px"></iframe>
 
-## Task 7 📝
+## Task 7 📝: Triangle Shape
 
 Buatlah pola segitiga terbalik
 
@@ -296,13 +296,13 @@ function draw() {
 
 <iframe src="03-looping/13-animated.html" width="400px" height="400px"></iframe>
 
-## Task 8 📝
+## Task 8 📝: Animated
 
 Buatlah agar lingkaran bergerak ke kanan dan ke kiri saja
 
 <iframe src="03-looping/14-animated-horizontal.html" width="400px" height="400px"></iframe>
 
-## Task 9 📝
+## Task 9 📝: Chess Board
 
 Buatlah papan catur seperti ini:
 
@@ -330,17 +330,17 @@ Perhatikan bahwa lingkaran akan mengikuti posisi mouse.
 
 Oh, ya apa yang terjadi jika `background(220)` dihapus?
 
-## Task 10 📝
+## Task 10 📝: Without `background`
 
 Hapus `background(220)` dan lihat apa yang terjadi.
 
-## Task 11 📝
+## Task 11 📝: Mouse Following
 
 Buatlah animasi seperti ini
 
 <iframe src="03-looping/17-mouse.html" width="400px" height="400px"></iframe>
 
-## Task 12 📝
+## Task 12 📝: Enlarge
 
 Buat agar ketika mouse-nya diclick, lingkaran akan membesar. Dan ketika keyboard-nya ditekan, lingkaran akan mengecil.
 
@@ -456,7 +456,7 @@ function draw() {
 
 <iframe src="03-looping/23-cool-pattern-randomized.html" width="400px" height="400px"></iframe>
 
-## Task 13 📝
+## Task 13 📝 Cool Pattern
 
 Buatlah pattern seperti ini
 

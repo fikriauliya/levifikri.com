@@ -162,11 +162,11 @@ function mousePressed() {
 
 Nah, sekarang ketika kita tekan mouse, `squareSize` akan berubah jadi besar.
 
-## Task 1 📝
+## Task 1 📝: Increasing Size
 
-Ubah code di atas, sehingga ketika mouse ditekan, `squareSize` akan **bertambah** ukurannya.
+Ubah code di atas, sehingga ketika mouse ditekan, `squareSize` akan terus **bertambah** ukurannya.
 
-## Task 2 📝
+## Task 2 📝: Decreasing Size
 
 Lihat dokumentasi di [https://p5js.org/reference/](https://p5js.org/reference/), tambahkan sebuah event baru **mengurangi** ukuran `squareSize` ketika keyboard ditekan.
 
@@ -210,11 +210,11 @@ function draw() {
 
 <iframe src="01-variable/8-random-variable.html" width="400px" height="400px"></iframe>
 
-## Task 3 📝
+## Task 3 📝: Random Square Location
 
 Ubah code di atas, sehingga posisi square juga acak.
 
-## Task 4 📝
+## Task 4 📝: Click Handling
 
 Ubah code di atas, sehingga posisi dan ukuran square hanya diacak ketika mouse ditekan.
 
@@ -247,6 +247,6 @@ text("🐶", 100, 100);
 
 <iframe src="01-variable/10-text-larger.html" width="400px" height="400px"></iframe>
 
-## Task 5 📝
+## Task 5 📝: Random Emojis
 
 Gambar dua emoji, dan randomize posisinya ketika mouse ditekan.
