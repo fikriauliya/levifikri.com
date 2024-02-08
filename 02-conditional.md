@@ -217,7 +217,7 @@ function keyPressed() {
 
 <iframe src="02-conditional/6-nested-if.html" width="400px" height="400px"></iframe>
 
-## Task 3 📝
+## Boundary Check
 
 Gerakkan terus robotnya sampai ke ujung layar, robot akan menghilang!
 
@@ -226,6 +226,39 @@ Buat supaya robotnya tidak bisa bergerak ketika sudah di ujung layar.
 <iframe src="02-conditional/7-nested-if-boundary-check.html" width="400px" height="400px"></iframe>
 
 Tips: bisa gunakan `width` dan `height` untuk mengecek koordinat ujung layar.
+
+Ada 4 kemungkinan kondisi:
+
+- Jika robot bergerak ke kiri, dan sudah di ujung layar kiri
+- Jika robot bergerak ke kanan, dan sudah di ujung layar kanan
+- Jika robot bergerak ke atas, dan sudah di ujung layar atas
+- Jika robot bergerak ke bawah, dan sudah di ujung layar bawah
+
+Seperti di ilustrasi di bawah ini, yang warna merah adalah kondisi di luar boundary.
+
+![Boundary Check](02-conditional/boundary-check.svg)
+
+Untuk mencegah itu, ada 2 solusi:
+
+### Preventive
+
+Jangan biarkan robot keluar dari boundary
+
+![Preventive](02-conditional/boundary-preventive.svg)
+
+### Corrective
+
+Biarkan robot keluar dari boundary, tapi kembalikan ke boundary
+
+![Corrective](02-conditional/boundary-corrective.svg)
+
+## Task 3 📝
+
+Buatlah program supaya robot tidak bisa keluar dari layar menggunakan cara preventif
+
+## Task 4 📝
+
+Buatlah program supaya robot tidak bisa keluar dari layar menggunakan cara corrective
 
 ## Apple
 
@@ -270,7 +303,7 @@ function keyPressed() {
 
 <iframe src="02-conditional/8-apple.html" width="400px" height="400px"></iframe>
 
-## Task 4 📝
+## Task 5 📝
 
 Buat supaya apelnya bisa dimakan oleh robot. Jika robot menyentuh apel, apel akan pindah ke posisi acak.
 
@@ -307,12 +340,16 @@ function draw() {
 
 <iframe src="02-conditional/10-apple-move.html" width="400px" height="400px"></iframe>
 
-## Task 5 📝
+## Task 6 📝
 
 Waduh, apelnya bisa keluar dari layar. Bagaimana jika kita ingin apelnya tidak bisa keluar dari layar?
 
 Dan coba main-main, buat apelnya bisa bergerak lebih cepat
 
-## Task 6 📝
+<iframe src="02-conditional/11-apple-boundary.html" width="400px" height="400px"></iframe>
+
+## Task 7 📝
 
 Wah apelnya curang, bisa bergerak diagonal. Buat supaya apelnya hanya bisa bergerak ke atas, ke bawah, ke kiri, atau ke kanan saja.
+
+<iframe src="02-conditional/12-apple-no-diagonal.html" width="400px" height="400px"></iframe>

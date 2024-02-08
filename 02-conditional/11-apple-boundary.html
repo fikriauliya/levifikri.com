@@ -1,0 +1,66 @@
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
+    <script>
+      let appleX;
+      let appleY;
+
+      let robotX = 200;
+      let robotY = 200;
+
+      let lastAppleMoveTime = 0;
+
+      function setup() {
+        createCanvas(400, 400);
+        // math calculation di sini untuk membuat posisi apel acak tapi kelipatan 10
+        appleX = Math.floor(random(width / 10)) * 10;
+        appleY = Math.floor(random(height / 10)) * 10;
+      }
+
+      function draw() {
+        background(220);
+        textSize(60);
+        text("🤖", robotX, robotY);
+        text("🍎", appleX, appleY);
+
+        if (millis() - lastAppleMoveTime > 200) {
+          appleX = random([-10, 0, 10]) + appleX;
+          appleY = random([-10, 0, 10]) + appleY;
+
+          if (appleX < 0) {
+            appleX = 0;
+          } else if (appleX > width) {
+            appleX = width;
+          }
+          if (appleY < 0) {
+            appleY = 0;
+          } else if (appleY > height) {
+            appleY = height;
+          }
+
+          lastAppleMoveTime = millis();
+        }
+      }
+
+      function keyPressed() {
+        if (keyCode === LEFT_ARROW) {
+          robotX = robotX - 10;
+        } else if (keyCode === RIGHT_ARROW) {
+          robotX = robotX + 10;
+        } else if (keyCode === UP_ARROW) {
+          robotY = robotY - 10;
+        } else if (keyCode === DOWN_ARROW) {
+          robotY = robotY + 10;
+        }
+
+        if (robotX === appleX && robotY === appleY) {
+          appleX = Math.floor(random(width / 10)) * 10;
+          appleY = Math.floor(random(height / 10)) * 10;
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main></main>
+  </body>
+</html>
