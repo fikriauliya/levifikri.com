@@ -1,5 +1,5 @@
 ---
-title: Looping
+title: 4. Looping
 format:
   html:
     code-fold: true
@@ -7,7 +7,7 @@ format:
 
 Yuk, kita buat 3 lingkaran yang bersampingan.
 
-<iframe src="03-looping/0-manual.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/0-manual.html" width="400px" height="400px"></iframe>
 
 ```javascript
 function draw() {
@@ -23,7 +23,7 @@ function draw() {
 
 Sekarang buatlah 10 lingkaran yang bersampingan.
 
-<iframe src="03-looping/1-ten-manual.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/1-ten-manual.html" width="400px" height="400px"></iframe>
 
 Repot kan ya :D, bagaimana kalau kita membuat 100 lingkaran? Tentu sangat repot.
 
@@ -39,7 +39,7 @@ function draw() {
 }
 ```
 
-<iframe src="03-looping/2-loop.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/2-loop.html" width="400px" height="400px"></iframe>
 
 Nah, bisa jauh lebih simple kan?
 
@@ -69,19 +69,19 @@ Mari kita pahami isi `for` loop di atas.
 
 Buatlah 20 lingkaran yang bersampingan.
 
-<iframe src="03-looping/3-20-loop.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/3-20-loop.html" width="400px" height="400px"></iframe>
 
 ## Task 3 📝: Shift to Right
 
 Geser semua lingkaran 10 pixel ke kanan, i.e. lingkaran dimulai dari posisi 20 (bukan 10) dan berakhir di posisi 210.
 
-<iframe src="03-looping/4-20-loop-shifted.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/4-20-loop-shifted.html" width="400px" height="400px"></iframe>
 
 ## Task 4 📝: Add Space
 
 Letakkan lingkaran di posisi 10, 30, 50, 70, 90, 110, 130, 150, 170, 190.
 
-<iframe src="03-looping/5-with-padding.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/5-with-padding.html" width="400px" height="400px"></iframe>
 
 ## Bonus: Modulo Operator
 
@@ -109,7 +109,7 @@ function draw() {
 }
 ```
 
-<iframe src="03-looping/6-modulo.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/6-modulo.html" width="400px" height="400px"></iframe>
 
 | i   | i % 2 |
 | --- | ----- |
@@ -125,7 +125,7 @@ Perhatikan bahwa nilai modulo-nya bergantian antara 0 dan 1, sehingga bisa digun
 
 Buatlah 10 lingkaran dengan pola warna merah - hijau - biru
 
-<iframe src="03-looping/7-modulo-3.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/7-modulo-3.html" width="400px" height="400px"></iframe>
 
 ## Repeating `for` loop
 
@@ -156,7 +156,7 @@ function draw() {
 }
 ```
 
-<iframe src="03-looping/8-2-loop.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/8-2-loop.html" width="400px" height="400px"></iframe>
 
 Bagaimana untuk 4 baris?
 
@@ -215,7 +215,7 @@ function draw() {
 
 Perhatikan adalah `j` yang bertugas menggeser posisi y-nya.
 
-<iframe src="03-looping/9-nested-loop.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/9-nested-loop.html" width="400px" height="400px"></iframe>
 
 ## Bonus: i, j, k Counter
 
@@ -244,7 +244,7 @@ function draw() {
 
 Buatlah 10 baris pola di atas
 
-<iframe src="03-looping/10-nested-loop-10.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/10-nested-loop-10.html" width="400px" height="400px"></iframe>
 
 ## Pola Segitiga
 
@@ -265,13 +265,13 @@ for (let i = 0; i < 10; i++) {
 }
 ```
 
-<iframe src="03-looping/11-nested-loop-triangle.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/11-nested-loop-triangle.html" width="400px" height="400px"></iframe>
 
 ## Task 7 📝: Triangle Shape
 
 Buatlah pola segitiga terbalik
 
-<iframe src="03-looping/12-nested-loop-triangle-rev.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/12-nested-loop-triangle-rev.html" width="400px" height="400px"></iframe>
 
 ## Animasikan
 
@@ -294,19 +294,19 @@ function draw() {
 }
 ```
 
-<iframe src="03-looping/13-animated.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/13-animated.html" width="400px" height="400px"></iframe>
 
 ## Task 8 📝: Animated
 
 Buatlah agar lingkaran bergerak ke kanan dan ke kiri saja
 
-<iframe src="03-looping/14-animated-horizontal.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/14-animated-horizontal.html" width="400px" height="400px"></iframe>
 
 ## Task 9 📝: Chess Board
 
 Buatlah papan catur seperti ini:
 
-<iframe src="03-looping/15-chess.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/15-chess.html" width="400px" height="400px"></iframe>
 
 ## `mouseX` dan `mouseY`
 
@@ -326,7 +326,7 @@ function draw() {
 
 Perhatikan bahwa lingkaran akan mengikuti posisi mouse.
 
-<iframe src="03-looping/16-mouse-pos.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/16-mouse-pos.html" width="400px" height="400px"></iframe>
 
 Oh, ya apa yang terjadi jika `background(220)` dihapus?
 
@@ -338,13 +338,13 @@ Hapus `background(220)` dan lihat apa yang terjadi.
 
 Buatlah animasi seperti ini
 
-<iframe src="03-looping/17-mouse.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/17-mouse.html" width="400px" height="400px"></iframe>
 
 ## Task 12 📝: Enlarge
 
 Buat agar ketika mouse-nya diclick, lingkaran akan membesar. Dan ketika keyboard-nya ditekan, lingkaran akan mengecil.
 
-<iframe src="03-looping/18-mouse-expanded.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/18-mouse-expanded.html" width="400px" height="400px"></iframe>
 
 ## Bonus: Cool Pattern
 
@@ -363,7 +363,7 @@ function draw() {
 }
 ```
 
-<iframe src="03-looping/19-cool-pattern-square.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/19-cool-pattern-square.html" width="400px" height="400px"></iframe>
 
 Kemudian, kita buat garis diagonal dari kiri atas ke kanan bawah
 
@@ -387,7 +387,7 @@ function draw() {
 }
 ```
 
-<iframe src="03-looping/20-cool-pattern-diagonal-1.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/20-cool-pattern-diagonal-1.html" width="400px" height="400px"></iframe>
 
 Satu lagi diagonal dari kanan atas ke kiri bawah
 
@@ -417,11 +417,11 @@ function draw() {
 }
 ```
 
-<iframe src="03-looping/21-cool-pattern-diagonal-2.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/21-cool-pattern-diagonal-2.html" width="400px" height="400px"></iframe>
 
 Sekarang kita hapus persegi dan biarkan garisnya saja
 
-<iframe src="03-looping/22-cool-pattern-without-square.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/22-cool-pattern-without-square.html" width="400px" height="400px"></iframe>
 
 Terakhir, decision untuk membuat diagonal-nya kita randomize. Kadang kita buat diagonal dari kiri atas ke kanan bawah, kadang kita buat diagonal dari kanan atas ke kiri bawah.
 
@@ -454,10 +454,10 @@ function draw() {
 }
 ```
 
-<iframe src="03-looping/23-cool-pattern-randomized.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/23-cool-pattern-randomized.html" width="400px" height="400px"></iframe>
 
 ## Task 13 📝 Cool Pattern
 
 Buatlah pattern seperti ini
 
-<iframe src="03-looping/24-cool-pattern-with-vertical-horizontal.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/24-cool-pattern-with-vertical-horizontal.html" width="400px" height="400px"></iframe>

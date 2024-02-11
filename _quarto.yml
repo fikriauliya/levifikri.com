@@ -2,9 +2,10 @@ project:
   type: website
 
 website:
-  title: "Visual Fun Coding"
+  title: "Levi Fikri"
   sidebar:
     contents: auto
+    pinned: true
 
 format:
   html:

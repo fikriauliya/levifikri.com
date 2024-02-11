@@ -1,38 +1,41 @@
 ---
-title: "Introduction"
+title: "0. Introduction"
+format:
+  html:
+    code-fold: true
 ---
 
 Berlajar coding seharusnya mudah dan menyenangkan. Jika sulit, mungkin approach belajarnya yang kurang tepat? :)
 
 Di sini kita coba belajar secara visual dengan [p5.js](https://p5js.org/)
 
-
 ## Cikal Bakal
 
 Materi ini dibuat oleh [Pahlevi](https://twitter.com/_fikri_auliya) [Fikri Auliya](https://www.linkedin.com/in/pahleviauliya/) untuk mengajarkan Javascript coding pada anak saya, Yusuf (8 tahun saat ini). Pada saat ini, ~50% materi di sini sudah diujicobakan pada anak. Jadi hopefully sudah cukup beginner friendly :)
 
-## Projects 
+## Projects
 
 Untuk belajar coding harus get our hands dirty. Tidak cukup hanya membaca materi, tapi juga benar-benar mencoba coding. Contoh project (dari sekian banyak) yang dibuat:
 
 Belajar loop untuk membuat pola seperti ini
 
-<iframe src="03-looping/23-cool-pattern-randomized.html" width="400px" height="400px"></iframe>
+<iframe src="04-looping/23-cool-pattern-randomized.html" width="400px" height="400px"></iframe>
 
 Belajar array dengan membuat game
 
-<iframe src="04-array/10-treasure.html" width="400px" height="400px"></iframe>
+<iframe src="05-array/10-treasure.html" width="400px" height="400px"></iframe>
 
 Seru kan? :)
 
 ## Modules
+
 Project ini masih work in progress, namun sudah cukup mengcover hampir semua basic yang dibutuhkan untuk bisa coding:
 
-- [Function](./00-function.md)
-- [Variable](./01-variable.md)
-- [Conditional](./02-conditiona.md)
-- [Looping](./03-looping.md)
-- [Array](./04-array.md)
+- [Function](./01-function.md)
+- [Variable](./02-variable.md)
+- [Conditional](./03-conditional.md)
+- [Looping](./04-looping.md)
+- [Array](./05-array.md)
 
 Masing-masing materi mungkin membutuhkan ~2-4 jam untuk beginner
 
@@ -64,4 +67,3 @@ Hindari copy+paste, biarkan diketik ulang. Biar anak hafal syntaxnya
 ### Intervensi sebelum bad mood
 
 You know the best tanda-tanda anak akan bad mood. Berikan bantuan sebelum bad mood, bukan ketika bad mood
-
