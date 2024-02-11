@@ -3,6 +3,7 @@ project:
 
 website:
   title: "Levi Fikri"
+  google-analytics: "G-HZ27R5K5M2"
   navbar:
     search: true
     background: "danger"
