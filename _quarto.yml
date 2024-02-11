@@ -3,13 +3,24 @@ project:
 
 website:
   title: "Levi Fikri"
+  navbar:
+    search: true
+    background: "danger"
+    right: 
+      - text: "Fun Visual Coding"
+        href: "fun-visual-coding/introduction.md"
+      - text: "Competitive Programming"
+        href: "competitive-programming/introduction.ipynb"
+    pinned: true
+  bread-crumbs: false
   sidebar:
     style: "floating"
-    search: true
     collapse-level: 3
+    border: true
     contents: 
       - section: "Fun Visual Coding"
         contents: "fun-visual-coding/*"
+      - text: "---"
       - section: "Competitive Programming"
         contents:
           - "competitive-programming/introduction.ipynb"
@@ -20,7 +31,6 @@ website:
             contents: "competitive-programming/algorithm/*"
           - section: "Cryptography"
             contents: "competitive-programming/cryptography/*"
-    pinned: true
   twitter-card: true
   open-graph: true
 
