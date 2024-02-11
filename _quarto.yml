@@ -6,11 +6,13 @@ website:
   sidebar:
     style: "floating"
     search: true
+    collapse-level: 3
     contents: 
       - section: "Fun Visual Coding"
         contents: "fun-visual-coding/*"
       - section: "Competitive Programming"
         contents:
+          - "competitive-programming/introduction.ipynb"
           - "competitive-programming/philosophy.ipynb"
           - section: "Data Structure"
             contents: "competitive-programming/data-structure/*.ipynb"
@@ -24,9 +26,9 @@ website:
 
 format:
   html:
-    # theme: default
+    theme: default
     # theme: lumen
-    theme: materia
+    # theme: materia
     # theme: united
     # theme: zephyr
     css: styles.css
