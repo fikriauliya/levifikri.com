@@ -4,14 +4,30 @@ project:
 website:
   title: "Levi Fikri"
   sidebar:
-    contents: auto
+    style: "floating"
+    search: true
+    contents: 
+      - section: "Fun Visual Coding"
+        contents: "fun-visual-coding/*"
+      - section: "Competitive Programming"
+        contents:
+          - "competitive-programming/philosophy.ipynb"
+          - section: "Data Structure"
+            contents: "competitive-programming/data-structure/*.ipynb"
+          - section: "Algorithm"
+            contents: "competitive-programming/algorithm/*"
+          - section: "Cryptography"
+            contents: "competitive-programming/cryptography/*"
     pinned: true
+  twitter-card: true
+  open-graph: true
 
 format:
   html:
-    theme: cosmo
+    # theme: default
+    # theme: lumen
+    theme: materia
+    # theme: united
+    # theme: zephyr
     css: styles.css
     toc: true
-
-
-

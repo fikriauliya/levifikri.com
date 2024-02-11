@@ -1,8 +1,9 @@
 ---
-title: "0. Introduction"
+title: "Introduction"
 format:
   html:
     code-fold: true
+order: 0
 ---
 
 Berlajar coding seharusnya mudah dan menyenangkan. Jika sulit, mungkin approach belajarnya yang kurang tepat? :)
@@ -19,11 +20,11 @@ Untuk belajar coding harus get our hands dirty. Tidak cukup hanya membaca materi
 
 Belajar loop untuk membuat pola seperti ini
 
-<iframe src="04-looping/23-cool-pattern-randomized.html" width="400px" height="400px"></iframe>
+<iframe src="looping/23-cool-pattern-randomized.html" width="400px" height="400px"></iframe>
 
 Belajar array dengan membuat game
 
-<iframe src="05-array/10-treasure.html" width="400px" height="400px"></iframe>
+<iframe src="array/10-treasure.html" width="400px" height="400px"></iframe>
 
 Seru kan? :)
 

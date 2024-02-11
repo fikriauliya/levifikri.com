@@ -1,8 +1,9 @@
 ---
-title: 2. Variable
+title: Variable
 format:
   html:
     code-fold: true
+order: 2
 ---
 
 ## Constant
@@ -11,7 +12,7 @@ format:
 square(100, 200, 50);
 ```
 
-<iframe src="02-variable/0-square.html" width="400px" height="400px"></iframe>
+<iframe src="variable/0-square.html" width="400px" height="400px"></iframe>
 
 Bagaimana agar square-nya jadi lebih lebar
 
@@ -21,7 +22,7 @@ Mudah, cukup ubah parameter ke-3:
 square(100, 200, 100);
 ```
 
-<iframe src="02-variable/1-square-larger.html" width="400px" height="400px"></iframe>
+<iframe src="variable/1-square-larger.html" width="400px" height="400px"></iframe>
 
 Bagaimana jika kita memiliki banyak square?
 
@@ -31,7 +32,7 @@ square(200, 200, 50);
 square(300, 200, 50);
 ```
 
-<iframe src="02-variable/2-many-square.html" width="400px" height="400px"></iframe>
+<iframe src="variable/2-many-square.html" width="400px" height="400px"></iframe>
 
 ...dan kita ingin membuat semua square-nya lebih lebar
 
@@ -60,7 +61,7 @@ square(200, 200, squareSize);
 square(300, 200, squareSize);
 ```
 
-<iframe src="02-variable/3-many-square-const.html" width="400px" height="400px"></iframe>
+<iframe src="variable/3-many-square-const.html" width="400px" height="400px"></iframe>
 
 Code di atas akan menghasilkan hasil yang sama dengan code sebelumnya, tapi lebih mudah dibaca dan diubah.
 
@@ -113,7 +114,7 @@ function mousePressed() {
 }
 ```
 
-<iframe src="02-variable/4-event.html" width="400px" height="400px"></iframe>
+<iframe src="variable/4-event.html" width="400px" height="400px"></iframe>
 
 Apa yang terjadi ketika kita tekan mouse? Tidak terlihat apa-apa.
 
@@ -133,7 +134,7 @@ function mousePressed() {
 }
 ```
 
-<iframe src="02-variable/5-event-change-variable-wrong.html" width="400px" height="400px"></iframe>
+<iframe src="variable/5-event-change-variable-wrong.html" width="400px" height="400px"></iframe>
 
 Hmm, tidak terjadi apa-apa. Kenapa?
 
@@ -158,7 +159,7 @@ function mousePressed() {
 }
 ```
 
-<iframe src="02-variable/6-event-change-variable.html" width="400px" height="400px"></iframe>
+<iframe src="variable/6-event-change-variable.html" width="400px" height="400px"></iframe>
 
 Nah, sekarang ketika kita tekan mouse, `squareSize` akan berubah jadi besar.
 
@@ -192,7 +193,7 @@ function draw() {
 }
 ```
 
-<iframe src="02-variable/7-time-variable.html" width="400px" height="400px"></iframe>
+<iframe src="variable/7-time-variable.html" width="400px" height="400px"></iframe>
 
 ## Random Variable
 
@@ -208,7 +209,7 @@ function draw() {
 }
 ```
 
-<iframe src="02-variable/8-random-variable.html" width="400px" height="400px"></iframe>
+<iframe src="variable/8-random-variable.html" width="400px" height="400px"></iframe>
 
 ## Task 3 📝: Random Square Location
 
@@ -236,7 +237,7 @@ Agar lebih menarik, kita bisa memasukkan Emoji. Explore [https://emojipedia.org/
 text("🐶", 100, 20);
 ```
 
-<iframe src="02-variable/9-text.html" width="400px" height="400px"></iframe>
+<iframe src="variable/9-text.html" width="400px" height="400px"></iframe>
 
 Wah, kecil sekali, mari perbesar dengan `textSize`:
 
@@ -245,7 +246,7 @@ textSize(60);
 text("🐶", 100, 100);
 ```
 
-<iframe src="02-variable/10-text-larger.html" width="400px" height="400px"></iframe>
+<iframe src="variable/10-text-larger.html" width="400px" height="400px"></iframe>
 
 ## Task 5 📝: Random Emojis
 

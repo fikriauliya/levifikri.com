@@ -1,8 +1,9 @@
 ---
-title: 1. Function
+title: Function
 format:
   html:
     code-fold: true
+order: 1
 ---
 
 Di programming, kita tidak ingin membuat semuanya dari awal/nol.
@@ -17,7 +18,7 @@ Mari kita coba:
 circle(100, 200, 50);
 ```
 
-<iframe src="01-function/0-circle.html" width="400px" height="400px"></iframe>
+<iframe src="function/0-circle.html" width="400px" height="400px"></iframe>
 
 ## Reading Docs
 
@@ -63,7 +64,7 @@ Mari kita ganti nilai x, y, dan d
 
 Apa yang berubah?
 
-<iframe src="01-function/1-circle.html" width="400px" height="400px"></iframe>
+<iframe src="function/1-circle.html" width="400px" height="400px"></iframe>
 
 ## Task 1 📝: Playing with Variables
 
@@ -84,7 +85,7 @@ TODO: tambah visualisasi
 
 Buatlah bentuk seperti ini (Hint: bisa gunakan fungsi `square` atau `rect`)
 
-<iframe src="01-function/2-square.html" width="400px" height="400px"></iframe>
+<iframe src="function/2-square.html" width="400px" height="400px"></iframe>
 
 ## Other functions
 
@@ -106,7 +107,7 @@ Mari kita buat `square`:
 square(100, 200, 50);
 ```
 
-<iframe src="01-function/3-square-normal.html" width="400px" height="400px"></iframe>
+<iframe src="function/3-square-normal.html" width="400px" height="400px"></iframe>
 
 Di situ kita memberikan 3 parameter: x, y, dan s.
 
@@ -142,7 +143,7 @@ square(100, 200, 50, 10);
 
 di sini, `10` adalah nilai `tl`, dan nilai `tr`, `br`, dan `bl` akan menggunakan nilai default
 
-<iframe src="01-function/4-square-with-optional-param.html" width="400px" height="400px"></iframe>
+<iframe src="function/4-square-with-optional-param.html" width="400px" height="400px"></iframe>
 
 ## Task 4 📝: Rounded
 
@@ -195,7 +196,7 @@ fill(0, 255, 0); //green
 rect(200, 100, 50, 50);
 ```
 
-<iframe src="01-function/5-fill.html" width="400px" height="400px"></iframe>
+<iframe src="function/5-fill.html" width="400px" height="400px"></iframe>
 
 ## Declaring Function
 
@@ -207,7 +208,7 @@ Gambarlah bentuk Doraemon/kucing dengan menggunakan fungsi-fungsi yang sudah ada
 
 Kurang lebih seperti ini, tapi buatlah versi yang jauh lebih keren!
 
-<iframe src="01-function/5-doraemon.html" width="400px" height="400px"></iframe>
+<iframe src="function/5-doraemon.html" width="400px" height="400px"></iframe>
 
 ## Conclusion
 

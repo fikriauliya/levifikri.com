@@ -1,8 +1,9 @@
 ---
-title: 5. Array
+title: Array
 format:
   html:
     code-fold: true
+order: 5
 ---
 
 Yuk kita bikin game robot 🤖 vs alien 👾.
@@ -44,7 +45,7 @@ function keyPressed() {
 }
 ```
 
-<iframe src="05-array/0-robot.html" width="400px" height="400px"></iframe>
+<iframe src="array/0-robot.html" width="400px" height="400px"></iframe>
 
 ## Alien
 
@@ -88,7 +89,7 @@ function keyPressed() {
 }
 ```
 
-<iframe src="05-array/1-robot-alien.html" width="400px" height="400px"></iframe>
+<iframe src="array/1-robot-alien.html" width="400px" height="400px"></iframe>
 
 ## More Alien
 
@@ -139,7 +140,7 @@ function keyPressed() {
 }
 ```
 
-<iframe src="05-array/2-robot-2-aliens.html" width="400px" height="400px"></iframe>
+<iframe src="array/2-robot-2-aliens.html" width="400px" height="400px"></iframe>
 
 ## Much More Aliens
 
@@ -199,7 +200,7 @@ function keyPressed() {
 }
 ```
 
-<iframe src="05-array/3-array.html" width="400px" height="400px"></iframe>
+<iframe src="array/3-array.html" width="400px" height="400px"></iframe>
 
 Untuk menambah jumlah alien, kita hanya perlu mengubah nilai `numOfAliens`.
 
@@ -260,7 +261,7 @@ for (let i = 0; i < numOfAliens; i++) {
 }
 ```
 
-<iframe src="05-array/4-moving-aliens.html" width="400px" height="400px"></iframe>
+<iframe src="array/4-moving-aliens.html" width="400px" height="400px"></iframe>
 
 ## Task 1 📝: Avoid Off Grid
 
@@ -270,13 +271,13 @@ Ok, kita perbaiki. Idenya adalah jika posisi alien melebihi batas layar, kita ke
 
 Tenang, karena pakai array, kita bisa tingga looping
 
-<iframe src="05-array/5-avoid-off-grid.html" width="400px" height="400px"></iframe>
+<iframe src="array/5-avoid-off-grid.html" width="400px" height="400px"></iframe>
 
 ## Task 2 📝: Slower Aliens
 
 Aliens terlalu cepat, kita perbaiki dengan menambahkan delay
 
-<iframe src="05-array/6-slower.html" width="400px" height="400px"></iframe>
+<iframe src="array/6-slower.html" width="400px" height="400px"></iframe>
 
 ## Collision detection
 
@@ -296,7 +297,7 @@ for (let i = 0; i < numOfAliens; i++) {
 }
 ```
 
-<iframe src="05-array/7-collision-detection.html" width="400px" height="400px"></iframe>
+<iframe src="array/7-collision-detection.html" width="400px" height="400px"></iframe>
 
 ## Attack
 
@@ -327,7 +328,7 @@ if (
 
 Implementasikan attack mode
 
-<iframe src="05-array/8-attack.html" width="400px" height="400px"></iframe>
+<iframe src="array/8-attack.html" width="400px" height="400px"></iframe>
 
 ## Task 4 📝: Smarter Aliens
 
@@ -335,10 +336,10 @@ Alien terlalu bodoh, karena gerakannya random, kita buat alien lebih pintar yuk!
 
 Jadi alien akan bergerak ke arah robot! Tapi kalau alien terlalu smart, akan terlalu sulit, jadi kita buat supaya 80% chance alien bergerak ke arah robot, 20% chance alien bergerak random.
 
-<iframe src="05-array/9-smarter-aliens.html" width="400px" height="400px"></iframe>
+<iframe src="array/9-smarter-aliens.html" width="400px" height="400px"></iframe>
 
 ## Task 5 📝: Treasure
 
 Masa game tanpa hadiah? Kita tambahkan hadiah di layar, jika robot berhasil mengambilnya, robot menang! Score bertambah 5 dan game diulangi (naik ke level berikutnya) dengan jumlah alien bertambah 1.
 
-<iframe src="05-array/10-treasure.html" width="400px" height="400px"></iframe>
+<iframe src="array/10-treasure.html" width="400px" height="400px"></iframe>

@@ -1,8 +1,9 @@
 ---
-title: 3. Conditional
+title: Conditional
 format:
   html:
     code-fold: true
+order: 3
 ---
 
 Di bagian sebelumnya, kita sudah belajar bagaimana mengubah variable dengan menerima input dari keyboard (user input).
@@ -24,7 +25,7 @@ function keyPressed() {
 }
 ```
 
-<iframe src="03-conditional/0-single-direction.html" width="400px" height="400px"></iframe>
+<iframe src="conditional/0-single-direction.html" width="400px" height="400px"></iframe>
 
 Namun, robot di atas selalu bergerak ke kanan, walaupun kita tekan tombol kiri atau tombol lainnya. Bagaimana supaya agar hanya bergerak ke kanan jika tombol kanan ditekan?
 
@@ -52,7 +53,7 @@ function keyPressed() {
 }
 ```
 
-<iframe src="03-conditional/1-key-code.html" width="400px" height="400px"></iframe>
+<iframe src="conditional/1-key-code.html" width="400px" height="400px"></iframe>
 
 Tekan tombol kiri dan kanan, lalu lihat hasilnya di console. Apa keycode untuk tombol kiri dan kanan?
 
@@ -66,7 +67,7 @@ function keyPressed() {
 }
 ```
 
-<iframe src="03-conditional/2-strict-right.html" width="400px" height="400px"></iframe>
+<iframe src="conditional/2-strict-right.html" width="400px" height="400px"></iframe>
 
 Nah, sekarang robot hanya bergerak ke kanan jika tombol kanan ditekan. Dan robot tidak bergerak jika tombol lainnya ditekan.
 
@@ -104,13 +105,13 @@ function keyPressed() {
 }
 ```
 
-<iframe src="03-conditional/3-left-right.html" width="400px" height="400px"></iframe>
+<iframe src="conditional/3-left-right.html" width="400px" height="400px"></iframe>
 
 ## Task 1 📝: Moving Up & Down
 
 Buat supaya bisa gerak ke atas dan ke bawah juga
 
-<iframe src="03-conditional/4-left-right-up-down.html" width="400px" height="400px"></iframe>
+<iframe src="conditional/4-left-right-up-down.html" width="400px" height="400px"></iframe>
 
 ## Bonus
 
@@ -187,7 +188,7 @@ function keyPressed() {
 
 Lengkapi program di atas supaya bisa bergerak ke atas, ke bawah, ke kiri, dan ke kanan, dan ubah emoji jadi 👾 jika tombol lainnya ditekan.
 
-<iframe src="03-conditional/5-else.html" width="400px" height="400px"></iframe>
+<iframe src="conditional/5-else.html" width="400px" height="400px"></iframe>
 
 ## Nested If
 
@@ -215,7 +216,7 @@ function keyPressed() {
 }
 ```
 
-<iframe src="03-conditional/6-nested-if.html" width="400px" height="400px"></iframe>
+<iframe src="conditional/6-nested-if.html" width="400px" height="400px"></iframe>
 
 ## Boundary Check
 
@@ -223,7 +224,7 @@ Gerakkan terus robotnya sampai ke ujung layar, robot akan menghilang!
 
 Buat supaya robotnya tidak bisa bergerak ketika sudah di ujung layar.
 
-<iframe src="03-conditional/7-nested-if-boundary-check.html" width="400px" height="400px"></iframe>
+<iframe src="conditional/7-nested-if-boundary-check.html" width="400px" height="400px"></iframe>
 
 Tips: bisa gunakan `width` dan `height` untuk mengecek koordinat ujung layar.
 
@@ -236,7 +237,7 @@ Ada 4 kemungkinan kondisi:
 
 Seperti di ilustrasi di bawah ini, yang warna merah adalah kondisi di luar boundary.
 
-![Boundary Check](03-conditional/boundary-check.svg)
+![Boundary Check](conditional/boundary-check.svg)
 
 Untuk mencegah itu, ada 2 solusi:
 
@@ -244,13 +245,13 @@ Untuk mencegah itu, ada 2 solusi:
 
 Jangan biarkan robot keluar dari boundary
 
-![Preventive](03-conditional/boundary-preventive.svg)
+![Preventive](conditional/boundary-preventive.svg)
 
 ### Corrective
 
 Biarkan robot keluar dari boundary, tapi kembalikan ke boundary
 
-![Corrective](03-conditional/boundary-corrective.svg)
+![Corrective](conditional/boundary-corrective.svg)
 
 ## Task 3 📝: Off-grid Prevention
 
@@ -301,13 +302,13 @@ function keyPressed() {
 }
 ```
 
-<iframe src="03-conditional/8-apple.html" width="400px" height="400px"></iframe>
+<iframe src="conditional/8-apple.html" width="400px" height="400px"></iframe>
 
 ## Task 5 📝: Eating Apple
 
 Buat supaya apelnya bisa dimakan oleh robot. Jika robot menyentuh apel, apel akan pindah ke posisi acak.
 
-<iframe src="03-conditional/9-apple-eaten.html" width="400px" height="400px"></iframe>
+<iframe src="conditional/9-apple-eaten.html" width="400px" height="400px"></iframe>
 
 ## Moving Apple
 
@@ -321,7 +322,7 @@ Hint: bisa gunakan `random([-10, 0, 10])` untuk membuat gerakan acak, output dar
 
 Kenapa 0? Karena boleh donk apelnya diam saja. Kalau selalu gerak, sulit nanti robotnya menangkapnya.
 
-![last-movement](03-conditional/last-movement.svg)
+![last-movement](conditional/last-movement.svg)
 
 ```javascript
 let lastAppleMoveTime = 0;
@@ -340,7 +341,7 @@ function draw() {
 }
 ```
 
-<iframe src="03-conditional/10-apple-move.html" width="400px" height="400px"></iframe>
+<iframe src="conditional/10-apple-move.html" width="400px" height="400px"></iframe>
 
 ## Task 6 📝: On-grid Apple
 
@@ -348,10 +349,10 @@ Waduh, apelnya bisa keluar dari layar. Bagaimana jika kita ingin apelnya tidak b
 
 Dan coba main-main, buat apelnya bisa bergerak lebih cepat
 
-<iframe src="03-conditional/11-apple-boundary.html" width="400px" height="400px"></iframe>
+<iframe src="conditional/11-apple-boundary.html" width="400px" height="400px"></iframe>
 
 ## Task 7 📝: Non-diagonal Apple
 
 Wah apelnya curang, bisa bergerak diagonal. Buat supaya apelnya hanya bisa bergerak ke atas, ke bawah, ke kiri, atau ke kanan saja.
 
-<iframe src="03-conditional/12-apple-no-diagonal.html" width="400px" height="400px"></iframe>
+<iframe src="conditional/12-apple-no-diagonal.html" width="400px" height="400px"></iframe>
