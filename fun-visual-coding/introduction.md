@@ -32,11 +32,11 @@ Seru kan? :)
 
 Project ini masih work in progress, namun sudah cukup mengcover hampir semua basic yang dibutuhkan untuk bisa coding:
 
-- [Function](./01-function.md)
-- [Variable](./02-variable.md)
-- [Conditional](./03-conditional.md)
-- [Looping](./04-looping.md)
-- [Array](./05-array.md)
+- [Function](./function.md)
+- [Variable](./variable.md)
+- [Conditional](./conditional.md)
+- [Looping](./looping.md)
+- [Array](./array.md)
 
 Masing-masing materi mungkin membutuhkan ~2-4 jam untuk beginner
 
