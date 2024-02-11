@@ -321,6 +321,8 @@ Hint: bisa gunakan `random([-10, 0, 10])` untuk membuat gerakan acak, output dar
 
 Kenapa 0? Karena boleh donk apelnya diam saja. Kalau selalu gerak, sulit nanti robotnya menangkapnya.
 
+![last-movement](02-conditional/last-movement.svg)
+
 ```javascript
 let lastAppleMoveTime = 0;
 function draw() {
