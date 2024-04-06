@@ -12,6 +12,8 @@ website:
         href: "fun-visual-coding/introduction.md"
       - text: "Competitive Programming"
         href: "competitive-programming/introduction.ipynb"
+      - text: "Demystifying Rust"
+        href: "rust/introduction.ipynb"
     pinned: true
   bread-crumbs: false
   sidebar:
@@ -32,6 +34,9 @@ website:
             contents: "competitive-programming/algorithm/*"
           - section: "Cryptography"
             contents: "competitive-programming/cryptography/*"
+      - text: "---"
+      - section: "Demystifying Rust"
+        contents: "rust/*.ipynb"
   twitter-card: true
   open-graph: true
 
