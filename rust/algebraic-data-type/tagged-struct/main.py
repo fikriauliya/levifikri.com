@@ -1,0 +1,49 @@
+# Define classes for each message type
+class TextMessage:
+    def __init__(self, text):
+        self.type = "Text"
+        self.text = text
+
+
+class ImageMessage:
+    def __init__(self, url, caption):
+        self.type = "Image"
+        self.url = url
+        self.caption = caption
+
+
+class VideoMessage:
+    def __init__(self, video_url, thumbnail_url):
+        self.type = "Video"
+        self.video_url = video_url
+        self.thumbnail_url = thumbnail_url
+
+
+# Create a function to process messages
+def process_message(message):
+    message_type = message.type
+
+    if message_type == "Text":
+        print(f"Text message: {message.text}")
+    elif message_type == "Image":
+        print("Image message:")
+        print(f"URL: {message.url}")
+        print(f"Caption: {message.caption}")
+    elif message_type == "Video":
+        print("Video message:")
+        print(f"Video URL: {message.video_url}")
+        print(f"Thumbnail URL: {message.thumbnail_url}")
+    else:
+        print("Unknown message type")
+
+
+# Example usage
+text_message = TextMessage("Hello, world!")
+image_message = ImageMessage(
+    "https://example.com/image.jpg", "A beautiful sunset")
+video_message = VideoMessage(
+    "https://example.com/video.mp4", "https://example.com/thumbnail.jpg")
+
+process_message(text_message)
+process_message(image_message)
+process_message(video_message)
