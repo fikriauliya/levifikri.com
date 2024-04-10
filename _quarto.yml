@@ -21,8 +21,8 @@ website:
     collapse-level: 3
     border: true
     contents: 
-      - section: "Fun Visual Coding"
-        contents: "fun-visual-coding/*"
+      - section: "Demystifying Rust"
+        contents: "rust/*.ipynb"
       - text: "---"
       - section: "Competitive Programming"
         contents:
@@ -35,8 +35,8 @@ website:
           - section: "Cryptography"
             contents: "competitive-programming/cryptography/*"
       - text: "---"
-      - section: "Demystifying Rust"
-        contents: "rust/*.ipynb"
+      - section: "Fun Visual Coding"
+        contents: "fun-visual-coding/*"
   twitter-card: true
   open-graph: true
 
