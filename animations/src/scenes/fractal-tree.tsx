@@ -9,18 +9,20 @@ import {
 } from "@motion-canvas/core";
 import { loopUntilSlide } from "../libs";
 
+const topMargin = 200;
+const bottomMargin = 350;
+
 function* drawFractal(
   view: View2D,
   startPos: Vector2,
   direction: Vector2,
-  len: number,
-  angle: number
+  len: number
 ): ThreadGenerator {
   if (len < 50) {
     return;
   }
   const line = createRef<Line>();
-  let endPos = startPos.add(direction.scale(len));
+  const endPos = startPos.add(direction.scale(len));
 
   view.add(
     <Line
@@ -33,15 +35,15 @@ function* drawFractal(
     />
   );
 
-  yield* line().end(1, 0.3);
+  yield* line().end(1, 0.25);
 
-  angle = Math.random() * 25 + 10;
-  let nextRightDirection = direction.rotate(angle);
-  let nextLeftDirection = direction.rotate(-angle);
-  let nextLen = len * 0.75;
+  const angle = () => Math.random() * 25 + 10;
+  const nextRightDirection = direction.rotate(angle());
+  const nextLeftDirection = direction.rotate(-angle());
+  const nextLen = len * 0.75;
   yield* all(
-    drawFractal(view, endPos, nextRightDirection, nextLen, angle),
-    drawFractal(view, endPos, nextLeftDirection, nextLen, angle)
+    drawFractal(view, endPos, nextRightDirection, nextLen),
+    drawFractal(view, endPos, nextLeftDirection, nextLen)
   );
 }
 
@@ -52,26 +54,26 @@ export default makeScene2D(function* (view) {
   const title = createRef<Txt>();
 
   yield* beginSlide("First Slide");
-  const titlePosition = new Vector2(0, -view.height() / 2 + 200);
+  const titlePosition = new Vector2(0, -view.height() / 2 + topMargin);
   view.add(
     <Txt
       ref={title}
       text={"Fractal Tree and Recursion"}
-      fontSize={60}
+      fontSize={80}
       fontFamily={"Futura"}
       position={titlePosition}
     />
   );
 
-  let len = 300;
-  let startPos = new Vector2(0, view.height() / 2 - 400);
-  let direction = new Vector2(0, -1);
+  const len = 300;
+  const startPos = new Vector2(0, view.height() / 2 - bottomMargin);
+  const direction = new Vector2(0, -1);
 
   const fractalView = createRef<View2D>();
   view.add(<Layout ref={fractalView} position={new Vector2(0, 0)} />);
   yield* loopUntilSlide("Second Slide", () => {
     fractalView().removeChildren();
-    return drawFractal(fractalView(), startPos, direction, len, 30);
+    return drawFractal(fractalView(), startPos, direction, len);
   });
 
   // const nextLine = createRef<Line>();
