@@ -9,7 +9,7 @@ import {
 } from "@motion-canvas/core";
 import { loopUntilSlide } from "../libs";
 
-function* rec(
+function* drawFractal(
   view: View2D,
   startPos: Vector2,
   direction: Vector2,
@@ -40,20 +40,9 @@ function* rec(
   let nextLeftDirection = direction.rotate(-angle);
   let nextLen = len * 0.75;
   yield* all(
-    rec(view, endPos, nextRightDirection, nextLen, angle),
-    rec(view, endPos, nextLeftDirection, nextLen, angle)
+    drawFractal(view, endPos, nextRightDirection, nextLen, angle),
+    drawFractal(view, endPos, nextLeftDirection, nextLen, angle)
   );
-}
-
-function* startRec(
-  view: View2D,
-  startPos: Vector2,
-  direction: Vector2,
-  len: number,
-  angle: number
-) {
-  view.removeChildren();
-  yield* rec(view, startPos, direction, len, angle);
 }
 
 export default makeScene2D(function* (view) {
@@ -78,12 +67,12 @@ export default makeScene2D(function* (view) {
   let startPos = new Vector2(0, view.height() / 2 - 400);
   let direction = new Vector2(0, -1);
 
-  const fractalLayout = createRef<View2D>();
-  view.add(<Layout ref={fractalLayout} position={new Vector2(0, 0)} />);
-  yield* loopUntilSlide("Second Slide", () =>
-    startRec(fractalLayout(), startPos, direction, len, 30)
-  );
-  yield* startRec(fractalLayout(), startPos, direction, len, 30);
+  const fractalView = createRef<View2D>();
+  view.add(<Layout ref={fractalView} position={new Vector2(0, 0)} />);
+  yield* loopUntilSlide("Second Slide", () => {
+    fractalView().removeChildren();
+    return drawFractal(fractalView(), startPos, direction, len, 30);
+  });
 
   // const nextLine = createRef<Line>();
   // len = len * 0.7;
