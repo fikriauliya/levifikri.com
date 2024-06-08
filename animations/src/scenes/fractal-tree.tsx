@@ -1,4 +1,12 @@
-import { Layout, Line, Txt, View2D, makeScene2D } from "@motion-canvas/2d";
+import {
+  Layout,
+  LezerHighlighter,
+  Line,
+  Txt,
+  View2D,
+  makeScene2D,
+  Code,
+} from "@motion-canvas/2d";
 import {
   Reference,
   ThreadGenerator,
@@ -8,7 +16,10 @@ import {
   createRef,
   useLogger,
 } from "@motion-canvas/core";
-import { loopUntilSlide, initTwoLayout } from "./libs";
+import { loopUntilSlide, initTwoLayout, initTwoSimilarLayout } from "./libs";
+import { parser } from "@lezer/javascript";
+
+Code.defaultHighlighter = new LezerHighlighter(parser);
 
 function* drawFractal(
   view: Layout,
@@ -48,13 +59,12 @@ function* drawFractal(
 function* slide1(view: View2D) {
   const { title, content } = initTwoLayout(view);
 
-  // logger.info(title().toString());
-
   yield* beginSlide("First Slide");
-  title().text("Fractal Tree and Recursion");
+  title().text("Fractal Tree & Recursion");
 
   const len = 300;
-  const startPos = new Vector2(0, content().height());
+  const startPos = new Vector2(0, content().height() / 2);
+  // const startPos = new Vector2(0, 0);
   const direction = new Vector2(0, -1);
 
   yield* loopUntilSlide("Second Slide", () => {
@@ -64,11 +74,33 @@ function* slide1(view: View2D) {
 }
 
 function* slide2(view: View2D) {
-  view.removeChildren();
+  const { topContent, bottomContent } = initTwoSimilarLayout(view);
+
+  const len = 200;
+  const startPos = new Vector2(0, topContent().height() / 2);
+  const direction = new Vector2(0, -1);
+
+  const code = createRef<Code>();
+  bottomContent().add(
+    <Code
+      ref={code}
+      code={`
+const number = 8;
+const number = 8;
+const number = 8;
+const number = 8;
+    `}
+    />
+  );
+
+  yield* loopUntilSlide("Third Slide", () => {
+    topContent().removeChildren();
+
+    return drawFractal(topContent(), startPos, direction, len);
+  });
 }
 
 export default makeScene2D(function* (view) {
-  const logger = useLogger();
   const line = createRef<Line>();
 
   yield* slide1(view);

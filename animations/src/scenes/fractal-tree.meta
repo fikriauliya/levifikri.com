@@ -4,6 +4,10 @@
     {
       "name": "Second Slide",
       "targetTime": 10.545482741421761
+    },
+    {
+      "name": "Third Slide",
+      "targetTime": 21.23862867065416
     }
   ],
   "seed": 2193388174

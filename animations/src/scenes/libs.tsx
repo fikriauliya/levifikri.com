@@ -32,41 +32,74 @@ type TwoLayout = {
   content: Reference<Layout>;
 };
 
-const topMargin = 300;
+const topMargin = 200;
 const bottomMargin = 350;
 
 export function initTwoLayout(view: View2D): TwoLayout {
-  view.removeChildren();
-
-  const titlePosition = new Vector2(0, -view.height() / 2 + topMargin);
   const title = createRef<Txt>();
-  view.add(
-    <Txt
-      ref={title}
-      fontSize={80}
-      fontFamily="Futura"
-      position={titlePosition}
-      fill={"white"}
-    />
-  );
   const content = createRef<Layout>();
   view.add(
     <Layout
-      ref={content}
-      position={new Vector2(0, view.height() / 2 - bottomMargin)}
-    />
+      layout
+      direction={"column"}
+      alignItems={"stretch"}
+      size={["100%", "100%"]}
+      paddingTop={topMargin}
+      paddingBottom={bottomMargin}
+    >
+      <Layout layout marginBottom={100} justifyContent={"center"}>
+        <Txt
+          layout
+          justifyContent={"center"}
+          ref={title}
+          fontSize={80}
+          fontFamily="Futura"
+          fill={"white"}
+        />
+      </Layout>
+      <Layout layout grow={1}>
+        {/* TODO: the height is still hardcoded */}
+        <Layout height={1200} width={"100%"} ref={content} layout={false} />
+      </Layout>
+    </Layout>
   );
 
   return { title, content };
 }
 
-type ThreeLayout = {
-  title: Reference<Txt>;
-  content: Reference<Layout>;
+type TwoSimilarLayout = {
+  topContent: Reference<Layout>;
+  bottomContent: Reference<Layout>;
 };
-export function initThreeLayout(view: View2D): ThreeLayout {
-  return {
-    title: createRef<Txt>(),
-    content: createRef<Layout>(),
-  };
+export function initTwoSimilarLayout(view: View2D): TwoSimilarLayout {
+  view.removeChildren();
+  const topContent = createRef<Layout>();
+  const bottomContent = createRef<Layout>();
+
+  view.add(
+    <Layout
+      layout
+      direction={"column"}
+      alignItems={"stretch"}
+      size={["100%", "100%"]}
+      paddingTop={topMargin}
+      paddingBottom={bottomMargin}
+    >
+      <Layout grow={1} layout justifyContent={"center"}>
+        {/* TODO: the height is still hardcoded */}
+        <Layout height={700} width={"100%"} ref={topContent} layout={false} />
+      </Layout>
+      <Layout layout grow={1}>
+        {/* TODO: the height is still hardcoded */}
+        <Layout
+          height={700}
+          width={"100%"}
+          ref={bottomContent}
+          layout={false}
+        />
+      </Layout>
+    </Layout>
+  );
+
+  return { topContent, bottomContent };
 }
