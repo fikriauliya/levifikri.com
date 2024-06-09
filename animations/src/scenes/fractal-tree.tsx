@@ -76,28 +76,32 @@ function* explainFractal(
   const line = createRef<Line>();
   const endPos = startPos.add(direction.scale(len));
 
-  drawView.add(
-    <>
-      <Circle position={startPos} fill={"red"} size={20} />
-      <Txt
-        position={startPos.addX(80)}
-        text={`from`}
-        fill={"yellow"}
-        fontSize={40}
-      />
-      <Circle position={endPos} fill={"red"} size={20} />
-      <Txt
-        position={endPos.addX(80)}
-        text={`to`}
-        fill={"yellow"}
-        fontSize={40}
-      />
-    </>
-  );
+  const labels = createRef<Layout>();
   if (depth == 0) {
-    yield* codeView.append(2)`\
+    drawView.add(
+      <Layout ref={labels} opacity={0}>
+        <Circle position={startPos} fill={"red"} size={20} />
+        <Txt
+          position={startPos.addX(80)}
+          text={`from`}
+          fill={"yellow"}
+          fontSize={40}
+        />
+        <Circle position={endPos} fill={"red"} size={20} />
+        <Txt
+          position={endPos.addX(80)}
+          text={`to`}
+          fill={"yellow"}
+          fontSize={40}
+        />
+      </Layout>
+    );
+    yield* all(
+      labels().opacity(1, 2),
+      codeView.append(2)`\
   let from = pos;
-  let to = pos + dir * len;\n`;
+  let to = pos + dir * len;\n`
+    );
   }
   // Draw solid line
   drawView.add(
@@ -117,6 +121,7 @@ function* explainFractal(
       codeView.append(2)`\
   drawLine(from, to);\n`
     );
+    yield* labels().opacity(0, 0.5);
   } else {
     yield* line().end(1, 2);
   }
