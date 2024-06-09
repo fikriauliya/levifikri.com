@@ -3,11 +3,35 @@
   "timeEvents": [
     {
       "name": "Second Slide",
-      "targetTime": 10.545482741421761
+      "targetTime": 10.361091651188381
+    },
+    {
+      "name": "250",
+      "targetTime": 15.621269063605737
+    },
+    {
+      "name": "187.5",
+      "targetTime": 20.621269063605737
+    },
+    {
+      "name": "140.625",
+      "targetTime": 25.621269063605737
+    },
+    {
+      "name": "105.46875",
+      "targetTime": 30.621269063605737
+    },
+    {
+      "name": "79.1015625",
+      "targetTime": 35.62126906360574
+    },
+    {
+      "name": "59.326171875",
+      "targetTime": 40.62126906360574
     },
     {
       "name": "Third Slide",
-      "targetTime": 21.23862867065416
+      "targetTime": 46.86165364911959
     }
   ],
   "seed": 2193388174

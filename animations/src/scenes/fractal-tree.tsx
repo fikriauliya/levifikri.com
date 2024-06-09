@@ -6,15 +6,21 @@ import {
   View2D,
   makeScene2D,
   Code,
+  CodeSignal,
+  CODE,
 } from "@motion-canvas/2d";
 import {
   Reference,
+  Signal,
   ThreadGenerator,
   Vector2,
   all,
   beginSlide,
   createRef,
+  createSignal,
   useLogger,
+  waitFor,
+  waitUntil,
 } from "@motion-canvas/core";
 import { loopUntilSlide, initTwoLayout, initTwoSimilarLayout } from "./libs";
 import { parser } from "@lezer/javascript";
@@ -56,6 +62,71 @@ function* drawFractal(
   );
 }
 
+function* explainFractal(
+  drawView: Layout,
+  codeView: CodeSignal<void>,
+  startPos: Vector2,
+  direction: Vector2,
+  len: number
+): ThreadGenerator {
+  const logger = useLogger();
+  if (len < 50) {
+    return;
+  }
+  const line = createRef<Line>();
+  const endPos = startPos.add(direction.scale(len));
+
+  // Draw solid line
+  drawView.add(
+    <Line
+      ref={line}
+      points={[startPos, endPos]}
+      stroke={"white"}
+      lineWidth={8}
+      radius={40}
+      end={0}
+    />
+  );
+
+  yield* all(
+    line().end(1, 2),
+    codeView.append(2)`\
+drawLine(from: (0, 0), to: (0, -len));\n`
+  );
+  // Explanation
+  yield* waitUntil(`${len}`);
+
+  // Draw dotted line
+  const dottedLen = len * 0.75;
+  const dottedDirection = Vector2.createSignal(direction);
+  const dottedStartPos = endPos;
+  const dottedEndPos = Vector2.createSignal(() => {
+    return dottedStartPos.add(dottedDirection().scale(dottedLen));
+  });
+
+  const dottedLine = createRef<Line>();
+  drawView.add(
+    <Line
+      ref={dottedLine}
+      points={[dottedStartPos, () => dottedEndPos()]}
+      stroke={"white"}
+      lineWidth={8}
+      radius={40}
+      end={0}
+      opacity={0.5}
+    />
+  );
+  yield* dottedLine().end(1, 1);
+  yield* dottedDirection(dottedDirection().rotate(30), 2);
+
+  // recurse to the right
+  const nextLen = len * 0.75;
+  const nextDirection = direction.rotate(30);
+  yield* explainFractal(drawView, codeView, endPos, nextDirection, nextLen);
+
+  yield* waitUntil("Third Slide");
+}
+
 function* slide1(view: View2D) {
   const { title, content } = initTwoLayout(view);
 
@@ -64,7 +135,6 @@ function* slide1(view: View2D) {
 
   const len = 300;
   const startPos = new Vector2(0, content().height() / 2);
-  // const startPos = new Vector2(0, 0);
   const direction = new Vector2(0, -1);
 
   yield* loopUntilSlide("Second Slide", () => {
@@ -76,60 +146,18 @@ function* slide1(view: View2D) {
 function* slide2(view: View2D) {
   const { topContent, bottomContent } = initTwoSimilarLayout(view);
 
-  const len = 200;
+  const len = 250;
   const startPos = new Vector2(0, topContent().height() / 2);
   const direction = new Vector2(0, -1);
 
-  const code = createRef<Code>();
-  bottomContent().add(
-    <Code
-      ref={code}
-      code={`
-const number = 8;
-const number = 8;
-const number = 8;
-const number = 8;
-    `}
-    />
-  );
+  const code = Code.createSignal(CODE``);
+  bottomContent().add(<Code fontSize={40} code={CODE`${code}`} />);
 
-  yield* loopUntilSlide("Third Slide", () => {
-    topContent().removeChildren();
-
-    return drawFractal(topContent(), startPos, direction, len);
-  });
+  topContent().removeChildren();
+  yield* explainFractal(topContent(), code, startPos, direction, len);
 }
 
 export default makeScene2D(function* (view) {
-  const line = createRef<Line>();
-
   yield* slide1(view);
   yield* slide2(view);
-
-  // const nextLine = createRef<Line>();
-  // len = len * 0.7;
-
-  // startPos = endPos;
-  // let directionSignal = Vector2.createSignal(new Vector2(0, -len));
-  // let endPosSignal = Vector2.createSignal(() =>
-  //   startPos.add(directionSignal())
-  // );
-
-  // view.add(
-  //   <Line
-  //     ref={nextLine}
-  //     points={[startPos, () => endPosSignal()]}
-  //     stroke={"black"}
-  //     lineWidth={8}
-  //     radius={40}
-  //     end={0}
-  //     lineDash={[10, 10]}
-  //   />
-  // );
-
-  // yield* nextLine().end(1, 1);
-
-  // yield* directionSignal(directionSignal().rotate(angle), 1);
-  // yield* nextLine().lineDash([0, 0], 1);
-  // yield* waitFor(1);
 });

@@ -32,10 +32,11 @@ type TwoLayout = {
   content: Reference<Layout>;
 };
 
-const topMargin = 200;
-const bottomMargin = 350;
+const paddingTop = 200;
+const paddingBottom = 350;
 
 export function initTwoLayout(view: View2D): TwoLayout {
+  view.removeChildren();
   const title = createRef<Txt>();
   const content = createRef<Layout>();
   view.add(
@@ -44,8 +45,8 @@ export function initTwoLayout(view: View2D): TwoLayout {
       direction={"column"}
       alignItems={"stretch"}
       size={["100%", "100%"]}
-      paddingTop={topMargin}
-      paddingBottom={bottomMargin}
+      paddingTop={paddingTop}
+      paddingBottom={paddingBottom}
     >
       <Layout layout marginBottom={100} justifyContent={"center"}>
         <Txt
@@ -82,15 +83,15 @@ export function initTwoSimilarLayout(view: View2D): TwoSimilarLayout {
       direction={"column"}
       alignItems={"stretch"}
       size={["100%", "100%"]}
-      paddingTop={topMargin}
-      paddingBottom={bottomMargin}
+      paddingTop={paddingTop}
+      paddingBottom={paddingBottom}
     >
       <Layout grow={1} layout justifyContent={"center"}>
-        {/* TODO: the height is still hardcoded */}
+        {/* TODO: the height is still hardcoded 🏳️ */}
         <Layout height={700} width={"100%"} ref={topContent} layout={false} />
       </Layout>
       <Layout layout grow={1}>
-        {/* TODO: the height is still hardcoded */}
+        {/* TODO: the height is still hardcoded 🏳️ */}
         <Layout
           height={700}
           width={"100%"}
