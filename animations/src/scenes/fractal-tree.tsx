@@ -2,24 +2,23 @@ import {
   Layout,
   LezerHighlighter,
   Line,
-  Txt,
   View2D,
   makeScene2D,
   Code,
   CodeSignal,
   CODE,
+  Circle,
+  QuadBezier,
+  DefaultHighlightStyle,
+  Txt,
 } from "@motion-canvas/2d";
 import {
-  Reference,
-  Signal,
   ThreadGenerator,
   Vector2,
   all,
   beginSlide,
   createRef,
-  createSignal,
   useLogger,
-  waitFor,
   waitUntil,
 } from "@motion-canvas/core";
 import { loopUntilSlide, initTwoLayout, initTwoSimilarLayout } from "./libs";
@@ -67,15 +66,39 @@ function* explainFractal(
   codeView: CodeSignal<void>,
   startPos: Vector2,
   direction: Vector2,
-  len: number
+  len: number,
+  depth: number
 ): ThreadGenerator {
   const logger = useLogger();
-  if (len < 50) {
+  if (depth > 2) {
     return;
   }
   const line = createRef<Line>();
   const endPos = startPos.add(direction.scale(len));
 
+  drawView.add(
+    <>
+      <Circle position={startPos} fill={"red"} size={20} />
+      <Txt
+        position={startPos.addX(80)}
+        text={`from`}
+        fill={"yellow"}
+        fontSize={40}
+      />
+      <Circle position={endPos} fill={"red"} size={20} />
+      <Txt
+        position={endPos.addX(80)}
+        text={`to`}
+        fill={"yellow"}
+        fontSize={40}
+      />
+    </>
+  );
+  if (depth == 0) {
+    yield* codeView.append(2)`\
+  let from = pos;
+  let to = pos + dir * len;\n`;
+  }
   // Draw solid line
   drawView.add(
     <Line
@@ -88,11 +111,16 @@ function* explainFractal(
     />
   );
 
-  yield* all(
-    line().end(1, 2),
-    codeView.append(2)`\
-drawLine(from: (0, 0), to: (0, -len));\n`
-  );
+  if (depth == 0) {
+    yield* all(
+      line().end(1, 2),
+      codeView.append(2)`\
+  drawLine(from, to);\n`
+    );
+  } else {
+    yield* line().end(1, 2);
+  }
+
   // Explanation
   yield* waitUntil(`${len}`);
 
@@ -116,15 +144,31 @@ drawLine(from: (0, 0), to: (0, -len));\n`
       opacity={0.5}
     />
   );
-  yield* dottedLine().end(1, 1);
-  yield* dottedDirection(dottedDirection().rotate(30), 2);
+  yield* dottedLine().end(1, 2);
+  if (depth == 0) {
+    yield* all(
+      dottedDirection(dottedDirection().rotate(30), 2),
+      codeView.append(2)`\
+  const rightDir = rotate(dir, 30);
+  drawFractal(endPos, rightDir, nextLen);\n`
+    );
+  } else {
+    yield* dottedDirection(dottedDirection().rotate(30), 2);
+  }
 
   // recurse to the right
   const nextLen = len * 0.75;
   const nextDirection = direction.rotate(30);
-  yield* explainFractal(drawView, codeView, endPos, nextDirection, nextLen);
+  yield* explainFractal(
+    drawView,
+    codeView,
+    endPos,
+    nextDirection,
+    nextLen,
+    depth + 1
+  );
 
-  yield* waitUntil("Third Slide");
+  // yield* waitUntil("Third Slide");
 }
 
 function* slide1(view: View2D) {
@@ -146,15 +190,23 @@ function* slide1(view: View2D) {
 function* slide2(view: View2D) {
   const { topContent, bottomContent } = initTwoSimilarLayout(view);
 
-  const len = 250;
+  const len = 300;
   const startPos = new Vector2(0, topContent().height() / 2);
   const direction = new Vector2(0, -1);
 
   const code = Code.createSignal(CODE``);
-  bottomContent().add(<Code fontSize={40} code={CODE`${code}`} />);
+  bottomContent().add(
+    <Code
+      fontSize={40}
+      code={CODE`
+function drawFractal(pos, dir, len) {
+${code}}`}
+    />
+  );
 
   topContent().removeChildren();
-  yield* explainFractal(topContent(), code, startPos, direction, len);
+
+  yield* explainFractal(topContent(), code, startPos, direction, len, 0);
 }
 
 export default makeScene2D(function* (view) {
