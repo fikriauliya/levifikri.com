@@ -6,16 +6,40 @@
       "targetTime": 10.361091651188381
     },
     {
-      "name": "300",
-      "targetTime": 12.394424984521715
+      "name": "let to 0",
+      "targetTime": 14.394424984521715
     },
     {
-      "name": "225",
-      "targetTime": 18.394424984521713
+      "name": "drawLine 0",
+      "targetTime": 16.394424984521713
     },
     {
-      "name": "168.75",
-      "targetTime": 24.394424984521713
+      "name": "drawFractal 0",
+      "targetTime": 22.163412121746198
+    },
+    {
+      "name": "let to 1",
+      "targetTime": 26.163412121746198
+    },
+    {
+      "name": "drawLine 1",
+      "targetTime": 28.163412121746198
+    },
+    {
+      "name": "drawFractal 1",
+      "targetTime": 32.1634121217462
+    },
+    {
+      "name": "let to 2",
+      "targetTime": 36.1634121217462
+    },
+    {
+      "name": "drawLine 2",
+      "targetTime": 38.1634121217462
+    },
+    {
+      "name": "drawFractal 2",
+      "targetTime": 42.1634121217462
     }
   ],
   "seed": 2193388174

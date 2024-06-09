@@ -19,6 +19,7 @@ import {
   beginSlide,
   createRef,
   useLogger,
+  waitFor,
   waitUntil,
 } from "@motion-canvas/core";
 import { loopUntilSlide, initTwoLayout, initTwoSimilarLayout } from "./libs";
@@ -61,6 +62,7 @@ function* drawFractal(
   );
 }
 
+const UNIT = 150;
 function* explainFractal(
   drawView: Layout,
   codeView: CodeSignal<void>,
@@ -73,37 +75,60 @@ function* explainFractal(
   if (depth > 2) {
     return;
   }
-  const line = createRef<Line>();
-  const endPos = startPos.add(direction.scale(len));
+  // const line = createRef<Line>();
+  const scaledDirection = Vector2.createSignal(direction.scale(UNIT));
+  const endPos = Vector2.createSignal(() => startPos.add(scaledDirection()));
 
-  const labels = createRef<Layout>();
-  if (depth == 0) {
-    drawView.add(
-      <Layout ref={labels} opacity={0}>
-        <Circle position={startPos} fill={"red"} size={20} />
-        <Txt
-          position={startPos.addX(80)}
-          text={`from`}
-          fill={"yellow"}
-          fontSize={40}
-        />
-        <Circle position={endPos} fill={"red"} size={20} />
-        <Txt
-          position={endPos.addX(80)}
-          text={`to`}
-          fill={"yellow"}
-          fontSize={40}
-        />
-      </Layout>
-    );
-    yield* all(
-      labels().opacity(1, 2),
-      codeView.append(2)`\
-  let from = pos;
-  let to = pos + dir * len;\n`
-    );
-  }
+  const dirLine = createRef<Layout>();
+  drawView.add(
+    <Layout ref={dirLine} opacity={0}>
+      <Line
+        ref={dirLine}
+        points={[startPos, endPos]}
+        stroke={"white"}
+        fontSize={40}
+        lineWidth={8}
+        opacity={0.5}
+        endArrow
+      />
+      <Txt
+        text={"dir"}
+        fill={"yellow"}
+        position={() => startPos.add(scaledDirection().div(2)).addX(60)}
+      />
+    </Layout>
+  );
+  yield* dirLine().opacity(1, 2);
+
+  const label = createRef<Layout>();
+  drawView.add(
+    <Layout opacity={0} ref={label}>
+      <Circle position={startPos} fill={"yellow"} size={20} />
+      <Txt
+        position={startPos.addX(80)}
+        text={`from`}
+        fill={"yellow"}
+        fontSize={40}
+      />
+      <Circle position={endPos} fill={"yellow"} size={20} />
+      <Txt
+        position={() => endPos().addX(50)}
+        text={`to`}
+        fill={"yellow"}
+        fontSize={40}
+      />
+    </Layout>
+  );
+  yield* all(
+    label().opacity(1, 2),
+    scaledDirection(direction.scale(len), 2),
+    codeView.append(2)`\
+  let to = from + dir * len\n`
+  );
+  yield* waitUntil("let to " + depth);
+
   // Draw solid line
+  const line = createRef<Line>();
   drawView.add(
     <Line
       ref={line}
@@ -118,35 +143,34 @@ function* explainFractal(
   if (depth == 0) {
     yield* all(
       line().end(1, 2),
+      dirLine().opacity(0, 2),
       codeView.append(2)`\
   drawLine(from, to);\n`
     );
-    yield* labels().opacity(0, 0.5);
   } else {
-    yield* line().end(1, 2);
+    yield* all(line().end(1, 2), dirLine().opacity(0, 2));
   }
-
-  // Explanation
-  yield* waitUntil(`${len}`);
+  yield* label().opacity(0, 1);
+  yield* waitUntil("drawLine " + depth);
 
   // Draw dotted line
-  const dottedLen = len * 0.75;
   const dottedDirection = Vector2.createSignal(direction);
-  const dottedStartPos = endPos;
+  const dottedStartPos = endPos();
   const dottedEndPos = Vector2.createSignal(() => {
-    return dottedStartPos.add(dottedDirection().scale(dottedLen));
+    return dottedStartPos.add(dottedDirection().scale(UNIT));
   });
 
   const dottedLine = createRef<Line>();
   drawView.add(
     <Line
       ref={dottedLine}
-      points={[dottedStartPos, () => dottedEndPos()]}
+      points={[dottedStartPos, dottedEndPos]}
       stroke={"white"}
       lineWidth={8}
       radius={40}
       end={0}
       opacity={0.5}
+      endArrow
     />
   );
   yield* dottedLine().end(1, 2);
@@ -154,20 +178,22 @@ function* explainFractal(
     yield* all(
       dottedDirection(dottedDirection().rotate(30), 2),
       codeView.append(2)`\
-  const rightDir = rotate(dir, 30);
-  drawFractal(endPos, rightDir, nextLen);\n`
+  
+  let rightDir = rotate(dir, 30);
+  drawFractal(to, rightDir, nextLen);\n`
     );
   } else {
     yield* dottedDirection(dottedDirection().rotate(30), 2);
   }
+  yield* waitUntil("drawFractal " + depth);
 
-  // recurse to the right
+  // // recurse to the right
   const nextLen = len * 0.75;
   const nextDirection = direction.rotate(30);
   yield* explainFractal(
     drawView,
     codeView,
-    endPos,
+    endPos(),
     nextDirection,
     nextLen,
     depth + 1
@@ -204,7 +230,7 @@ function* slide2(view: View2D) {
     <Code
       fontSize={40}
       code={CODE`
-function drawFractal(pos, dir, len) {
+function drawFractal(from, dir, len) {
 ${code}}`}
     />
   );
