@@ -1,4 +1,4 @@
-import { Layout, Rect, Txt, View2D } from "@motion-canvas/2d";
+import { Code, CodeSignal, Layout, Rect, Txt, View2D } from "@motion-canvas/2d";
 import {
   ThreadGenerator,
   loop,
@@ -103,4 +103,21 @@ export function initTwoSimilarLayout(view: View2D): TwoSimilarLayout {
   );
 
   return { topContent, bottomContent };
+}
+
+export function* insertOrSelect(
+  codeView: Reference<Code>,
+  code: string
+): ThreadGenerator {
+  const regex = new RegExp(escapeRegExp(code), "gim");
+  const ranges = codeView().findAllRanges(regex);
+  if (ranges.length > 0) {
+    yield* codeView().selection(ranges, 2);
+  } else {
+    yield* codeView().code.append(code, 2);
+  }
+}
+
+function escapeRegExp(text: string) {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // Escape special characters
 }
