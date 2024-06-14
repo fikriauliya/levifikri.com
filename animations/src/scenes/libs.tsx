@@ -115,6 +115,8 @@ export function* insertOrSelect(
     yield* codeView().selection(ranges, 2);
   } else {
     yield* codeView().code.append(code, 2);
+    const ranges = codeView().findAllRanges(regex);
+    yield* codeView().selection(ranges, 2);
   }
 }
 

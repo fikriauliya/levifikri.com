@@ -94,7 +94,7 @@ function drawFractal(from, dir, len) {
     insertOrSelect(
       codeView,
       `\
-  let to = from + dir * len\n`
+  to = from + dir * len\n`
     )
   );
   if (depth < 2) yield* beginSlide("drawLine " + depth);
@@ -125,7 +125,7 @@ function drawFractal(from, dir, len) {
   if (depth < 2) yield* beginSlide("rotate right " + depth);
 
   // Draw dotted line
-  let explainRec = function* (degree: number) {
+  let explainRec = function* (degree: number, label: string) {
     if (depth + 1 > 2) return;
 
     const dottedDirection = Vector2.createSignal(direction);
@@ -171,8 +171,8 @@ function drawFractal(from, dir, len) {
         codeView,
         `\
     
-    let nextDir = rotate(dir, ${degree});
-    let nextLen = len * 0.75;\n`
+    nextDir = rotate(dir, ${degree});
+    nextLen = len * 0.75;\n`
       )
     );
 
@@ -182,7 +182,9 @@ function drawFractal(from, dir, len) {
     yield* insertOrSelect(
       codeView,
       `\
-    drawFractal(to, nextDir, nextLen);\n`
+    // recurse to ${label}
+    if (nextLen > MINIMUM_LENGTH) 
+      drawFractal(to, nextDir, nextLen);\n`
     );
     if (depth < 2) yield* beginSlide("recurse " + degree + " " + depth);
 
@@ -199,8 +201,8 @@ function drawFractal(from, dir, len) {
     );
   };
 
-  yield* explainRec(30);
-  yield* explainRec(-30);
+  yield* explainRec(30, "right");
+  yield* explainRec(-30, "left");
 }
 
 export function* explanation(view: View2D) {
