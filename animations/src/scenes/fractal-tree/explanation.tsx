@@ -122,81 +122,85 @@ function drawFractal(from, dir, len) {
     )
   );
   yield* label().opacity(0, 1);
-  if (depth < 2) yield* beginSlide("rotate " + depth);
+  if (depth < 2) yield* beginSlide("rotate right " + depth);
 
   // Draw dotted line
-  const dottedDirection = Vector2.createSignal(direction);
-  const dottedStartPos = endPos();
-  const dottedEndPos = Vector2.createSignal(() => {
-    return dottedStartPos.add(dottedDirection().scale(UNIT));
-  });
+  let explainRec = function* (degree: number) {
+    if (depth + 1 > 2) return;
 
-  const rightDirLayout = createRef<Layout>();
-  const rightDirLine = createRef<Line>();
-  const rightDirTxt = createRef<Txt>();
-  drawView.add(
-    <Layout ref={rightDirLayout}>
-      <Line
-        ref={rightDirLine}
-        points={[dottedStartPos, dottedEndPos]}
-        stroke={"white"}
-        lineWidth={8}
-        radius={40}
-        end={0}
-        opacity={0.5}
-      />
-      <Txt
-        ref={rightDirTxt}
-        text={"rightDir"}
-        fill={"yellow"}
-        opacity={0.5}
-        position={() =>
-          dottedEndPos()
-            .sub(dottedStartPos)
-            .mul(rightDirLine().end())
-            .mul(0.5)
-            .add(dottedStartPos)
-            .addX(60)
-        }
-      />
-    </Layout>
-  );
-  yield* all(rightDirLine().end(1, 2), rightDirTxt().opacity(1, 2));
-  yield* all(
-    dottedDirection(dottedDirection().rotate(30), 2),
-    insertOrSelect(
+    const dottedDirection = Vector2.createSignal(direction);
+    const dottedStartPos = endPos();
+    const dottedEndPos = Vector2.createSignal(() => {
+      return dottedStartPos.add(dottedDirection().scale(UNIT));
+    });
+
+    const rightDirLayout = createRef<Layout>();
+    const rightDirLine = createRef<Line>();
+    const rightDirTxt = createRef<Txt>();
+    drawView.add(
+      <Layout ref={rightDirLayout}>
+        <Line
+          ref={rightDirLine}
+          points={[dottedStartPos, dottedEndPos]}
+          stroke={"white"}
+          lineWidth={8}
+          radius={40}
+          end={0}
+          opacity={0.5}
+        />
+        <Txt
+          ref={rightDirTxt}
+          text={"nextDir"}
+          fill={"yellow"}
+          opacity={0.5}
+          position={() =>
+            dottedEndPos()
+              .sub(dottedStartPos)
+              .mul(rightDirLine().end())
+              .mul(0.5)
+              .add(dottedStartPos)
+              .addX(60)
+          }
+        />
+      </Layout>
+    );
+    yield* all(rightDirLine().end(1, 2), rightDirTxt().opacity(1, 2));
+    yield* all(
+      dottedDirection(dottedDirection().rotate(degree), 2),
+      insertOrSelect(
+        codeView,
+        `\
+    
+    let nextDir = rotate(dir, ${degree});
+    let nextLen = len * 0.75;\n`
+      )
+    );
+
+    if (depth < 2) yield* beginSlide("drawFractal " + degree + " " + depth);
+
+    yield* rightDirTxt().opacity(0, 1);
+    yield* insertOrSelect(
       codeView,
       `\
-    
-    let rightDir = rotate(dir, 30);
-    let nextLen = len * 0.75;\n`
-    )
-  );
-  if (depth < 2) yield* beginSlide("drawFractal " + depth);
+    drawFractal(to, nextDir, nextLen);\n`
+    );
+    if (depth < 2) yield* beginSlide("recurse " + degree + " " + depth);
 
-  yield* rightDirTxt().opacity(0, 1);
+    // // recurse to the right
+    const nextLen = len * 0.75;
+    const nextDirection = direction.rotate(degree);
+    yield* explainFractal(
+      drawView,
+      codeView,
+      endPos(),
+      nextDirection,
+      nextLen,
+      depth + 1
+    );
+  };
 
-  yield* insertOrSelect(
-    codeView,
-    `\
-    drawFractal(to, rightDir, nextLen);\n`
-  );
-
-  if (depth < 2) yield* beginSlide("recurse " + depth);
-
-  // // recurse to the right
-  const nextLen = len * 0.75;
-  const nextDirection = direction.rotate(30);
-  yield* explainFractal(
-    drawView,
-    codeView,
-    endPos(),
-    nextDirection,
-    nextLen,
-    depth + 1
-  );
-
-  // yield* waitUntil("Third Slide");
+  yield* explainRec(30);
+  yield* explainRec(-30);
 }
 
 export function* explanation(view: View2D) {

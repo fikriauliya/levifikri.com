@@ -18,10 +18,19 @@ drawLine:
 
     Nah, sekarang kita sudah punya titik-titik segment pertama dari dahan pohon, yaitu "from" dan "to". Kita bisa gambar garis dari "from" ke "to" dan ini adalah dahan pohon pertama kita. Yey!
 
+rotate 0:
 
+    Pohon dengan satu dahan saja tentu tidak menarik. Sekarang, kita bikin dahan baru yang bercabang ke kanan. Untuk membuat dahan baru ini, kita cukup memutar "dir" sebesar sudut tertentu, di sini kita putar 30 derajat ke kanan, dan kita sebut ini "rightDir"
 
+    Panjang dahan juga kita kurangi sedikit, misalnya jadi 0.75 kali panjang dahan sebelumnya. Kita sebut "nextLen"
 
+drawFractal:
 
+    Logic utamanya sudah selesai!
 
+    Kita tinggal mengulang proses sebelumnya untuk membuat dahan baru. Kita panggil fungsi drawFractal lagi, tapi kali ini dengan "from" yang baru, "dir" yang baru, dan "len" yang baru.
 
+    Ini disebut rekursi, dan ini adalah magic untuk membuat pohon fractal.
 
+recurse 0:
+    Selebihnya prosesnya sama persis dengan sebelumnya
