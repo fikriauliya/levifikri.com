@@ -3,13 +3,9 @@ import {
   LezerHighlighter,
   Line,
   View2D,
-  makeScene2D,
   Code,
-  CodeSignal,
   CODE,
   Circle,
-  QuadBezier,
-  DefaultHighlightStyle,
   Txt,
 } from "@motion-canvas/2d";
 import {
@@ -20,53 +16,12 @@ import {
   beginSlide,
   createRef,
   useLogger,
-  waitFor,
   waitUntil,
 } from "@motion-canvas/core";
-import {
-  loopUntilSlide,
-  initTwoLayout,
-  initTwoSimilarLayout,
-  insertOrSelect,
-} from "./libs";
+import { initTwoSimilarLayout, insertOrSelect } from "../libs";
 import { parser } from "@lezer/javascript";
 
 Code.defaultHighlighter = new LezerHighlighter(parser);
-
-function* drawFractal(
-  view: Layout,
-  startPos: Vector2,
-  direction: Vector2,
-  len: number
-): ThreadGenerator {
-  if (len < 50) {
-    return;
-  }
-  const line = createRef<Line>();
-  const endPos = startPos.add(direction.scale(len));
-
-  view.add(
-    <Line
-      ref={line}
-      points={[startPos, endPos]}
-      stroke={"white"}
-      lineWidth={8}
-      radius={40}
-      end={0}
-    />
-  );
-
-  yield* line().end(1, 0.25);
-
-  const angle = () => Math.random() * 40 + 5;
-  const nextRightDirection = direction.rotate(angle());
-  const nextLeftDirection = direction.rotate(-angle());
-  const nextLen = len * 0.75;
-  yield* all(
-    drawFractal(view, endPos, nextRightDirection, nextLen),
-    drawFractal(view, endPos, nextLeftDirection, nextLen)
-  );
-}
 
 const UNIT = 150;
 function* explainFractal(
@@ -104,7 +59,15 @@ function* explainFractal(
       />
     </Layout>
   );
-  yield* dirLine().opacity(1, 2);
+  yield* all(
+    insertOrSelect(
+      codeView,
+      `\
+function drawFractal(from, dir, len) {
+  `
+    ),
+    dirLine().opacity(1, 2)
+  );
 
   const label = createRef<Layout>();
   drawView.add(
@@ -134,7 +97,7 @@ function* explainFractal(
   let to = from + dir * len\n`
     )
   );
-  yield* waitUntil("let to " + depth);
+  if (depth < 2) yield* beginSlide("drawLine " + depth);
 
   // Draw solid line
   const line = createRef<Line>();
@@ -155,11 +118,11 @@ function* explainFractal(
     insertOrSelect(
       codeView,
       `\
-  drawLine(from, to);\n`
+    drawLine(from, to);\n`
     )
   );
   yield* label().opacity(0, 1);
-  yield* waitUntil("drawLine " + depth);
+  if (depth < 2) yield* beginSlide("rotate " + depth);
 
   // Draw dotted line
   const dottedDirection = Vector2.createSignal(direction);
@@ -168,31 +131,58 @@ function* explainFractal(
     return dottedStartPos.add(dottedDirection().scale(UNIT));
   });
 
-  const dottedLine = createRef<Line>();
+  const rightDirLayout = createRef<Layout>();
+  const rightDirLine = createRef<Line>();
+  const rightDirTxt = createRef<Txt>();
   drawView.add(
-    <Line
-      ref={dottedLine}
-      points={[dottedStartPos, dottedEndPos]}
-      stroke={"white"}
-      lineWidth={8}
-      radius={40}
-      end={0}
-      opacity={0.5}
-      endArrow
-    />
+    <Layout ref={rightDirLayout}>
+      <Line
+        ref={rightDirLine}
+        points={[dottedStartPos, dottedEndPos]}
+        stroke={"white"}
+        lineWidth={8}
+        radius={40}
+        end={0}
+        opacity={0.5}
+      />
+      <Txt
+        ref={rightDirTxt}
+        text={"rightDir"}
+        fill={"yellow"}
+        opacity={0.5}
+        position={() =>
+          dottedEndPos()
+            .sub(dottedStartPos)
+            .mul(rightDirLine().end())
+            .mul(0.5)
+            .add(dottedStartPos)
+            .addX(60)
+        }
+      />
+    </Layout>
   );
-  yield* dottedLine().end(1, 2);
+  yield* all(rightDirLine().end(1, 2), rightDirTxt().opacity(1, 2));
   yield* all(
     dottedDirection(dottedDirection().rotate(30), 2),
     insertOrSelect(
       codeView,
       `\
-  
-  let rightDir = rotate(dir, 30);
-  drawFractal(to, rightDir, nextLen);\n`
+    
+    let rightDir = rotate(dir, 30);
+    let nextLen = len * 0.75;\n`
     )
   );
-  yield* waitUntil("drawFractal " + depth);
+  if (depth < 2) yield* beginSlide("drawFractal " + depth);
+
+  yield* rightDirTxt().opacity(0, 1);
+
+  yield* insertOrSelect(
+    codeView,
+    `\
+    drawFractal(to, rightDir, nextLen);\n`
+  );
+
+  if (depth < 2) yield* beginSlide("recurse " + depth);
 
   // // recurse to the right
   const nextLen = len * 0.75;
@@ -209,23 +199,7 @@ function* explainFractal(
   // yield* waitUntil("Third Slide");
 }
 
-function* slide1(view: View2D) {
-  const { title, content } = initTwoLayout(view);
-
-  yield* beginSlide("First Slide");
-  title().text("Fractal Tree & Recursion");
-
-  const len = 300;
-  const startPos = new Vector2(0, content().height() / 2);
-  const direction = new Vector2(0, -1);
-
-  yield* loopUntilSlide("Second Slide", () => {
-    content().removeChildren();
-    return drawFractal(content(), startPos, direction, len);
-  });
-}
-
-function* slide2(view: View2D) {
+export function* explanation(view: View2D) {
   const { topContent, bottomContent } = initTwoSimilarLayout(view);
 
   const len = 300;
@@ -239,15 +213,9 @@ function* slide2(view: View2D) {
       ref={code}
       fontSize={40}
       code={CODE`
-function drawFractal(from, dir, len) {
-`}
+  `}
     />
   );
 
   yield* explainFractal(topContent(), code, startPos, direction, len, 0);
 }
-
-export default makeScene2D(function* (view) {
-  yield* slide1(view);
-  yield* slide2(view);
-});

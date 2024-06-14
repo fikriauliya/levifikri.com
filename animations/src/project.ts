@@ -1,7 +1,7 @@
 import { makeProject } from "@motion-canvas/core";
 
-import fractalTree from "./scenes/fractal-tree?scene";
+import fractal from "./scenes/fractal-tree/index?scene";
 
 export default makeProject({
-  scenes: [fractalTree],
+  scenes: [fractal],
 });

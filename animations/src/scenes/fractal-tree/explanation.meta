@@ -1,0 +1,42 @@
+{
+  "version": 0,
+  "timeEvents": [
+    {
+      "name": "let to 0",
+      "targetTime": 4
+    },
+    {
+      "name": "drawLine 0",
+      "targetTime": 7
+    },
+    {
+      "name": "drawFractal 0",
+      "targetTime": 11
+    },
+    {
+      "name": "let to 1",
+      "targetTime": 15
+    },
+    {
+      "name": "drawLine 1",
+      "targetTime": 18
+    },
+    {
+      "name": "drawFractal 1",
+      "targetTime": 22
+    },
+    {
+      "name": "let to 2",
+      "targetTime": 26
+    },
+    {
+      "name": "drawLine 2",
+      "targetTime": 29
+    },
+    {
+      "name": "drawFractal 2",
+      "targetTime": 33
+    }
+  ],
+  "seed": 469426034
+}

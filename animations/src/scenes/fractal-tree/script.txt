@@ -1,0 +1,27 @@
+First Slide:
+
+    Ini adalah pohon fractal, sebuah pola yang terlihat kompleks namun sebenarnya sangat mudah dibuat hanya dengan mengulang pola yang sama berulang-ualng kali.
+
+    Yuk kita bikin pohon fractal!
+
+Second Slide:
+
+    Pertama-tama kita tentukan titik awal (yang disebut "from") dan arah tumbuh pohonnya (disebut "dir"). Seperti pohon pada umumnya, "dir" pada awalnya mengarah ke atas, iya kan pohon tumbuh ke atas. Maka "dir" adalah unit vector vertikal ke atas. 
+    
+    "from" berada di tengah bawah. Anggaplah "from" ini sebagai posisi akar pohon.
+
+    Oh ya, dahan pohon memiliki panjang, kita namai "len". 
+
+    Dari "from", "dir", dan "len" kita bisa menhitung posisi titik "to".
+    
+drawLine:
+
+    Nah, sekarang kita sudah punya titik-titik segment pertama dari dahan pohon, yaitu "from" dan "to". Kita bisa gambar garis dari "from" ke "to" dan ini adalah dahan pohon pertama kita. Yey!
+
+
+
+
+
+
+
+
