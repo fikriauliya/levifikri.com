@@ -1,36 +1,34 @@
 First Slide:
 
-    Ini adalah pohon fractal, sebuah pola yang terlihat kompleks namun sebenarnya sangat mudah dibuat hanya dengan mengulang pola yang sama berulang-ualng kali.
+    Ini adalah pohon fractal, sebuah pola yang terlihat kompleks namun sebenarnya sangat mudah dibuat hanya dengan mengulang pola yang sama berulang-ulang kali.
 
     Yuk kita bikin pohon fractal!
 
 Second Slide:
 
-    Pertama-tama kita tentukan titik awal (yang disebut "from") dan arah tumbuh pohonnya (disebut "dir"). Seperti pohon pada umumnya, "dir" pada awalnya mengarah ke atas, iya kan pohon tumbuh ke atas. Maka "dir" adalah unit vector vertikal ke atas. 
+    Pertama-tama kita tentukan arah tumbuh pohonnya ("dir") dan titik awal ("from"). "dir" pada awalnya mengarah ke atas, iya kan pohon tumbuh ke atas. 
     
-    "from" berada di tengah bawah. Anggaplah "from" ini sebagai posisi akar pohon.
-
-    Oh ya, dahan pohon memiliki panjang, kita namai "len". 
+    "from" awalnya adalah akar pohon. Dahan pohon memiliki panjang, kita namai "len". 
 
     Dari "from", "dir", dan "len" kita bisa menhitung posisi titik "to".
     
 drawLine:
 
-    Nah, sekarang kita sudah punya titik-titik segment pertama dari dahan pohon, yaitu "from" dan "to". Kita bisa gambar garis dari "from" ke "to" dan ini adalah dahan pohon pertama kita. Yey!
+    Nah, sekarang kita gambar garis dari "from" ke "to" dan ini adalah dahan pohon pertama kita. Yey!
 
-rotate 0:
+rotate right 0:
 
-    Pohon dengan satu dahan saja tentu tidak menarik. Sekarang, kita bikin dahan baru yang bercabang ke kanan. Untuk membuat dahan baru ini, kita cukup memutar "dir" sebesar sudut tertentu, di sini kita putar 30 derajat ke kanan, dan kita sebut ini "rightDir"
+    Sekarang, kita bikin dahan baru yang bercabang ke kanan. Untuk itu, kita cukup memutar "dir" sebesar 30 derajat ke kanan
 
-    Panjang dahan juga kita kurangi sedikit, misalnya jadi 0.75 kali panjang dahan sebelumnya. Kita sebut "nextLen"
+    Panjang dahan juga kita kurangi sedikit, kita sebut "nextLen"
 
-drawFractal:
+drawFractal right 0:
 
     Logic utamanya sudah selesai!
 
-    Kita tinggal mengulang proses sebelumnya untuk membuat dahan baru. Kita panggil fungsi drawFractal lagi, tapi kali ini dengan "from" yang baru, "dir" yang baru, dan "len" yang baru.
+    Kita tinggal mengulang proses sebelumnya untuk membuat dahan baru. Panggil fungsi drawFractal lagi, tapi kali ini dengan nilai "from", "dir", dan "len" yang baru.
 
-    Ini disebut rekursi, dan ini adalah magic untuk membuat pohon fractal.
+    Ini disebut fungsi rekursi, dan ini adalah magic untuk membuat pohon fractal.
 
 recurse 0:
     Selebihnya prosesnya sama persis dengan sebelumnya

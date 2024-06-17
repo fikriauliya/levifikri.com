@@ -107,16 +107,17 @@ export function initTwoSimilarLayout(view: View2D): TwoSimilarLayout {
 
 export function* insertOrSelect(
   codeView: Reference<Code>,
-  code: string
+  code: string,
+  time: number
 ): ThreadGenerator {
   const regex = new RegExp(escapeRegExp(code), "gim");
   const ranges = codeView().findAllRanges(regex);
   if (ranges.length > 0) {
-    yield* codeView().selection(ranges, 2);
+    yield* codeView().selection(ranges, time);
   } else {
-    yield* codeView().code.append(code, 2);
+    yield* codeView().code.append(code, time);
     const ranges = codeView().findAllRanges(regex);
-    yield* codeView().selection(ranges, 2);
+    yield* codeView().selection(ranges, time);
   }
 }
 

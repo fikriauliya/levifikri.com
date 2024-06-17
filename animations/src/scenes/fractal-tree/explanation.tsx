@@ -24,6 +24,12 @@ import { parser } from "@lezer/javascript";
 Code.defaultHighlighter = new LezerHighlighter(parser);
 
 const UNIT = 150;
+const MAX_DEPTH_FOR_EXPLANATION = 1;
+const sleep_duration = (depth: number): number => {
+  if (depth < MAX_DEPTH_FOR_EXPLANATION) return 2;
+  else return 0.5;
+};
+
 function* explainFractal(
   drawView: Layout,
   codeView: Reference<Code>,
@@ -64,9 +70,10 @@ function* explainFractal(
       codeView,
       `\
 function drawFractal(from, dir, len) {
-  `
+  `,
+      sleep_duration(depth)
     ),
-    dirLine().opacity(1, 2)
+    dirLine().opacity(1, sleep_duration(depth))
   );
 
   const label = createRef<Layout>();
@@ -89,15 +96,16 @@ function drawFractal(from, dir, len) {
     </Layout>
   );
   yield* all(
-    label().opacity(1, 2),
-    scaledDirection(direction.scale(len), 2),
+    label().opacity(1, sleep_duration(depth)),
+    scaledDirection(direction.scale(len), sleep_duration(depth)),
     insertOrSelect(
       codeView,
       `\
-  to = from + dir * len\n`
+  to = from + dir * len\n`,
+      sleep_duration(depth)
     )
   );
-  if (depth < 2) yield* beginSlide("drawLine " + depth);
+  if (depth < MAX_DEPTH_FOR_EXPLANATION) yield* beginSlide("drawLine " + depth);
 
   // Draw solid line
   const line = createRef<Line>();
@@ -113,16 +121,18 @@ function drawFractal(from, dir, len) {
   );
 
   yield* all(
-    line().end(1, 2),
-    dirLine().opacity(0, 2),
+    line().end(1, sleep_duration(depth)),
+    dirLine().opacity(0, sleep_duration(depth)),
     insertOrSelect(
       codeView,
       `\
-    drawLine(from, to);\n`
+    drawLine(from, to);\n`,
+      sleep_duration(depth)
     )
   );
-  yield* label().opacity(0, 1);
-  if (depth < 2) yield* beginSlide("rotate right " + depth);
+  yield* label().opacity(0, sleep_duration(depth) / 2);
+  if (depth < MAX_DEPTH_FOR_EXPLANATION)
+    yield* beginSlide("rotate right " + depth);
 
   // Draw dotted line
   let explainRec = function* (degree: number, label: string) {
@@ -164,29 +174,36 @@ function drawFractal(from, dir, len) {
         />
       </Layout>
     );
-    yield* all(rightDirLine().end(1, 2), rightDirTxt().opacity(1, 2));
     yield* all(
-      dottedDirection(dottedDirection().rotate(degree), 2),
+      rightDirLine().end(1, sleep_duration(depth)),
+      rightDirTxt().opacity(1, sleep_duration(depth))
+    );
+    yield* all(
+      dottedDirection(dottedDirection().rotate(degree), sleep_duration(depth)),
       insertOrSelect(
         codeView,
         `\
     
     nextDir = rotate(dir, ${degree});
-    nextLen = len * 0.75;\n`
+    nextLen = len * 0.75;\n`,
+        sleep_duration(depth)
       )
     );
 
-    if (depth < 2) yield* beginSlide("drawFractal " + degree + " " + depth);
+    if (depth < MAX_DEPTH_FOR_EXPLANATION)
+      yield* beginSlide("drawFractal " + degree + " " + depth);
 
-    yield* rightDirTxt().opacity(0, 1);
+    yield* rightDirTxt().opacity(0, sleep_duration(depth) / 2);
     yield* insertOrSelect(
       codeView,
       `\
     // recurse to ${label}
     if (nextLen > MINIMUM_LENGTH) 
-      drawFractal(to, nextDir, nextLen);\n`
+      drawFractal(to, nextDir, nextLen);\n`,
+      sleep_duration(depth)
     );
-    if (depth < 2) yield* beginSlide("recurse " + degree + " " + depth);
+    if (depth < MAX_DEPTH_FOR_EXPLANATION)
+      yield* beginSlide("recurse " + degree + " " + depth);
 
     // // recurse to the right
     const nextLen = len * 0.75;
