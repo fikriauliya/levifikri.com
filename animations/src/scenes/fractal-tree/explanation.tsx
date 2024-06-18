@@ -16,8 +16,13 @@ import {
   createRef,
   useLogger,
 } from "@motion-canvas/core";
-import { initExplain, initTwoSimilarLayout, insertOrSelect } from "../libs";
-import { parser } from "@lezer/javascript";
+import {
+  ExplanationFunction,
+  initExplain,
+  initTwoSimilarLayout,
+  insertOrSelect,
+} from "../libs";
+import { parser } from "@lezer/python";
 
 Code.defaultHighlighter = new LezerHighlighter(parser);
 
@@ -25,10 +30,7 @@ const UNIT = 150;
 
 function* explainFractal(
   drawView: Layout,
-  explain: (
-    title: string,
-    fn: (time: number) => ThreadGenerator
-  ) => ThreadGenerator,
+  explain: ExplanationFunction,
   codeView: Reference<Code>,
   startPos: Vector2,
   direction: Vector2,
@@ -41,9 +43,9 @@ function* explainFractal(
   }
   const scaledDirection = Vector2.createSignal(direction.scale(UNIT));
   const endPos = Vector2.createSignal(() => startPos.add(scaledDirection()));
-
   const dirLine = createRef<Layout>();
   const label = createRef<Layout>();
+
   yield* explain("dir", function* (time) {
     drawView.add(
       <Layout ref={dirLine} opacity={0}>
@@ -67,7 +69,7 @@ function* explainFractal(
       insertOrSelect(
         codeView,
         `\
-function drawFractal(from, dir, len) {
+def drawFractal(start, dir, len):
   `,
         time
       ),
@@ -98,11 +100,12 @@ function drawFractal(from, dir, len) {
       insertOrSelect(
         codeView,
         `\
-  to = from + dir * len\n`,
+  to = start + dir * len\n`,
         time
       )
     );
   });
+
   yield* explain("drawLine", function* (time) {
     // Draw solid line
     const line = createRef<Line>();
@@ -123,7 +126,7 @@ function drawFractal(from, dir, len) {
       insertOrSelect(
         codeView,
         `\
-    drawLine(from, to);\n`,
+    drawLine(start, to);\n`,
         time
       )
     );
@@ -177,8 +180,8 @@ function drawFractal(from, dir, len) {
         codeView,
         `\
     
-    nextDir = rotate(dir, ${degree});
-    nextLen = len * 0.75;\n`,
+    nextDir = rotate(dir, ${degree})
+    nextLen = len * 0.75\n`,
         time
       )
     );
@@ -188,9 +191,9 @@ function drawFractal(from, dir, len) {
       yield* insertOrSelect(
         codeView,
         `\
-    // recurse to ${label}
-    if (nextLen > MINIMUM_LENGTH) 
-      drawFractal(to, nextDir, nextLen);\n`,
+    # recurse to ${label}
+    if nextLen > MINIMUM_LENGTH:
+      drawFractal(to, nextDir, nextLen)\n`,
         time
       );
     });

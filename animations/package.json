@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@lezer/javascript": "^1.4.16",
+    "@lezer/python": "^1.1.14",
     "@motion-canvas/2d": "^3.16.0",
     "@motion-canvas/core": "^3.16.0",
     "@motion-canvas/ffmpeg": "^1.1.0"

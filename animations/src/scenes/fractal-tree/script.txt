@@ -4,7 +4,7 @@ First Slide:
 
     Yuk kita bikin pohon fractal!
 
-Second Slide:
+dir:
 
     Pertama-tama kita tentukan arah tumbuh pohonnya ("dir") dan titik awal ("from"). "dir" pada awalnya mengarah ke atas, iya kan pohon tumbuh ke atas. 
     

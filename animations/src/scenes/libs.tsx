@@ -129,7 +129,12 @@ type ExplanationSetting = {
   [key: string]: { quota: number; time: number };
 };
 
-export function initExplain(setting: ExplanationSetting) {
+export type ExplanationFunction = (
+  title: string,
+  fn: (time: number) => ThreadGenerator
+) => ThreadGenerator;
+
+export function initExplain(setting: ExplanationSetting): ExplanationFunction {
   return function* (
     title: string,
     fn: (time: number) => ThreadGenerator
@@ -151,11 +156,3 @@ export function initExplain(setting: ExplanationSetting) {
     }
   };
 }
-
-// const setting = {
-//  "to the right 0 ": { quota: 1, time: 2 },
-// }
-//
-// explain = initExplain(setting)
-// explain("to the right", time => {
-// })
