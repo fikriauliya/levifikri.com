@@ -29,9 +29,9 @@ export function* loopUntilSlide(
 ): ThreadGenerator {
   const loopTask = yield loop(Infinity, slideLoop);
 
-  if (usePlayback().state != PlaybackState.Presenting) {
-    yield* waitUntil(name);
-  }
+  // if (usePlayback().state != PlaybackState.Presenting) {
+  yield* waitUntil(name);
+  // }
   // yield* beginSlide(name);
 
   cancel(loopTask);
