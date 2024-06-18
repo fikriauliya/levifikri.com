@@ -124,3 +124,38 @@ export function* insertOrSelect(
 function escapeRegExp(text: string) {
   return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // Escape special characters
 }
+
+type ExplanationSetting = {
+  [key: string]: { quota: number; time: number };
+};
+
+export function initExplain(setting: ExplanationSetting) {
+  return function* (
+    title: string,
+    fn: (time: number) => ThreadGenerator
+  ): ThreadGenerator {
+    console.log(title);
+    // console.log("Calculating Quota");
+    // console.log("Setting", setting);
+    let { quota, time } = setting[title];
+    // console.log("Quota:", quota, "Time:", time);
+    if (quota <= 0) {
+      time = 0.5;
+      yield* fn(time);
+    } else {
+      // console.log("Enough quota");
+      setting[title].quota -= 1;
+
+      yield* beginSlide(title);
+      yield* fn(time);
+    }
+  };
+}
+
+// const setting = {
+//  "to the right 0 ": { quota: 1, time: 2 },
+// }
+//
+// explain = initExplain(setting)
+// explain("to the right", time => {
+// })
