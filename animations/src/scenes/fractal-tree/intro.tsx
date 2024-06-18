@@ -4,13 +4,16 @@ import {
   Line,
   View2D,
   Code,
+  makeScene2D,
 } from "@motion-canvas/2d";
 import {
+  Direction,
   ThreadGenerator,
   Vector2,
   all,
   beginSlide,
   createRef,
+  slideTransition,
 } from "@motion-canvas/core";
 import { loopUntilSlide, initTwoLayout } from "../libs";
 import { parser } from "@lezer/javascript";
@@ -68,3 +71,7 @@ export function* intro(view: View2D) {
     return drawFractal(content(), startPos, direction, len);
   });
 }
+
+export default makeScene2D(function* (view) {
+  yield* intro(view);
+});

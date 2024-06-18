@@ -4,6 +4,7 @@ import {
   Line,
   View2D,
   Code,
+  makeScene2D,
 } from "@motion-canvas/2d";
 import {
   ThreadGenerator,
@@ -68,3 +69,7 @@ export function* outro(view: View2D) {
     return drawFractal(content(), startPos, direction, len);
   });
 }
+
+export default makeScene2D(function* (view) {
+  yield* outro(view);
+});

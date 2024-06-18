@@ -9,17 +9,22 @@ import {
   Txt,
   Camera,
   lines,
+  makeScene2D,
 } from "@motion-canvas/2d";
 import {
+  Direction,
   Reference,
   ThreadGenerator,
   Vector2,
   all,
   chain,
   createRef,
+  fadeTransition,
   sequence,
+  slideTransition,
   useLogger,
   waitFor,
+  zoomInTransition,
 } from "@motion-canvas/core";
 import {
   ExplanationFunction,
@@ -54,7 +59,7 @@ function* explainFractal(
 
   yield* explain("dir", function* (time) {
     drawView.add(
-      <Layout ref={dirLine} opacity={0}>
+      <Layout ref={dirLine} opacity={0.5}>
         <Line
           ref={dirLine}
           points={[startPos, endPos]}
@@ -265,7 +270,7 @@ export function* explanation(view: View2D) {
     "drawFractal -30": { quota: 1, slowTime: 2, fastTime: 0.5 },
     "recurse 30": { quota: 1, slowTime: 2, fastTime: 0.5 },
     "recurse -30": { quota: 1, slowTime: 2, fastTime: 0.5 },
-    baseCase: { quota: 1, slowTime: 4, fastTime: 0.5 },
+    baseCase: { quota: 1, slowTime: 2, fastTime: 0.5 },
   };
 
   const explain = initExplain(explanationSetting);
@@ -279,3 +284,7 @@ export function* explanation(view: View2D) {
     0
   );
 }
+
+export default makeScene2D(function* (view) {
+  yield* explanation(view);
+});
