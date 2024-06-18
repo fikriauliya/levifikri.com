@@ -6,21 +6,19 @@ First Slide:
 
 dir:
 
-    Pertama-tama kita tentukan arah tumbuh pohonnya ("dir") dan titik awal ("from"). "dir" pada awalnya mengarah ke atas, iya kan pohon tumbuh ke atas. 
+    Pertama-tama kita tentukan arah tumbuh pohonnya ("dir") dan titik awal ("start"). "dir" pada awalnya mengarah ke atas, iya kan pohon tumbuh ke atas. 
     
-    "from" awalnya adalah akar pohon. Dahan pohon memiliki panjang, kita namai "len". 
+    "start" awalnya adalah akar pohon. Dahan pohon memiliki panjang "len". 
 
-    Dari "from", "dir", dan "len" kita bisa menhitung posisi titik "to".
+    Dari "start", "dir", dan "len" kita bisa menghitung posisi titik "to".
     
 drawLine:
 
-    Nah, sekarang kita gambar garis dari "from" ke "to" dan ini adalah dahan pohon pertama kita. Yey!
+    Nah, sekarang kita gambar garis dari "from" ke "to" dan ini adalah dahan pertama kita. Yey!
 
 rotate right 0:
 
     Sekarang, kita bikin dahan baru yang bercabang ke kanan. Untuk itu, kita cukup memutar "dir" sebesar 30 derajat ke kanan
-
-    Panjang dahan juga kita kurangi sedikit, kita sebut "nextLen"
 
 drawFractal right 0:
 

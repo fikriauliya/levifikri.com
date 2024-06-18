@@ -53,17 +53,17 @@ function* drawFractal(
 }
 
 const UNIT = 150;
-export function* intro(view: View2D) {
+export function* outro(view: View2D) {
   const { title, content } = initTwoLayout(view);
 
-  yield* beginSlide("First Slide");
-  title().text("Fractal Tree & Recursion");
+  yield* beginSlide("Last Slide");
+  title().text("Random Angles");
 
   const len = 300;
   const startPos = new Vector2(0, content().height() / 2);
   const direction = new Vector2(0, -1);
 
-  yield* loopUntilSlide("dir", () => {
+  yield* loopUntilSlide("Terminate Slide", () => {
     content().removeChildren();
     return drawFractal(content(), startPos, direction, len);
   });

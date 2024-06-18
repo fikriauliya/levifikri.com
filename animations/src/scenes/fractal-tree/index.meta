@@ -2,8 +2,12 @@
   "version": 0,
   "timeEvents": [
     {
-      "name": "Second Slide",
-      "targetTime": 14.045241892610333
+      "name": "EOF",
+      "targetTime": 0.03333333333333333
+    },
+    {
+      "name": "Terminate Slide",
+      "targetTime": 82.54235818209852
     }
   ],
   "seed": 3878821583

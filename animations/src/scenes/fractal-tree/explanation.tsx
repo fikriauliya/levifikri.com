@@ -7,14 +7,19 @@ import {
   CODE,
   Circle,
   Txt,
+  Camera,
+  lines,
 } from "@motion-canvas/2d";
 import {
   Reference,
   ThreadGenerator,
   Vector2,
   all,
+  chain,
   createRef,
+  sequence,
   useLogger,
+  waitFor,
 } from "@motion-canvas/core";
 import {
   ExplanationFunction,
@@ -27,6 +32,7 @@ import { parser } from "@lezer/python";
 Code.defaultHighlighter = new LezerHighlighter(parser);
 
 const UNIT = 150;
+const MAX_DEPTH = 2;
 
 function* explainFractal(
   drawView: Layout,
@@ -38,7 +44,7 @@ function* explainFractal(
   depth: number
 ): ThreadGenerator {
   const logger = useLogger();
-  if (depth > 2) {
+  if (depth > MAX_DEPTH) {
     return;
   }
   const scaledDirection = Vector2.createSignal(direction.scale(UNIT));
@@ -65,23 +71,12 @@ function* explainFractal(
         />
       </Layout>
     );
-    yield* all(
-      insertOrSelect(
-        codeView,
-        `\
-def drawFractal(start, dir, len):
-  `,
-        time
-      ),
-      dirLine().opacity(1, time)
-    );
-
     drawView.add(
       <Layout opacity={0} ref={label}>
         <Circle position={startPos} fill={"yellow"} size={20} />
         <Txt
           position={startPos.addX(80)}
-          text={`from`}
+          text={`start`}
           fill={"yellow"}
           fontSize={40}
         />
@@ -94,14 +89,27 @@ def drawFractal(start, dir, len):
         />
       </Layout>
     );
-    yield* all(
-      label().opacity(1, time),
-      scaledDirection(direction.scale(len), time),
-      insertOrSelect(
-        codeView,
-        `\
+    yield* chain(
+      all(
+        insertOrSelect(
+          codeView,
+          `\
+def drawFractal(start, dir, len):
+  `,
+          time
+        ),
+        dirLine().opacity(1, time / 2)
+      ),
+      waitFor(time),
+      all(
+        label().opacity(1, time / 2),
+        scaledDirection(direction.scale(len), time),
+        insertOrSelect(
+          codeView,
+          `\
   to = start + dir * len\n`,
-        time
+          time
+        )
       )
     );
   });
@@ -135,7 +143,19 @@ def drawFractal(start, dir, len):
 
   // Draw dotted line
   let explainRec = function* (degree: number, label: string, time: number) {
-    if (depth + 1 > 2) return;
+    if (depth + 1 > MAX_DEPTH) {
+      yield* explain("baseCase", function* (time) {
+        yield* insertOrSelect(
+          codeView,
+          `\
+    if len < MIN_LENGTH:
+      return\n\n`,
+          time,
+          [2, 0]
+        );
+      });
+      return;
+    }
 
     const dottedDirection = Vector2.createSignal(direction);
     const dottedStartPos = endPos();
@@ -143,13 +163,13 @@ def drawFractal(start, dir, len):
       return dottedStartPos.add(dottedDirection().scale(UNIT));
     });
 
-    const rightDirLayout = createRef<Layout>();
-    const rightDirLine = createRef<Line>();
-    const rightDirTxt = createRef<Txt>();
+    const nextDirLayout = createRef<Layout>();
+    const nextDirLine = createRef<Line>();
+    const nextDirTxt = createRef<Txt>();
     drawView.add(
-      <Layout ref={rightDirLayout}>
+      <Layout ref={nextDirLayout}>
         <Line
-          ref={rightDirLine}
+          ref={nextDirLine}
           points={[dottedStartPos, dottedEndPos]}
           stroke={"white"}
           lineWidth={8}
@@ -158,14 +178,14 @@ def drawFractal(start, dir, len):
           opacity={0.5}
         />
         <Txt
-          ref={rightDirTxt}
+          ref={nextDirTxt}
           text={"nextDir"}
           fill={"yellow"}
           opacity={0.5}
           position={() =>
             dottedEndPos()
               .sub(dottedStartPos)
-              .mul(rightDirLine().end())
+              .mul(nextDirLine().end())
               .mul(0.5)
               .add(dottedStartPos)
               .addX(60)
@@ -173,32 +193,28 @@ def drawFractal(start, dir, len):
         />
       </Layout>
     );
-    yield* all(rightDirLine().end(1, time), rightDirTxt().opacity(1, time));
+
+    yield* all(nextDirLine().end(1, time), nextDirTxt().opacity(1, time));
     yield* all(
       dottedDirection(dottedDirection().rotate(degree), time),
       insertOrSelect(
         codeView,
         `\
     
-    nextDir = rotate(dir, ${degree})
-    nextLen = len * 0.75\n`,
+    nextDir = rotate(dir, ${degree})\n`,
         time
       )
     );
+    yield* nextDirTxt().opacity(0, time / 2);
 
-    yield* explain("drawFractal " + degree, function* (time) {
-      yield* rightDirTxt().opacity(0, time / 2);
+    yield* explain("recurse " + degree, function* (time) {
       yield* insertOrSelect(
         codeView,
         `\
     # recurse to ${label}
-    if nextLen > MINIMUM_LENGTH:
-      drawFractal(to, nextDir, nextLen)\n`,
+    drawFractal(to, nextDir, len * 0.7)\n`,
         time
       );
-    });
-
-    yield* explain("recurse " + degree, function* (time) {
       // // recurse to the right
       const nextLen = len * 0.75;
       const nextDirection = direction.rotate(degree);
@@ -241,14 +257,15 @@ export function* explanation(view: View2D) {
   );
 
   const explanationSetting = {
-    drawLine: { quota: 1, time: 2 },
-    rotateRight: { quota: 1, time: 2 },
-    rotateLeft: { quota: 1, time: 2 },
-    "drawFractal 30": { quota: 1, time: 2 },
-    "drawFractal -30": { quota: 1, time: 2 },
-    "recurse 30": { quota: 1, time: 2 },
-    "recurse -30": { quota: 1, time: 2 },
-    dir: { quota: 1, time: 2 },
+    dir: { quota: 1, slowTime: 4, fastTime: 0.5 },
+    drawLine: { quota: 1, slowTime: 2, fastTime: 0.5 },
+    rotateRight: { quota: 1, slowTime: 2, fastTime: 0.5 },
+    rotateLeft: { quota: 2, slowTime: 2, fastTime: 0.5 },
+    "drawFractal 30": { quota: 1, slowTime: 2, fastTime: 0.5 },
+    "drawFractal -30": { quota: 1, slowTime: 2, fastTime: 0.5 },
+    "recurse 30": { quota: 1, slowTime: 2, fastTime: 0.5 },
+    "recurse -30": { quota: 1, slowTime: 2, fastTime: 0.5 },
+    baseCase: { quota: 1, slowTime: 4, fastTime: 0.5 },
   };
 
   const explain = initExplain(explanationSetting);

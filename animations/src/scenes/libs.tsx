@@ -1,4 +1,12 @@
-import { Code, CodeSignal, Layout, Rect, Txt, View2D } from "@motion-canvas/2d";
+import {
+  Code,
+  CodePoint,
+  CodeSignal,
+  Layout,
+  Rect,
+  Txt,
+  View2D,
+} from "@motion-canvas/2d";
 import {
   ThreadGenerator,
   loop,
@@ -11,6 +19,8 @@ import {
   createRef,
   Vector2,
   useLogger,
+  all,
+  DEFAULT,
 } from "@motion-canvas/core";
 
 export function* loopUntilSlide(
@@ -22,7 +32,7 @@ export function* loopUntilSlide(
   if (usePlayback().state != PlaybackState.Presenting) {
     yield* waitUntil(name);
   }
-  yield* beginSlide(name);
+  // yield* beginSlide(name);
 
   cancel(loopTask);
 }
@@ -105,19 +115,51 @@ export function initTwoSimilarLayout(view: View2D): TwoSimilarLayout {
   return { topContent, bottomContent };
 }
 
-export function* insertOrSelect(
+export function insertOrSelect(
   codeView: Reference<Code>,
   code: string,
   time: number
+): ThreadGenerator;
+
+export function insertOrSelect(
+  codeView: Reference<Code>,
+  code: string,
+  time: number,
+  codePoint: CodePoint
+): ThreadGenerator;
+
+// function isCodePoint(value: unknown): value is CodePoint {
+//   return (
+//     Array.isArray(value) &&
+//     value.length === 2 &&
+//     typeof value[0] === 'number' &&
+//     typeof value[1] === 'number'
+//   );
+// }
+
+export function* insertOrSelect(
+  codeView: Reference<Code>,
+  code: string,
+  time: number,
+  codePoint?: CodePoint
 ): ThreadGenerator {
   const regex = new RegExp(escapeRegExp(code), "gim");
   const ranges = codeView().findAllRanges(regex);
   if (ranges.length > 0) {
     yield* codeView().selection(ranges, time);
   } else {
-    yield* codeView().code.append(code, time);
-    const ranges = codeView().findAllRanges(regex);
-    yield* codeView().selection(ranges, time);
+    if (codePoint) {
+      yield* all(
+        codeView().selection(DEFAULT, 0),
+        codeView().code.insert(codePoint, code, time)
+      );
+    } else {
+      yield* all(
+        codeView().selection(DEFAULT, 0),
+        codeView().code.append(code, time)
+        // codeView().selection(ranges, time)
+      );
+    }
   }
 }
 
@@ -126,7 +168,12 @@ function escapeRegExp(text: string) {
 }
 
 type ExplanationSetting = {
-  [key: string]: { quota: number; time: number };
+  [key: string]: {
+    quota: number;
+    slowTime: number;
+    fastTime: number;
+    slideCreated?: boolean;
+  };
 };
 
 export type ExplanationFunction = (
@@ -135,24 +182,22 @@ export type ExplanationFunction = (
 ) => ThreadGenerator;
 
 export function initExplain(setting: ExplanationSetting): ExplanationFunction {
-  return function* (
-    title: string,
-    fn: (time: number) => ThreadGenerator
-  ): ThreadGenerator {
-    console.log(title);
-    // console.log("Calculating Quota");
-    // console.log("Setting", setting);
-    let { quota, time } = setting[title];
-    // console.log("Quota:", quota, "Time:", time);
+  return function* (title, fn) {
+    let { quota, fastTime, slowTime } = setting[title];
+    console.log(title, setting[title]);
+    if (!("slideCreated" in setting[title])) {
+      console.log("Create slide", title);
+      yield* beginSlide(title);
+      setting[title].slideCreated = true;
+    }
     if (quota <= 0) {
-      time = 0.5;
-      yield* fn(time);
+      yield* fn(fastTime);
     } else {
       // console.log("Enough quota");
       setting[title].quota -= 1;
 
-      yield* beginSlide(title);
-      yield* fn(time);
+      console.log("Slide:", title);
+      yield* fn(slowTime);
     }
   };
 }
