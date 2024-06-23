@@ -12,10 +12,14 @@ import {
   Vector2,
   all,
   beginSlide,
+  cancel,
   createRef,
+  loop,
+  loopUntil,
   slideTransition,
+  waitUntil,
 } from "@motion-canvas/core";
-import { loopUntilSlide, initTwoLayout } from "../libs";
+import { loopUntilSlide, initTwoLayout, initExplain } from "../libs";
 import { parser } from "@lezer/javascript";
 
 Code.defaultHighlighter = new LezerHighlighter(parser);
@@ -56,22 +60,29 @@ function* drawFractal(
 }
 
 const UNIT = 150;
-export function* intro(view: View2D) {
+export default function* (view: View2D) {
   const { title, content } = initTwoLayout(view);
 
-  yield* beginSlide("First Slide");
-  title().text("Fractal Tree & Recursion");
+  const explanationSetting = {
+    intro: {
+      quota: 1,
+      slowTime: 2,
+      fastTime: 1,
+      naration: "",
+    },
+  };
+  const explain = initExplain(explanationSetting);
 
-  const len = 300;
-  const startPos = new Vector2(0, content().height() / 2);
-  const direction = new Vector2(0, -1);
+  yield* explain("intro", function* () {
+    title().text("Fractal Tree & Recursion");
 
-  yield* loopUntilSlide("dir", () => {
-    content().removeChildren();
-    return drawFractal(content(), startPos, direction, len);
+    const len = 300;
+    const startPos = new Vector2(0, content().height() / 2);
+    const direction = new Vector2(0, -1);
+
+    const loopTask = yield loop(Infinity, function* () {
+      content().removeChildren();
+      yield* drawFractal(content(), startPos, direction, len);
+    });
   });
 }
-
-export default makeScene2D(function* (view) {
-  yield* intro(view);
-});

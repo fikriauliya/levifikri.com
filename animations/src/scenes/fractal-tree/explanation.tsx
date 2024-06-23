@@ -7,24 +7,18 @@ import {
   CODE,
   Circle,
   Txt,
-  Camera,
-  lines,
   makeScene2D,
 } from "@motion-canvas/2d";
 import {
-  Direction,
   Reference,
   ThreadGenerator,
   Vector2,
   all,
   chain,
   createRef,
-  fadeTransition,
-  sequence,
-  slideTransition,
   useLogger,
   waitFor,
-  zoomInTransition,
+  waitUntil,
 } from "@motion-canvas/core";
 import {
   ExplanationFunction,
@@ -107,7 +101,7 @@ def drawFractal(start, dir, len):
       ),
       waitFor(time),
       all(
-        label().opacity(1, time / 2),
+        label().opacity(1, time),
         scaledDirection(direction.scale(len), time),
         insertOrSelect(
           codeView,
@@ -147,8 +141,9 @@ def drawFractal(start, dir, len):
   });
 
   // Draw dotted line
-  let explainRec = function* (degree: number, label: string, time: number) {
+  let explainRec = function* (degree: number, label: string) {
     if (depth + 1 > MAX_DEPTH) {
+      // yield* waitUntil("baseCase Start");
       yield* explain("baseCase", function* (time) {
         yield* insertOrSelect(
           codeView,
@@ -162,57 +157,61 @@ def drawFractal(start, dir, len):
       return;
     }
 
-    const dottedDirection = Vector2.createSignal(direction);
-    const dottedStartPos = endPos();
-    const dottedEndPos = Vector2.createSignal(() => {
-      return dottedStartPos.add(dottedDirection().scale(UNIT));
-    });
+    yield* explain("rotate" + label, function* (time) {
+      const dottedDirection = Vector2.createSignal(direction);
+      const dottedStartPos = endPos();
+      const dottedEndPos = Vector2.createSignal(() => {
+        return dottedStartPos.add(dottedDirection().scale(UNIT));
+      });
 
-    const nextDirLayout = createRef<Layout>();
-    const nextDirLine = createRef<Line>();
-    const nextDirTxt = createRef<Txt>();
-    drawView.add(
-      <Layout ref={nextDirLayout}>
-        <Line
-          ref={nextDirLine}
-          points={[dottedStartPos, dottedEndPos]}
-          stroke={"white"}
-          lineWidth={8}
-          radius={40}
-          end={0}
-          opacity={0.5}
-        />
-        <Txt
-          ref={nextDirTxt}
-          text={"nextDir"}
-          fill={"yellow"}
-          opacity={0.5}
-          position={() =>
-            dottedEndPos()
-              .sub(dottedStartPos)
-              .mul(nextDirLine().end())
-              .mul(0.5)
-              .add(dottedStartPos)
-              .addX(60)
-          }
-        />
-      </Layout>
-    );
+      const nextDirLayout = createRef<Layout>();
+      const nextDirLine = createRef<Line>();
+      const nextDirTxt = createRef<Txt>();
+      drawView.add(
+        <Layout ref={nextDirLayout}>
+          <Line
+            ref={nextDirLine}
+            points={[dottedStartPos, dottedEndPos]}
+            stroke={"white"}
+            lineWidth={8}
+            radius={40}
+            end={0}
+            opacity={0.5}
+          />
+          <Txt
+            ref={nextDirTxt}
+            text={"nextDir"}
+            fill={"yellow"}
+            opacity={0.5}
+            position={() =>
+              dottedEndPos()
+                .sub(dottedStartPos)
+                .mul(nextDirLine().end())
+                .mul(0.5)
+                .add(dottedStartPos)
+                .addX(60)
+            }
+          />
+        </Layout>
+      );
 
-    yield* all(nextDirLine().end(1, time), nextDirTxt().opacity(1, time));
-    yield* all(
-      dottedDirection(dottedDirection().rotate(degree), time),
-      insertOrSelect(
-        codeView,
-        `\
+      yield* all(
+        nextDirLine().end(1, time),
+        nextDirTxt().opacity(1, time),
+
+        insertOrSelect(
+          codeView,
+          `\
     
     nextDir = rotate(dir, ${degree})\n`,
-        time
-      )
-    );
-    yield* nextDirTxt().opacity(0, time / 2);
+          time
+        )
+      );
+      yield* dottedDirection(dottedDirection().rotate(degree), time);
+      yield* nextDirTxt().opacity(0, time / 2);
+    });
 
-    yield* explain("recurse " + degree, function* (time) {
+    yield* explain("beforeRecursion " + degree, function* (time) {
       yield* insertOrSelect(
         codeView,
         `\
@@ -220,6 +219,9 @@ def drawFractal(start, dir, len):
     drawFractal(to, nextDir, len * 0.7)\n`,
         time
       );
+      yield* waitFor(time);
+    });
+    yield* explain("recurse " + degree, function* (time) {
       // // recurse to the right
       const nextLen = len * 0.75;
       const nextDirection = direction.rotate(degree);
@@ -235,15 +237,11 @@ def drawFractal(start, dir, len):
     });
   };
 
-  yield* explain("rotateRight", function* (time) {
-    yield* explainRec(30, "right", time);
-  });
-  yield* explain("rotateLeft", function* (time) {
-    yield* explainRec(-30, "left", time);
-  });
+  yield* explainRec(30, "Right");
+  yield* explainRec(-30, "Left");
 }
 
-export function* explanation(view: View2D) {
+export default function* (view: View2D) {
   const { topContent, bottomContent } = initTwoSimilarLayout(view);
 
   const len = 300;
@@ -262,15 +260,73 @@ export function* explanation(view: View2D) {
   );
 
   const explanationSetting = {
-    dir: { quota: 1, slowTime: 4, fastTime: 0.5 },
-    drawLine: { quota: 1, slowTime: 2, fastTime: 0.5 },
-    rotateRight: { quota: 1, slowTime: 2, fastTime: 0.5 },
-    rotateLeft: { quota: 2, slowTime: 2, fastTime: 0.5 },
-    "drawFractal 30": { quota: 1, slowTime: 2, fastTime: 0.5 },
-    "drawFractal -30": { quota: 1, slowTime: 2, fastTime: 0.5 },
-    "recurse 30": { quota: 1, slowTime: 2, fastTime: 0.5 },
-    "recurse -30": { quota: 1, slowTime: 2, fastTime: 0.5 },
-    baseCase: { quota: 1, slowTime: 2, fastTime: 0.5 },
+    dir: {
+      quota: 1,
+      slowTime: 2,
+      fastTime: 0.5,
+      naration: `\
+Pertama-tama kita tentukan arah tumbuh pohonnya ("dir") dan titik awal ("start"). "dir" pada awalnya mengarah ke atas, iya kan pohon tumbuh ke atas. 
+      
+"start" awalnya adalah akar pohon. Dahan pohon memiliki panjang "len". 
+
+Dari "start", "dir", dan "len" kita bisa menghitung posisi titik "to".`,
+    },
+    drawLine: {
+      quota: 1,
+      slowTime: 2,
+      fastTime: 0.5,
+      naration: `Nah, sekarang kita gambar garis dari "from" ke "to" dan ini adalah dahan pertama kita. Yey!`,
+    },
+    rotateRight: {
+      quota: 1,
+      slowTime: 2,
+      fastTime: 0.5,
+      naration: `Sekarang, kita bikin dahan baru yang bercabang ke kanan. Untuk itu, kita cukup memutar "dir" (yang semua ke atas) sebesar 30 derajat ke kanan`,
+    },
+    "beforeRecursion 30": {
+      quota: 1,
+      slowTime: 2,
+      fastTime: 0.5,
+      naration: `\
+Logic utamanya sudah selesai!
+
+Kita tinggal mengulang proses sebelumnya untuk membuat dahan baru. Panggil fungsi drawFractal lagi, tapi kali ini dengan nilai "start", "dir", dan "len" yang baru.
+
+Ini disebut fungsi rekursi, dan ini adalah magic untuk membuat pohon fractal.`,
+    },
+    "recurse 30": {
+      quota: 1,
+      slowTime: 2,
+      fastTime: 0.5,
+      naration: `Mari kita masuk ke fungsi recursinya.`,
+      noWait: true,
+    },
+    baseCase: {
+      quota: 1,
+      slowTime: 2,
+      fastTime: 0.5,
+      naration: `Eits ada masalah, kalau kita lakukan ini terus menerus, dahan akan terus tumbuh dan tumbuh. Kita harus berhenti pada suatu titik. Ini disebut base case. Jadi, ketika dahan sudah terlalu kecil, kita berhenti.`,
+      previousWaitEvent: "recurse 30",
+    },
+    rotateLeft: {
+      quota: 2,
+      slowTime: 2,
+      fastTime: 0.5,
+      naration: `Untuk dahan yang bercabang ke kiri, kita cukup memutar "dir" sebesar 30 derajat ke kiri. Selebihnya prosesnya sama`,
+    },
+    "beforeRecursion -30": {
+      quota: 1,
+      slowTime: 2,
+      fastTime: 0.5,
+      naration: `Sama seperti sebelumnya, kita recursi lagi, tapi kali ini yang mengarah ke kiri`,
+    },
+    "recurse -30": {
+      quota: 1,
+      slowTime: 0.5,
+      fastTime: 0.01,
+      naration: `Sama seperti sebelumnya, kita recursi lagi, tapi kali ini yang mengarah ke kiri`,
+      noWait: true,
+    },
   };
 
   const explain = initExplain(explanationSetting);
@@ -283,8 +339,5 @@ export function* explanation(view: View2D) {
     len,
     0
   );
+  yield* waitUntil("end");
 }
-
-export default makeScene2D(function* (view) {
-  yield* explanation(view);
-});

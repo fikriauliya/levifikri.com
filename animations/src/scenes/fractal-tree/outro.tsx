@@ -4,7 +4,6 @@ import {
   Line,
   View2D,
   Code,
-  makeScene2D,
 } from "@motion-canvas/2d";
 import {
   ThreadGenerator,
@@ -54,7 +53,7 @@ function* drawFractal(
 }
 
 const UNIT = 150;
-export function* outro(view: View2D) {
+export default function* (view: View2D) {
   const { title, content } = initTwoLayout(view);
 
   yield* beginSlide("Last Slide");
@@ -69,7 +68,3 @@ export function* outro(view: View2D) {
     return drawFractal(content(), startPos, direction, len);
   });
 }
-
-export default makeScene2D(function* (view) {
-  yield* outro(view);
-});

@@ -29,10 +29,10 @@ export function* loopUntilSlide(
 ): ThreadGenerator {
   const loopTask = yield loop(Infinity, slideLoop);
 
-  // if (usePlayback().state != PlaybackState.Presenting) {
-  yield* waitUntil(name);
-  // }
-  // yield* beginSlide(name);
+  if (usePlayback().state != PlaybackState.Presenting) {
+    yield* waitUntil(name);
+  }
+  yield* beginSlide(name);
 
   cancel(loopTask);
 }
@@ -172,7 +172,10 @@ type ExplanationSetting = {
     quota: number;
     slowTime: number;
     fastTime: number;
+    naration: string;
     slideCreated?: boolean;
+    noWait?: boolean;
+    previousWaitEvent?: string;
   };
 };
 
@@ -183,21 +186,30 @@ export type ExplanationFunction = (
 
 export function initExplain(setting: ExplanationSetting): ExplanationFunction {
   return function* (title, fn) {
-    let { quota, fastTime, slowTime } = setting[title];
-    console.log(title, setting[title]);
-    if (!("slideCreated" in setting[title])) {
-      console.log("Create slide", title);
-      yield* beginSlide(title);
-      setting[title].slideCreated = true;
-    }
+    let { quota, fastTime, naration, slowTime, noWait, previousWaitEvent } =
+      setting[title];
+    // console.log(title, setting[title]);
     if (quota <= 0) {
       yield* fn(fastTime);
     } else {
       // console.log("Enough quota");
       setting[title].quota -= 1;
+      // console.log(naration);
 
-      console.log("Slide:", title);
+      const isSlideCreated = "slideCreated" in setting[title];
+      if (!isSlideCreated) {
+        if (previousWaitEvent) {
+          yield* waitUntil(previousWaitEvent);
+        }
+        yield* beginSlide(title);
+      }
       yield* fn(slowTime);
+      if (!isSlideCreated && !noWait) {
+        // if (usePlayback().state != PlaybackState.Presenting) {
+        yield* waitUntil(title);
+        // }
+      }
+      setting[title].slideCreated = true;
     }
   };
 }

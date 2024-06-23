@@ -1,0 +1,50 @@
+{
+  "version": 0,
+  "timeEvents": [
+    {
+      "name": "intro",
+      "targetTime": 6.725447898043485
+    },
+    {
+      "name": "dir",
+      "targetTime": 24.210598891323535
+    },
+    {
+      "name": "drawLine",
+      "targetTime": 27.24393222465687
+    },
+    {
+      "name": "rotateRight",
+      "targetTime": 32.277265557990205
+    },
+    {
+      "name": "beforeRecursion 30",
+      "targetTime": 36.494280024932635
+    },
+    {
+      "name": "recurse 30",
+      "targetTime": 43.27761335826597
+    },
+    {
+      "name": "baseCase",
+      "targetTime": 45.3109466915993
+    },
+    {
+      "name": "rotateLeft",
+      "targetTime": 50.84428002493263
+    },
+    {
+      "name": "beforeRecursion -30",
+      "targetTime": 54.87761335826596
+    },
+    {
+      "name": "end",
+      "targetTime": 77.41094669159929
+    },
+    {
+      "name": "Terminate Slide",
+      "targetTime": 77.47761335826596
+    }
+  ],
+  "seed": 1789013884
+}
