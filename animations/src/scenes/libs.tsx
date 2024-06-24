@@ -194,7 +194,7 @@ export function initExplain(setting: ExplanationSetting): ExplanationFunction {
     } else {
       // console.log("Enough quota");
       setting[title].quota -= 1;
-      // console.log(naration);
+      console.log(naration);
 
       const isSlideCreated = "slideCreated" in setting[title];
       if (!isSlideCreated) {

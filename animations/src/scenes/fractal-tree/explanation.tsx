@@ -265,11 +265,11 @@ export default function* (view: View2D) {
       slowTime: 2,
       fastTime: 0.5,
       naration: `\
-Pertama-tama kita tentukan arah tumbuh pohonnya ("dir") dan titik awal ("start"). "dir" pada awalnya mengarah ke atas, iya kan pohon tumbuh ke atas. 
+Pertama-tama kita tentukan arah tumbuh pohonnya ("dir" atau direction) dan titik awal ("start"). "dir" pada awalnya mengarah ke atas, iya kan pohon tumbuh ke atas. 
       
 "start" awalnya adalah akar pohon. Dahan pohon memiliki panjang "len". 
 
-Dari "start", "dir", dan "len" kita bisa menghitung posisi titik "to".`,
+Dari sini kita bisa menghitung posisi "to", cukup tambahkan "start" dengan "dir" yang telah diekstrapolasi sejauh "len".`,
     },
     drawLine: {
       quota: 1,
@@ -286,45 +286,46 @@ Dari "start", "dir", dan "len" kita bisa menghitung posisi titik "to".`,
     "beforeRecursion 30": {
       quota: 1,
       slowTime: 2,
-      fastTime: 0.5,
+      fastTime: 0,
       naration: `\
 Logic utamanya sudah selesai!
 
-Kita tinggal mengulang proses sebelumnya untuk membuat dahan baru. Panggil fungsi drawFractal lagi, tapi kali ini dengan nilai "start", "dir", dan "len" yang baru.
+Kita tinggal mengulang proses sebelumnya untuk membuat dahan baru. 
+Kita panggil drawFractal dengan "to" sebagai titik awal, "nextDir" sebagai arah tumbuh, dan "len" yang lebih pendek.
 
 Ini disebut fungsi rekursi, dan ini adalah magic untuk membuat pohon fractal.`,
     },
     "recurse 30": {
       quota: 1,
       slowTime: 2,
-      fastTime: 0.5,
-      naration: `Mari kita masuk ke fungsi recursinya.`,
+      fastTime: 0.1,
+      naration: `Mari kita eksekusi fungsi recursinya. Intinya kita hanya mengulang-ngulang proses sebelumnya. Bikin dahan baru yang lebih pendek, putar ke kanan, dan ulang`,
       noWait: true,
     },
     baseCase: {
       quota: 1,
       slowTime: 2,
-      fastTime: 0.5,
-      naration: `Eits ada masalah, kalau kita lakukan ini terus menerus, dahan akan terus tumbuh dan tumbuh. Kita harus berhenti pada suatu titik. Ini disebut base case. Jadi, ketika dahan sudah terlalu kecil, kita berhenti.`,
+      fastTime: 0.1,
+      naration: `Eits ada masalah, kalau kita lakukan ini terus menerus, dahan akan terus tumbuh dan tumbuh hingga tak hingga kecilnya. Tidak pernah selesai. So, kita buat batasan, kalau panjang dahan sudah cukup pendek, kita berhenti`,
       previousWaitEvent: "recurse 30",
     },
     rotateLeft: {
       quota: 2,
-      slowTime: 2,
+      slowTime: 1,
       fastTime: 0.5,
-      naration: `Untuk dahan yang bercabang ke kiri, kita cukup memutar "dir" sebesar 30 derajat ke kiri. Selebihnya prosesnya sama`,
+      naration: `Untuk dahan yang bercabang ke kiri, kita cukup memutar "dir" sebesar 30 derajat ke kiri. Selebihnya prosesnya sama persis`,
     },
     "beforeRecursion -30": {
       quota: 1,
       slowTime: 2,
-      fastTime: 0.5,
-      naration: `Sama seperti sebelumnya, kita recursi lagi, tapi kali ini yang mengarah ke kiri`,
+      fastTime: 0.1,
+      naration: `Sama seperti sebelumnya, kita recursi lagi, tapi kali ini dengan parameter yang mengarah ke kiri`,
     },
     "recurse -30": {
       quota: 1,
-      slowTime: 0.5,
-      fastTime: 0.01,
-      naration: `Sama seperti sebelumnya, kita recursi lagi, tapi kali ini yang mengarah ke kiri`,
+      slowTime: 0.2,
+      fastTime: 0.1,
+      naration: `Kita ulang prosesnya ke kiri hingga base condition. Karena fungsi rekursi yang dipanggil sama, maka proses ini juga akan membuat dahan ke kanan. Tentu juga dahan ke kiri`,
       noWait: true,
     },
   };
@@ -339,5 +340,5 @@ Ini disebut fungsi rekursi, dan ini adalah magic untuk membuat pohon fractal.`,
     len,
     0
   );
-  yield* waitUntil("end");
+  yield* waitUntil("recurse -30");
 }

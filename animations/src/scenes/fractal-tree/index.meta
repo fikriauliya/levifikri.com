@@ -3,47 +3,47 @@
   "timeEvents": [
     {
       "name": "intro",
-      "targetTime": 6.725447898043485
+      "targetTime": 10.500099473078098
     },
     {
       "name": "dir",
-      "targetTime": 24.210598891323535
+      "targetTime": 30.22815937326277
     },
     {
       "name": "drawLine",
-      "targetTime": 27.24393222465687
+      "targetTime": 35.2855812323393
     },
     {
       "name": "rotateRight",
-      "targetTime": 32.277265557990205
+      "targetTime": 43.16357952077117
     },
     {
       "name": "beforeRecursion 30",
-      "targetTime": 36.494280024932635
+      "targetTime": 60.49614838022576
     },
     {
       "name": "recurse 30",
-      "targetTime": 43.27761335826597
+      "targetTime": 69.09149909673512
     },
     {
       "name": "baseCase",
-      "targetTime": 45.3109466915993
+      "targetTime": 83.29123485996458
     },
     {
       "name": "rotateLeft",
-      "targetTime": 50.84428002493263
+      "targetTime": 90.20515286619393
     },
     {
       "name": "beforeRecursion -30",
-      "targetTime": 54.87761335826596
+      "targetTime": 96.36688757024196
     },
     {
-      "name": "end",
-      "targetTime": 77.41094669159929
+      "name": "recurse -30",
+      "targetTime": 111.40022090357523
     },
     {
-      "name": "Terminate Slide",
-      "targetTime": 77.47761335826596
+      "name": "outro",
+      "targetTime": 119.97023220328525
     }
   ],
   "seed": 1789013884
