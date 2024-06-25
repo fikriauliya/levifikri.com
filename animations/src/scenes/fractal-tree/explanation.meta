@@ -1,0 +1,42 @@
+{
+  "version": 0,
+  "timeEvents": [
+    {
+      "name": "dir",
+      "targetTime": 15.258517175836062
+    },
+    {
+      "name": "drawLine",
+      "targetTime": 18.291850509169393
+    },
+    {
+      "name": "drawFractal 30",
+      "targetTime": 25.358517175836063
+    },
+    {
+      "name": "baseCase",
+      "targetTime": 33.67518384250273
+    },
+    {
+      "name": "rotateLeft",
+      "targetTime": 34.208517175836064
+    },
+    {
+      "name": "drawFractal -30",
+      "targetTime": 41.241850509169396
+    },
+    {
+      "name": "recurse -30",
+      "targetTime": 44.52518384250273
+    },
+    {
+      "name": "recurse 30",
+      "targetTime": 44.52518384250273
+    },
+    {
+      "name": "rotateRight",
+      "targetTime": 44.52518384250273
+    }
+  ],
+  "seed": 469426034
+}

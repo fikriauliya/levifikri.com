@@ -1,0 +1,50 @@
+{
+  "version": 0,
+  "timeEvents": [
+    {
+      "name": "intro",
+      "targetTime": 10.500099473078098
+    },
+    {
+      "name": "dir",
+      "targetTime": 30.22815937326277
+    },
+    {
+      "name": "drawLine",
+      "targetTime": 35.2855812323393
+    },
+    {
+      "name": "rotateRight",
+      "targetTime": 43.16357952077117
+    },
+    {
+      "name": "beforeRecursion 30",
+      "targetTime": 60.49614838022576
+    },
+    {
+      "name": "recurse 30",
+      "targetTime": 69.09149909673512
+    },
+    {
+      "name": "baseCase",
+      "targetTime": 83.29123485996458
+    },
+    {
+      "name": "rotateLeft",
+      "targetTime": 90.20515286619393
+    },
+    {
+      "name": "beforeRecursion -30",
+      "targetTime": 96.36688757024196
+    },
+    {
+      "name": "recurse -30",
+      "targetTime": 111.40022090357523
+    },
+    {
+      "name": "outro",
+      "targetTime": 119.97023220328525
+    }
+  ],
+  "seed": 1789013884
+}
