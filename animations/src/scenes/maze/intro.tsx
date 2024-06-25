@@ -9,6 +9,7 @@ import {
   waitFor,
   waitTransition,
 } from "@motion-canvas/core";
+import { Grid2D } from "../../components/grid";
 
 export default function* (view: View2D) {
   const explanationSetting = {
@@ -30,38 +31,20 @@ Pernah main Maze? Penasaran donk gimana cara generate maze secara otomatis? Yuk 
     const WIDTH = 30;
     const HEIGHT = 30;
 
-    const cells: Rect[][] = [];
-    const grid = <Layout layout={true} direction={"column"} />;
-    for (let i = 0; i < HEIGHT; i++) {
-      const rows: Rect[] = [];
-      const innerLayout = createRef<Layout>();
-      grid.add(<Layout ref={innerLayout} layout={true} />);
-      for (let j = 0; j < WIDTH; j++) {
-        innerLayout().add(
-          <Rect
-            width={CELL_SIZE}
-            height={CELL_SIZE}
-            stroke={"white"}
-            lineWidth={2}
-            lineCap={"round"}
-            ref={makeRef(rows, j)}
-          />
-        );
-      }
-      cells.push(rows);
-    }
-    content().add(grid);
+    content().add(
+      <Grid2D rowCount={HEIGHT} colCount={WIDTH} cellSize={CELL_SIZE} />
+    );
 
     // yield* rect().scale(10, time);
     // yield* rect().scale(10, time);
     const random = useRandom();
-    yield* all(
-      ...range(40).map(function* () {
-        const x = random.nextInt(0, WIDTH - 1);
-        const y = random.nextInt(0, HEIGHT - 1);
-        yield* cells[y][x].fill("red", time);
-      })
-    );
+    // yield* all(
+    //   ...range(40).map(function* () {
+    //     const x = random.nextInt(0, WIDTH - 1);
+    //     const y = random.nextInt(0, HEIGHT - 1);
+    //     yield* cells[y][x].fill("red", time);
+    //   })
+    // );
     yield* waitFor(time);
   });
 }
