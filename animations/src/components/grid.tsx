@@ -22,15 +22,15 @@ export interface Grid2DProps extends NodeProps {
 export class Grid2D extends Node {
   @initial(10)
   @signal()
-  public declare readonly cellSize: SimpleSignal<number>;
+  public declare readonly cellSize: SimpleSignal<number, this>;
 
   @signal()
-  public declare readonly colCount: SimpleSignal<number>;
+  public declare readonly colCount: SimpleSignal<number, this>;
 
   @signal()
-  public declare readonly rowCount: SimpleSignal<number>;
+  public declare readonly rowCount: SimpleSignal<number, this>;
 
-  private cells: Rect[][] = [];
+  public readonly cells: Rect[][] = [];
 
   public constructor(props?: Grid2DProps) {
     super({ ...props });
