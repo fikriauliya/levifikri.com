@@ -16,7 +16,6 @@ import {
   all,
   chain,
   createRef,
-  useLogger,
   waitFor,
   waitUntil,
 } from "@motion-canvas/core";
@@ -42,7 +41,6 @@ function* explainFractal(
   len: number,
   depth: number
 ): ThreadGenerator {
-  const logger = useLogger();
   if (depth > MAX_DEPTH) {
     return;
   }

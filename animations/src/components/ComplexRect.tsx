@@ -10,21 +10,19 @@ import {
   ColorSignal,
   PossibleColor,
   PossibleVector2,
-  Signal,
   SignalValue,
   SimpleSignal,
-  useLogger,
 } from "@motion-canvas/core";
 
 export interface ComplexRectProps extends NodeProps {
-  size: SignalValue<number>;
+  cellSize: SignalValue<number>;
   borders: SignalValue<[number, number, number, number]>;
   stroke?: SignalValue<PossibleColor>;
 }
 
 export class ComplexRect extends Node {
   @signal()
-  public declare readonly size: SimpleSignal<number, this>;
+  public declare readonly cellSize: SimpleSignal<number, this>;
 
   @signal()
   public declare readonly borders: SimpleSignal<
@@ -37,11 +35,7 @@ export class ComplexRect extends Node {
   public declare readonly stroke: ColorSignal<this>;
 
   public constructor(props?: ComplexRectProps) {
-    const logger = useLogger();
     super({ ...props });
-
-    logger.info("Size: " + this.size());
-    logger.info("Borders: " + this.borders());
 
     const [top, right, bottom, left] = this.borders();
     let points: PossibleVector2[][] = [];
@@ -49,34 +43,35 @@ export class ComplexRect extends Node {
     if (top > 0) {
       points.push([
         [0, 0],
-        [this.size(), 0],
+        [this.cellSize(), 0],
       ]);
       lineWidths.push(top);
     }
     if (right > 0) {
       points.push([
-        [this.size(), 0],
-        [this.size(), this.size()],
+        [this.cellSize(), 0],
+        [this.cellSize(), this.cellSize()],
       ]);
       lineWidths.push(right);
     }
     if (bottom > 0) {
       points.push([
-        [this.size(), this.size()],
-        [0, this.size()],
+        [this.cellSize(), this.cellSize()],
+        [0, this.cellSize()],
       ]);
       lineWidths.push(bottom);
     }
     if (left > 0) {
       points.push([
-        [0, this.size()],
+        [0, this.cellSize()],
         [0, 0],
       ]);
       lineWidths.push(left);
     }
-    // logger.info("Points: " + points.toString());
+    // const layout = createRef<Layout>();
+    // this.add(<Layout ref={layout} layout={false} />);
+
     for (let i = 0; i < points.length; i++) {
-      logger.info("Points " + i + ": " + points[i].toString());
       this.add(
         <Line
           points={points[i]}

@@ -28,33 +28,40 @@ Pernah main Maze? Penasaran donk gimana cara generate maze secara otomatis? Yuk 
   yield* explain("intro", function* (time) {
     title().text("Maze Generator");
 
-    const CELL_SIZE = 50;
-    const WIDTH = 30;
-    const HEIGHT = 30;
+    const CELL_SIZE = 30;
+    const WIDTH = 15;
+    const HEIGHT = 15;
 
-    content().add(<ComplexRect size={CELL_SIZE} borders={[1, 0, 10, 1]} />);
+    // content().add(<ComplexRect size={CELL_SIZE} borders={[5, 5, 5, 10]} />);
 
-    //   const grid2D = createRef<Grid2D>();
-    //   content().add(
-    //     <Grid2D
-    //       ref={grid2D}
-    //       rowCount={HEIGHT}
-    //       colCount={WIDTH}
-    //       cellSize={CELL_SIZE}
-    //     />
-    //   );
+    const grid2D = createRef<Grid2D>();
+    content().add(
+      <Grid2D
+        ref={grid2D}
+        rowCount={HEIGHT}
+        colCount={WIDTH}
+        cellSize={CELL_SIZE}
+      />
+    );
+    // content().add(
+    //   <Rect
+    //     width={WIDTH * CELL_SIZE}
+    //     height={HEIGHT * CELL_SIZE}
+    //     lineWidth={2}
+    //     stroke={"white"}
+    //   />
+    // );
 
-    //   // yield* rect().scale(10, time);
-    //   // yield* rect().scale(10, time);
-    //   const random = useRandom();
-    //   yield* all(
-    //     ...range(40).map(function* () {
-    //       const x = random.nextInt(0, WIDTH - 1);
-    //       const y = random.nextInt(0, HEIGHT - 1);
-    //       yield* grid2D().cells[y][x].fill("red", time);
-    //     })
-    //   );
-    //   yield* waitFor(time);
-    // });
+    // yield* rect().scale(10, time);
+    // yield* rect().scale(10, time);
+    const random = useRandom();
+    // yield* all(
+    //   ...range(40).map(function* () {
+    //     const x = random.nextInt(0, WIDTH - 1);
+    //     const y = random.nextInt(0, HEIGHT - 1);
+    //     // yield* grid2D().cells[y][x].fill("red", time);
+    //   })
+    // );
+    yield* waitFor(time);
   });
 }

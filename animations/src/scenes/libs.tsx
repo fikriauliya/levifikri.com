@@ -1,12 +1,4 @@
-import {
-  Code,
-  CodePoint,
-  CodeSignal,
-  Layout,
-  Rect,
-  Txt,
-  View2D,
-} from "@motion-canvas/2d";
+import { Code, CodePoint, Layout, Txt, View2D } from "@motion-canvas/2d";
 import {
   ThreadGenerator,
   loop,
@@ -17,8 +9,6 @@ import {
   cancel,
   Reference,
   createRef,
-  Vector2,
-  useLogger,
   all,
   DEFAULT,
 } from "@motion-canvas/core";
