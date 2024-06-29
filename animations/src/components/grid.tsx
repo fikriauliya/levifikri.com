@@ -5,12 +5,15 @@ import {
   Layout,
   Rect,
   signal,
+  Line,
 } from "@motion-canvas/2d";
 import {
   PossibleColor,
+  Signal,
   SignalValue,
   SimpleSignal,
   createRef,
+  createSignal,
   makeRef,
 } from "@motion-canvas/core";
 import { ComplexRect } from "./complexRect";
@@ -33,57 +36,97 @@ export class Grid2D extends Node {
   @signal()
   public declare readonly rowCount: SimpleSignal<number, this>;
 
-  public readonly cells: Rect[][] = [];
+  private readonly colBoundaries: SimpleSignal<boolean, this>[][] = [];
+
+  private readonly rowBoundaries: SimpleSignal<boolean, this>[][] = [];
 
   public constructor(props?: Grid2DProps) {
     super({ ...props });
 
-    // const grid = <Layout layout={true} direction={"column"} />;
+    const startingColPoint = -(this.colCount() * this.cellSize() * 0.5);
+    const startingRowPoint = -(this.rowCount() * this.cellSize() * 0.5);
 
-    const midColPoint = this.colCount() * this.cellSize() * 0.5;
-    const midRowPoint = this.rowCount() * this.cellSize() * 0.5;
+    // init
+    for (let i = 0; i < this.rowCount() + 1; i++) {
+      this.colBoundaries.push([]);
+      this.rowBoundaries.push([]);
 
-    const surroundingBox = createRef<Rect>();
-    this.add(
-      <Rect
-        ref={surroundingBox}
-        width={this.colCount() * this.cellSize()}
-        height={this.rowCount() * this.cellSize()}
-        stroke={"white"}
-        lineWidth={2}
-      />
-    );
-
-    for (let i = 0; i < this.rowCount(); i++) {
-      const rows: Rect[] = [];
-      // const innerLayout = createRef<Layout>();
-      // grid.add(<Layout ref={innerLayout} layout={true} direction={"row"} />);
-
-      for (let j = 0; j < this.colCount(); j++) {
-        const x = j * this.cellSize() - midColPoint;
-        const y = i * this.cellSize() - midRowPoint;
-
-        surroundingBox().add(
-          <ComplexRect
-            cellSize={this.cellSize}
-            borders={[0, 0, 0, 0]}
-            ref={makeRef(rows, j)}
-            stroke={"white"}
-            position={[x, y]}
-            // layout={true}
-          />
-          // <Rect
-          //   width={this.cellSize}
-          //   height={this.cellSize}
-          //   stroke={"white"}
-          //   lineWidth={2}
-          //   ref={makeRef(rows, j)}
-          // />
-        );
+      for (let j = 0; j < this.colCount() + 1; j++) {
+        this.colBoundaries[i].push(createSignal(false));
+        this.rowBoundaries[i].push(createSignal(false));
       }
-      this.cells.push(rows);
     }
 
-    // this.add(grid);
+    const LINE_WIDTH = 3;
+    // draw
+    for (let i = 0; i < this.rowCount() + 1; i++) {
+      for (let j = 0; j < this.colCount() + 1; j++) {
+        const x = j * this.cellSize() + startingColPoint;
+        const y = i * this.cellSize() + startingRowPoint;
+
+        const colLineWidth = () =>
+          this.colBoundaries[i][j]() ? LINE_WIDTH : 0;
+        const rowLineWidth = () =>
+          this.rowBoundaries[i][j]() ? LINE_WIDTH : 0;
+
+        // draw vertical line to the left, the center line is midColPoint
+        // const line = createRef<Line>();
+        this.add(
+          <Line
+            // ref={line}
+            points={[
+              [x, y],
+              [x, y + this.cellSize()],
+            ]}
+            stroke={"white"}
+            lineWidth={colLineWidth}
+          />
+        );
+        // draw horizontal line to the top
+        // const line = createRef<Line>();
+        this.add(
+          <Line
+            // ref={line}
+            points={[
+              [x, y],
+              [x + this.cellSize(), y],
+            ]}
+            stroke={"white"}
+            lineWidth={rowLineWidth}
+          />
+        );
+      }
+    }
+  }
+
+  public blockAllBoundaries() {
+    for (let i = 0; i < this.rowCount() + 1; i++) {
+      for (let j = 0; j < this.colCount() + 1; j++) {
+        const fillInCol = !(i == this.rowCount());
+        const fillInRow = !(j == this.colCount());
+        this.colBoundaries[i][j](fillInCol);
+        this.rowBoundaries[i][j](fillInRow);
+      }
+    }
+  }
+
+  public blockCol(row: number, col: number) {
+    this.colBoundaries[row][col](true);
+  }
+
+  public unblockCol(row: number, col: number) {
+    this.colBoundaries[row][col](false);
+  }
+
+  public blockRow(row: number, col: number) {
+    this.rowBoundaries[row][col](true);
+  }
+
+  public unblockRow(row: number, col: number) {
+    this.rowBoundaries[row][col](false);
+  }
+
+  public selectCol(row: number, col: number) {
+    this.colBoundaries[row][col](true);
   }
 }
