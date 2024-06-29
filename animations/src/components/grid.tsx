@@ -45,7 +45,7 @@ export class Grid2D extends Node {
   private readonly rowBoundaries: Line[][] = [];
 
   // hashmap of (x, y) -> cell
-  private readonly selectedCells = new Map<string, Rect>();
+  private readonly selectedCells = new Map<Cell, Rect>();
 
   public constructor(props?: Grid2DProps) {
     super({ ...props });
@@ -158,7 +158,10 @@ export class Grid2D extends Node {
     yield* arrow().end(1, 1);
   }
   public *selectCell(pos: Cell, color: PossibleColor, time: number) {
-    // draw rectangle
+    if (this.selectedCells.has(pos)) {
+      yield* this.selectedCells.get(pos)!.fill(color, time);
+      return;
+    }
 
     const { x, y } = this.getCellPosition(pos);
     const padding = LINE_WIDTH * 2;
@@ -176,6 +179,7 @@ export class Grid2D extends Node {
         lineWidth={LINE_WIDTH}
       />
     );
+    this.selectedCells.set(pos, rect());
 
     yield* rect().opacity(1, time);
   }

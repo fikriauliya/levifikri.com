@@ -17,7 +17,7 @@ import {
 } from "@motion-canvas/core";
 import { Grid2D } from "../../components/Grid";
 
-function* dfs(
+function* generateMaze(
   x: number,
   y: number,
   visited: boolean[][],
@@ -63,7 +63,7 @@ function* dfs(
       );
     }
 
-    yield* dfs(nx, ny, visited, random, grid, time);
+    yield* generateMaze(nx, ny, visited, random, grid, time);
   }
 }
 
@@ -125,12 +125,13 @@ Pernah main Maze? Penasaran donk gimana cara generate maze secara otomatis? Yuk 
     );
     grid2D().blockAllBoundaries();
 
-    yield* dfs(x, y, visited, random, grid2D(), time);
+    yield* generateMaze(x, y, visited, random, grid2D(), time);
 
     // draw startPos
     yield* grid2D().selectCell(startPos, "green", time);
     // draw endPos
     yield* grid2D().selectCell(endPos, "red", time);
+    yield* grid2D().selectCell(endPos, "blue", time);
 
     yield* waitFor(10);
   });
