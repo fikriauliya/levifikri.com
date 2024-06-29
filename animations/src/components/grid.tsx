@@ -24,6 +24,10 @@ export interface Grid2DProps extends NodeProps {
   cellColor?: SignalValue<PossibleColor>;
 }
 
+type Cell = { col: number; row: number };
+type Coord = { x: number; y: number };
+type Orientation = "row" | "col";
+
 const LINE_WIDTH = 4;
 export class Grid2D extends Node {
   @initial(10)
@@ -39,6 +43,9 @@ export class Grid2D extends Node {
   private readonly colBoundaries: Line[][] = [];
 
   private readonly rowBoundaries: Line[][] = [];
+
+  // hashmap of (x, y) -> cell
+  private readonly selectedCells = new Map<string, Rect>();
 
   public constructor(props?: Grid2DProps) {
     super({ ...props });
@@ -103,57 +110,35 @@ export class Grid2D extends Node {
     }
   }
 
-  public *blockColBoundary(row: number, col: number, time: number) {
-    yield* this.colBoundaries[row][col].lineWidth(LINE_WIDTH, time);
+  public *blockBoundary(pos: Cell, orientation: Orientation, time: number) {
+    yield* this.getBoundary(pos, orientation).lineWidth(LINE_WIDTH, time);
   }
 
-  public *unblockColBoundary(row: number, col: number, time: number) {
-    yield* this.selectColBoundary(row, col, "yellow", time);
-    yield* this.colBoundaries[row][col].lineWidth(0, time);
+  public *unblockBoundary(pos: Cell, orientation: Orientation, time: number) {
+    yield* this.selectBoundary(pos, "yellow", orientation, time);
+    yield* this.getBoundary(pos, orientation).lineWidth(0, time);
   }
 
-  public *selectColBoundary(
-    row: number,
-    col: number,
+  public *selectBoundary(
+    pos: Cell,
     color: PossibleColor,
+    orientation: Orientation,
     time: number
   ) {
-    yield* this.colBoundaries[row][col].stroke(color, time);
+    yield* this.getBoundary(pos, orientation).stroke(color, time);
   }
 
-  public *blockRowBoundary(row: number, col: number, time: number) {
-    yield* this.rowBoundaries[row][col].lineWidth(LINE_WIDTH, time);
+  private getBoundary(pos: Cell, orientation: Orientation): Line {
+    if (orientation === "col") {
+      return this.colBoundaries[pos.row][pos.col];
+    } else {
+      return this.rowBoundaries[pos.row][pos.col];
+    }
   }
 
-  public *unblockRowBoundary(row: number, col: number, time: number) {
-    yield* this.selectRowBoundary(row, col, "yellow", time);
-    yield* this.rowBoundaries[row][col].lineWidth(0, time);
-  }
-
-  public *selectRowBoundary(
-    row: number,
-    col: number,
-    color: PossibleColor,
-    time: number
-  ) {
-    yield* this.rowBoundaries[row][col].stroke(color, time);
-  }
-
-  public *arrow(
-    fromRow: number,
-    fromCol: number,
-    toRow: number,
-    toCol: number
-  ) {
-    const halfCellSize = this.cellSize() * 0.5;
-
-    const startingColPoint = -(this.colCount() * this.cellSize() * 0.5);
-    const startingRowPoint = -(this.rowCount() * this.cellSize() * 0.5);
-
-    const x1 = fromCol * this.cellSize() + startingColPoint + halfCellSize;
-    const y1 = fromRow * this.cellSize() + startingRowPoint + halfCellSize;
-    const x2 = toCol * this.cellSize() + startingColPoint + halfCellSize;
-    const y2 = toRow * this.cellSize() + startingRowPoint + halfCellSize;
+  public *arrow(from: Cell, to: Cell) {
+    const { x: x1, y: y1 } = this.getCellPosition(from);
+    const { x: x2, y: y2 } = this.getCellPosition(to);
 
     const arrow = createRef<Line>();
     this.add(
@@ -169,37 +154,41 @@ export class Grid2D extends Node {
       />
     );
 
+    // TODO: change to time
     yield* arrow().end(1, 1);
   }
-  public *selectCell(
-    row: number,
-    col: number,
-    color: PossibleColor,
-    time: number
-  ) {
+  public *selectCell(pos: Cell, color: PossibleColor, time: number) {
     // draw rectangle
 
-    const startingColPoint = -(this.colCount() * this.cellSize() * 0.5);
-    const startingRowPoint = -(this.rowCount() * this.cellSize() * 0.5);
-
-    const x1 = col * this.cellSize() + startingColPoint + this.cellSize() * 0.5;
-    const y1 = row * this.cellSize() + startingRowPoint + this.cellSize() * 0.5;
+    const { x, y } = this.getCellPosition(pos);
+    const padding = LINE_WIDTH * 2;
 
     const rect = createRef<Rect>();
     this.add(
       <Rect
         ref={rect}
-        x={x1}
-        y={y1}
-        width={this.cellSize()}
-        height={this.cellSize()}
+        x={x}
+        y={y}
+        width={this.cellSize() - padding}
+        height={this.cellSize() - padding}
         opacity={0}
-        stroke={"white"}
-        fill={"yellow"}
+        fill={color}
         lineWidth={LINE_WIDTH}
       />
     );
 
     yield* rect().opacity(1, time);
+  }
+
+  private getCellPosition(pos: Cell): Coord {
+    const startingColPoint = -(this.colCount() * this.cellSize() * 0.5);
+    const startingRowPoint = -(this.rowCount() * this.cellSize() * 0.5);
+
+    const x =
+      pos.col * this.cellSize() + startingColPoint + this.cellSize() * 0.5;
+    const y =
+      pos.row * this.cellSize() + startingRowPoint + this.cellSize() * 0.5;
+
+    return { x, y };
   }
 }

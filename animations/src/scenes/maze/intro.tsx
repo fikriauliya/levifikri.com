@@ -1,6 +1,8 @@
 import { Layout, Rect, Txt, View2D } from "@motion-canvas/2d";
 import { initExplain, initTwoLayout } from "../libs";
 import {
+  Random,
+  ThreadGenerator,
   all,
   chain,
   createRef,
@@ -15,14 +17,71 @@ import {
 } from "@motion-canvas/core";
 import { Grid2D } from "../../components/Grid";
 
+function* dfs(
+  x: number,
+  y: number,
+  visited: boolean[][],
+  random: Random,
+  grid: Grid2D,
+  time: number
+): ThreadGenerator {
+  const logger = useLogger();
+  visited[y][x] = true;
+  let directions = [
+    [0, -1],
+    [0, 1],
+    [-1, 0],
+    [1, 0],
+  ];
+
+  directions = directions.sort(() => random.nextInt(-1, 1));
+
+  for (const [dx, dy] of directions) {
+    const nx = x + dx;
+    const ny = y + dy;
+
+    if (nx < 0 || ny < 0 || nx >= visited[0].length || ny >= visited.length) {
+      continue;
+    }
+
+    if (visited[ny][nx]) {
+      continue;
+    }
+
+    if (nx == x) {
+      yield* grid.unblockBoundary(
+        { row: Math.max(y, ny), col: nx },
+        "row",
+        time
+      );
+    }
+    if (ny == y) {
+      yield* grid.unblockBoundary(
+        { row: ny, col: Math.max(x, nx) },
+        "col",
+        time
+      );
+    }
+
+    yield* dfs(nx, ny, visited, random, grid, time);
+  }
+}
+
 export default function* (view: View2D) {
   const random = useRandom();
   const logger = useLogger();
   const explanationSetting = {
-    intro: {
-      quota: 1,
-      slowTime: 1,
-      fastTime: 1,
+    generate: {
+      quota: 3,
+      slowTime: 0.01,
+      fastTime: 0.001,
+      naration: `\
+Pernah main Maze? Penasaran donk gimana cara generate maze secara otomatis? Yuk kita coba!`,
+    },
+    solve: {
+      quota: 3,
+      slowTime: 0.01,
+      fastTime: 0.001,
       naration: `\
 Pernah main Maze? Penasaran donk gimana cara generate maze secara otomatis? Yuk kita coba!`,
     },
@@ -30,16 +89,32 @@ Pernah main Maze? Penasaran donk gimana cara generate maze secara otomatis? Yuk 
   const explain = initExplain(explanationSetting);
   const { title, content } = initTwoLayout(view);
 
-  yield* explain("intro", function* (time) {
+  const grid2D = createRef<Grid2D>();
+  const CELL_SIZE = 50;
+  const WIDTH = 20;
+  const HEIGHT = 20;
+
+  const startPos = {
+    col: random.nextInt(0, WIDTH - 1),
+    row: random.nextInt(0, HEIGHT - 1),
+  };
+  const endPos = {
+    col: random.nextInt(0, WIDTH - 1),
+    row: random.nextInt(0, HEIGHT - 1),
+  };
+
+  yield* explain("generate", function* (time) {
     title().text("Maze Generator");
 
-    const CELL_SIZE = 50;
-    const WIDTH = 20;
-    const HEIGHT = 20;
+    const visited: boolean[][] = [];
+    for (let i = 0; i < HEIGHT; i++) {
+      visited.push(new Array(WIDTH).fill(false));
+    }
 
-    // content().add(<ComplexRect size={CELL_SIZE} borders={[5, 5, 5, 10]} />);
+    // select random position
+    const x = random.nextInt(0, WIDTH - 1);
+    const y = random.nextInt(0, HEIGHT - 1);
 
-    const grid2D = createRef<Grid2D>();
     content().add(
       <Grid2D
         ref={grid2D}
@@ -49,47 +124,18 @@ Pernah main Maze? Penasaran donk gimana cara generate maze secara otomatis? Yuk 
       />
     );
     grid2D().blockAllBoundaries();
-    // content().add(
-    //   <Rect
-    //     width={WIDTH * CELL_SIZE}
-    //     height={HEIGHT * CELL_SIZE}
-    //     lineWidth={2}
-    //     stroke={"white"}
-    //   />
-    // );
 
-    // yield* rect().scale(10, time);
-    // yield* rect().scale(10, time);
-    // yield* all(
-    //   ...range(40).map(function* () {
-    //     const x = random.nextInt(0, WIDTH - 1);
-    //     const y = random.nextInt(0, HEIGHT - 1);
-    //     // yield* grid2D().cells[y][x].fill("red", time);
-    //   })
-    // );
+    yield* dfs(x, y, visited, random, grid2D(), time);
 
-    // yield* waitFor(1);
+    // draw startPos
+    yield* grid2D().selectCell(startPos, "green", time);
+    // draw endPos
+    yield* grid2D().selectCell(endPos, "red", time);
 
-    yield* grid2D().arrow(1, 1, 1, 2);
-    yield* grid2D().arrow(1, 2, 2, 2);
-    yield* grid2D().selectCell(0, 0, "yellow", time);
-    yield* grid2D().selectCell(1, 1, "yellow", time);
-    yield* grid2D().selectCell(2, 2, "yellow", time);
+    yield* waitFor(10);
+  });
 
-    yield* sequence(
-      time,
-      ...range((HEIGHT * WIDTH) / 2).map(function* (i) {
-        const y = random.nextInt(1, HEIGHT);
-        const x = random.nextInt(1, WIDTH);
-        // logger.info("block" + y + ", " + x);
-
-        if (random.nextInt(0, 2) == 0) {
-          yield* grid2D().unblockColBoundary(y, x, time);
-        } else {
-          yield* grid2D().unblockRowBoundary(y, x, time);
-        }
-      })
-    );
-    yield* waitFor(5);
+  yield* explain("solve", function* (time) {
+    const visited: boolean[][] = [];
   });
 }

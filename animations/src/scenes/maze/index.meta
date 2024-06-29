@@ -2,8 +2,12 @@
   "version": 0,
   "timeEvents": [
     {
-      "name": "intro",
-      "targetTime": 0.03333333333333333
+      "name": "generate",
+      "targetTime": 18.013333333333208
+    },
+    {
+      "name": "solve",
+      "targetTime": 18.046666666666543
     }
   ],
   "seed": 3710369225
