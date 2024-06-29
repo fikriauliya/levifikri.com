@@ -2,19 +2,17 @@ import {
   NodeProps,
   Node,
   initial,
-  Layout,
   Rect,
   signal,
   Line,
+  Circle,
 } from "@motion-canvas/2d";
 import {
   PossibleColor,
-  Signal,
+  Reference,
   SignalValue,
   SimpleSignal,
   createRef,
-  createSignal,
-  makeRef,
 } from "@motion-canvas/core";
 
 export interface Grid2DProps extends NodeProps {
@@ -24,9 +22,21 @@ export interface Grid2DProps extends NodeProps {
   cellColor?: SignalValue<PossibleColor>;
 }
 
-type Cell = { col: number; row: number };
+export class Cell {
+  constructor(public col: number, public row: number) {}
+
+  toString(): string {
+    return `(${this.col}, ${this.row})`;
+  }
+
+  equals(other: Cell): boolean {
+    return this.col === other.col && this.row === other.row;
+  }
+}
+
 type Coord = { x: number; y: number };
 type Orientation = "row" | "col";
+type Shape = "rectangle" | "circle";
 
 const LINE_WIDTH = 4;
 export class Grid2D extends Node {
@@ -45,7 +55,9 @@ export class Grid2D extends Node {
   private readonly rowBoundaries: Line[][] = [];
 
   // hashmap of (x, y) -> cell
-  private readonly selectedCells = new Map<Cell, Rect>();
+  private readonly selectedCells = new Map<string, Rect | Circle>();
+
+  private readonly objectsCell = new Map<string, Rect | Circle>();
 
   public constructor(props?: Grid2DProps) {
     super({ ...props });
@@ -157,31 +169,111 @@ export class Grid2D extends Node {
     // TODO: change to time
     yield* arrow().end(1, 1);
   }
-  public *selectCell(pos: Cell, color: PossibleColor, time: number) {
-    if (this.selectedCells.has(pos)) {
-      yield* this.selectedCells.get(pos)!.fill(color, time);
+  public *selectCell(
+    pos: Cell,
+    color: PossibleColor,
+    shape: Shape,
+    time: number
+  ) {
+    if (this.selectedCells.has(pos.toString())) {
+      yield* this.selectedCells.get(pos.toString())!.fill(color, time);
       return;
     }
 
     const { x, y } = this.getCellPosition(pos);
-    const padding = LINE_WIDTH * 2;
+    const padding = LINE_WIDTH * 4;
 
-    const rect = createRef<Rect>();
-    this.add(
-      <Rect
-        ref={rect}
-        x={x}
-        y={y}
-        width={this.cellSize() - padding}
-        height={this.cellSize() - padding}
-        opacity={0}
-        fill={color}
-        lineWidth={LINE_WIDTH}
-      />
-    );
-    this.selectedCells.set(pos, rect());
+    let node: Reference<Rect | Circle>;
+    if (shape === "rectangle") {
+      node = createRef<Rect>();
+      this.add(
+        <Rect
+          ref={node}
+          x={x}
+          y={y}
+          width={this.cellSize() - padding}
+          height={this.cellSize() - padding}
+          opacity={0}
+          fill={color}
+          lineWidth={LINE_WIDTH}
+        />
+      );
+    } else {
+      node = createRef<Circle>();
+      this.add(
+        <Circle
+          ref={node}
+          x={x}
+          y={y}
+          size={this.cellSize() - padding}
+          opacity={0}
+          fill={color}
+          lineWidth={LINE_WIDTH}
+        />
+      );
+    }
+    this.selectedCells.set(pos.toString(), node());
+    yield* node().opacity(1, time);
+  }
 
-    yield* rect().opacity(1, time);
+  public *putCell(
+    name: string,
+    pos: Cell,
+    color: PossibleColor,
+    shape: Shape,
+    time: number
+  ) {
+    if (this.objectsCell.has(name)) {
+      const node = this.objectsCell.get(name)!;
+      node.remove();
+    }
+
+    const { x, y } = this.getCellPosition(pos);
+    const padding = LINE_WIDTH * 4;
+
+    let node: Reference<Rect | Circle>;
+    if (shape === "rectangle") {
+      node = createRef<Rect>();
+      this.add(
+        <Rect
+          ref={node}
+          x={x}
+          y={y}
+          width={this.cellSize() - padding}
+          height={this.cellSize() - padding}
+          opacity={0}
+          fill={color}
+          lineWidth={LINE_WIDTH}
+        />
+      );
+    } else {
+      node = createRef<Circle>();
+      this.add(
+        <Circle
+          ref={node}
+          x={x}
+          y={y}
+          size={this.cellSize() - padding}
+          opacity={0}
+          fill={color}
+          lineWidth={LINE_WIDTH}
+        />
+      );
+    }
+    this.objectsCell.set(name, node());
+    yield* node().opacity(1, time);
+  }
+
+  public *deselectCell(pos: Cell, time: number) {
+    if (!this.selectedCells.has(pos.toString())) {
+      return;
+    }
+
+    const cell = this.selectedCells.get(pos.toString())!;
+    yield* cell.opacity(0, time);
+
+    cell.remove();
+    this.selectedCells.delete(pos.toString());
   }
 
   private getCellPosition(pos: Cell): Coord {

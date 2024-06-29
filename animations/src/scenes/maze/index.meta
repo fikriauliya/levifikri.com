@@ -3,11 +3,11 @@
   "timeEvents": [
     {
       "name": "generate",
-      "targetTime": 18.013333333333208
+      "targetTime": 8.033333333333207
     },
     {
       "name": "solve",
-      "targetTime": 18.046666666666543
+      "targetTime": 12.056666666666455
     }
   ],
   "seed": 3710369225
