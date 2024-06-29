@@ -13,8 +13,7 @@ import {
   waitTransition,
   waitUntil,
 } from "@motion-canvas/core";
-import { Grid2D } from "../../components/grid";
-import { ComplexRect } from "../../components/complexRect";
+import { Grid2D } from "../../components/Grid";
 
 export default function* (view: View2D) {
   const random = useRandom();
@@ -34,9 +33,9 @@ Pernah main Maze? Penasaran donk gimana cara generate maze secara otomatis? Yuk 
   yield* explain("intro", function* (time) {
     title().text("Maze Generator");
 
-    const CELL_SIZE = 30;
-    const WIDTH = 25;
-    const HEIGHT = 25;
+    const CELL_SIZE = 50;
+    const WIDTH = 20;
+    const HEIGHT = 20;
 
     // content().add(<ComplexRect size={CELL_SIZE} borders={[5, 5, 5, 10]} />);
 
@@ -70,19 +69,25 @@ Pernah main Maze? Penasaran donk gimana cara generate maze secara otomatis? Yuk 
     // );
 
     // yield* waitFor(1);
+
+    yield* grid2D().arrow(1, 1, 1, 2);
+    yield* grid2D().arrow(1, 2, 2, 2);
+    yield* grid2D().selectCell(0, 0, "yellow", time);
+    yield* grid2D().selectCell(1, 1, "yellow", time);
+    yield* grid2D().selectCell(2, 2, "yellow", time);
+
     yield* sequence(
-      0.01,
+      time,
       ...range((HEIGHT * WIDTH) / 2).map(function* (i) {
         const y = random.nextInt(1, HEIGHT);
         const x = random.nextInt(1, WIDTH);
         // logger.info("block" + y + ", " + x);
 
         if (random.nextInt(0, 2) == 0) {
-          grid2D().unblockCol(y, x);
+          yield* grid2D().unblockColBoundary(y, x, time);
         } else {
-          grid2D().unblockRow(y, x);
+          yield* grid2D().unblockRowBoundary(y, x, time);
         }
-        yield* waitFor(0.01);
       })
     );
     yield* waitFor(5);

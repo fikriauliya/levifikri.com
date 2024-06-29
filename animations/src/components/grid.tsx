@@ -16,7 +16,6 @@ import {
   createSignal,
   makeRef,
 } from "@motion-canvas/core";
-import { ComplexRect } from "./complexRect";
 
 export interface Grid2DProps extends NodeProps {
   cellSize?: SignalValue<number>;
@@ -25,7 +24,7 @@ export interface Grid2DProps extends NodeProps {
   cellColor?: SignalValue<PossibleColor>;
 }
 
-const LINE_WIDTH = 3;
+const LINE_WIDTH = 4;
 export class Grid2D extends Node {
   @initial(10)
   @signal()
@@ -104,19 +103,103 @@ export class Grid2D extends Node {
     }
   }
 
-  public blockCol(row: number, col: number) {
-    this.colBoundaries[row][col].lineWidth(LINE_WIDTH);
+  public *blockColBoundary(row: number, col: number, time: number) {
+    yield* this.colBoundaries[row][col].lineWidth(LINE_WIDTH, time);
   }
 
-  public unblockCol(row: number, col: number) {
-    this.colBoundaries[row][col].lineWidth(0);
+  public *unblockColBoundary(row: number, col: number, time: number) {
+    yield* this.selectColBoundary(row, col, "yellow", time);
+    yield* this.colBoundaries[row][col].lineWidth(0, time);
   }
 
-  public blockRow(row: number, col: number) {
-    this.rowBoundaries[row][col].lineWidth(LINE_WIDTH);
+  public *selectColBoundary(
+    row: number,
+    col: number,
+    color: PossibleColor,
+    time: number
+  ) {
+    yield* this.colBoundaries[row][col].stroke(color, time);
   }
 
-  public unblockRow(row: number, col: number) {
-    this.rowBoundaries[row][col].lineWidth(0);
+  public *blockRowBoundary(row: number, col: number, time: number) {
+    yield* this.rowBoundaries[row][col].lineWidth(LINE_WIDTH, time);
+  }
+
+  public *unblockRowBoundary(row: number, col: number, time: number) {
+    yield* this.selectRowBoundary(row, col, "yellow", time);
+    yield* this.rowBoundaries[row][col].lineWidth(0, time);
+  }
+
+  public *selectRowBoundary(
+    row: number,
+    col: number,
+    color: PossibleColor,
+    time: number
+  ) {
+    yield* this.rowBoundaries[row][col].stroke(color, time);
+  }
+
+  public *arrow(
+    fromRow: number,
+    fromCol: number,
+    toRow: number,
+    toCol: number
+  ) {
+    const halfCellSize = this.cellSize() * 0.5;
+
+    const startingColPoint = -(this.colCount() * this.cellSize() * 0.5);
+    const startingRowPoint = -(this.rowCount() * this.cellSize() * 0.5);
+
+    const x1 = fromCol * this.cellSize() + startingColPoint + halfCellSize;
+    const y1 = fromRow * this.cellSize() + startingRowPoint + halfCellSize;
+    const x2 = toCol * this.cellSize() + startingColPoint + halfCellSize;
+    const y2 = toRow * this.cellSize() + startingRowPoint + halfCellSize;
+
+    const arrow = createRef<Line>();
+    this.add(
+      <Line
+        ref={arrow}
+        points={[
+          [x1, y1],
+          [x2, y2],
+        ]}
+        stroke={"magenta"}
+        lineWidth={LINE_WIDTH}
+        // endArrow
+      />
+    );
+
+    yield* arrow().end(1, 1);
+  }
+  public *selectCell(
+    row: number,
+    col: number,
+    color: PossibleColor,
+    time: number
+  ) {
+    // draw rectangle
+
+    const startingColPoint = -(this.colCount() * this.cellSize() * 0.5);
+    const startingRowPoint = -(this.rowCount() * this.cellSize() * 0.5);
+
+    const x1 = col * this.cellSize() + startingColPoint + this.cellSize() * 0.5;
+    const y1 = row * this.cellSize() + startingRowPoint + this.cellSize() * 0.5;
+
+    const rect = createRef<Rect>();
+    this.add(
+      <Rect
+        ref={rect}
+        x={x1}
+        y={y1}
+        width={this.cellSize()}
+        height={this.cellSize()}
+        opacity={0}
+        stroke={"white"}
+        fill={"yellow"}
+        lineWidth={LINE_WIDTH}
+      />
+    );
+
+    yield* rect().opacity(1, time);
   }
 }
