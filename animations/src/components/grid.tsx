@@ -25,6 +25,7 @@ export interface Grid2DProps extends NodeProps {
   cellColor?: SignalValue<PossibleColor>;
 }
 
+const LINE_WIDTH = 3;
 export class Grid2D extends Node {
   @initial(10)
   @signal()
@@ -36,9 +37,9 @@ export class Grid2D extends Node {
   @signal()
   public declare readonly rowCount: SimpleSignal<number, this>;
 
-  private readonly colBoundaries: SimpleSignal<boolean, this>[][] = [];
+  private readonly colBoundaries: Line[][] = [];
 
-  private readonly rowBoundaries: SimpleSignal<boolean, this>[][] = [];
+  private readonly rowBoundaries: Line[][] = [];
 
   public constructor(props?: Grid2DProps) {
     super({ ...props });
@@ -46,87 +47,76 @@ export class Grid2D extends Node {
     const startingColPoint = -(this.colCount() * this.cellSize() * 0.5);
     const startingRowPoint = -(this.rowCount() * this.cellSize() * 0.5);
 
-    // init
-    for (let i = 0; i < this.rowCount() + 1; i++) {
-      this.colBoundaries.push([]);
-      this.rowBoundaries.push([]);
-
-      for (let j = 0; j < this.colCount() + 1; j++) {
-        this.colBoundaries[i].push(createSignal(false));
-        this.rowBoundaries[i].push(createSignal(false));
-      }
-    }
-
-    const LINE_WIDTH = 3;
     // draw
     for (let i = 0; i < this.rowCount() + 1; i++) {
+      const rowLines = [];
+      const colLines = [];
+
       for (let j = 0; j < this.colCount() + 1; j++) {
         const x = j * this.cellSize() + startingColPoint;
         const y = i * this.cellSize() + startingRowPoint;
 
-        const colLineWidth = () =>
-          this.colBoundaries[i][j]() ? LINE_WIDTH : 0;
-        const rowLineWidth = () =>
-          this.rowBoundaries[i][j]() ? LINE_WIDTH : 0;
-
         // draw vertical line to the left, the center line is midColPoint
-        // const line = createRef<Line>();
+        const colLine = createRef<Line>();
         this.add(
           <Line
-            // ref={line}
+            ref={colLine}
             points={[
               [x, y],
               [x, y + this.cellSize()],
             ]}
             stroke={"white"}
-            lineWidth={colLineWidth}
+            lineWidth={0}
           />
         );
         // draw horizontal line to the top
-        // const line = createRef<Line>();
+        const rowLine = createRef<Line>();
         this.add(
           <Line
-            // ref={line}
+            ref={rowLine}
             points={[
               [x, y],
               [x + this.cellSize(), y],
             ]}
             stroke={"white"}
-            lineWidth={rowLineWidth}
+            lineWidth={0}
           />
         );
+
+        colLines.push(colLine());
+        rowLines.push(rowLine());
       }
+
+      this.colBoundaries.push(colLines);
+      this.rowBoundaries.push(rowLines);
     }
   }
 
   public blockAllBoundaries() {
     for (let i = 0; i < this.rowCount() + 1; i++) {
       for (let j = 0; j < this.colCount() + 1; j++) {
-        const fillInCol = !(i == this.rowCount());
-        const fillInRow = !(j == this.colCount());
-        this.colBoundaries[i][j](fillInCol);
-        this.rowBoundaries[i][j](fillInRow);
+        const colLineWidth = !(i == this.rowCount()) ? LINE_WIDTH : 0;
+        const rowLineWidth = !(j == this.colCount()) ? LINE_WIDTH : 0;
+
+        this.colBoundaries[i][j].lineWidth(colLineWidth);
+        this.rowBoundaries[i][j].lineWidth(rowLineWidth);
       }
     }
   }
 
   public blockCol(row: number, col: number) {
-    this.colBoundaries[row][col](true);
+    this.colBoundaries[row][col].lineWidth(LINE_WIDTH);
   }
 
   public unblockCol(row: number, col: number) {
-    this.colBoundaries[row][col](false);
+    this.colBoundaries[row][col].lineWidth(0);
   }
 
   public blockRow(row: number, col: number) {
-    this.rowBoundaries[row][col](true);
+    this.rowBoundaries[row][col].lineWidth(LINE_WIDTH);
   }
 
   public unblockRow(row: number, col: number) {
-    this.rowBoundaries[row][col](false);
-  }
-
-  public selectCol(row: number, col: number) {
-    this.colBoundaries[row][col](true);
+    this.rowBoundaries[row][col].lineWidth(0);
   }
 }
