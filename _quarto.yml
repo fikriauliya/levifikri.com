@@ -1,5 +1,10 @@
 project:
   type: website
+  resources:
+    - "slides/state-of-ai-2025/style.css"
+    - "slides/state-of-ai-2025/app.js"
+    - "slides/state-of-ai-2025/assets/"
+    - "slides/state-of-ai-2025/visualizations/"
 
 website:
   title: "Levi Fikri"
@@ -14,6 +19,8 @@ website:
         href: "competitive-programming/introduction.ipynb"
       - text: "Demystifying Rust"
         href: "rust/introduction.ipynb"
+      - text: "State of AI 2025"
+        href: "slides/state-of-ai-2025/index.html"
     pinned: true
   bread-crumbs: false
   sidebar:
