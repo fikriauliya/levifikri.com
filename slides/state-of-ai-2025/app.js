@@ -12,6 +12,17 @@ class SlidePresentation {
 
     init() {
         this.setupEventListeners();
+        this.loadFromHash();
+    }
+
+    loadFromHash() {
+        const hash = window.location.hash;
+        if (hash && hash.startsWith('#slide-')) {
+            const slideNumber = parseInt(hash.replace('#slide-', ''));
+            if (slideNumber >= 0 && slideNumber < this.totalSlides) {
+                this.showSlide(slideNumber);
+            }
+        }
     }
 
     showSlide(index) {
@@ -28,6 +39,9 @@ class SlidePresentation {
         });
 
         this.currentSlide = index;
+        
+        // Update URL hash
+        window.history.replaceState(null, null, `#slide-${index}`);
     }
 
     nextSlide() {
@@ -75,6 +89,11 @@ class SlidePresentation {
                 this.showSlide(index);
                 this.hideNavHint();
             });
+        });
+
+        // Handle browser back/forward navigation
+        window.addEventListener('hashchange', () => {
+            this.loadFromHash();
         });
     }
 
