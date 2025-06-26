@@ -82,6 +82,7 @@
             position: relative;
             border: 3px solid #d2691e;
             overflow: hidden;
+            box-sizing: border-box;
         }
         
         .pizza-slice {
@@ -385,22 +386,29 @@
             const pizza = document.getElementById('pizza');
             pizza.innerHTML = ''; // Clear existing slices
             
+            // Create a more accurate pizza visualization using conic gradient
+            const filledPercentage = (numerator / denominator) * 100;
+            
+            // Use conic gradient for accurate representation
+            pizza.style.background = `conic-gradient(
+                #ff6347 0deg ${filledPercentage}%, 
+                #ffeaa7 ${filledPercentage}% 100%
+            )`;
+            
+            // Add slice lines for visual separation
             const anglePerSlice = 360 / denominator;
             
             for (let i = 0; i < denominator; i++) {
-                const slice = document.createElement('div');
-                slice.className = 'pizza-slice ' + (i < numerator ? 'filled' : 'empty');
-                
-                const rotation = i * anglePerSlice;
-                const skew = 90 - anglePerSlice;
-                
-                slice.style.transform = `rotate(${rotation}deg) skewY(${skew}deg)`;
-                slice.style.transformOrigin = '100% 100%';
-                
-                // Add animation delay
-                slice.style.animationDelay = (i * 0.1) + 's';
-                
-                pizza.appendChild(slice);
+                const line = document.createElement('div');
+                line.style.position = 'absolute';
+                line.style.width = '50%';
+                line.style.height = '2px';
+                line.style.background = '#d2691e';
+                line.style.left = '50%';
+                line.style.top = '50%';
+                line.style.transformOrigin = 'left center';
+                line.style.transform = `rotate(${i * anglePerSlice}deg)`;
+                pizza.appendChild(line);
             }
         }
         
