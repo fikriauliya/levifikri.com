@@ -1,0 +1,17 @@
+- TED-style presentation format
+- Output should be HTML + CSS + JavaScript-based slides
+- Create as a Single Page Application
+- Use external JS/CSS libraries as needed, but avoid build systems (e.g., Webpack, Vite, etc.)
+- Design should be visually appealing with a bluish color palette
+- Include images and visual elements to enhance the presentation
+- Add animations to create a dynamic user experience
+- Enable slide navigation via swipe gestures, arrow keys, or spacebar
+- Ensure high contrast for readability: avoid light gray text on dark backgrounds
+- Use darker colors for subtitle and descriptive text to improve visibility
+- Make descriptive text larger (minimum 16px) for better readability
+- Maintain proper spacing and padding around content elements
+- Follow WCAG accessibility guidelines for color contrast ratios
+- For commented sections, follow these conventions:
+  - Inject: [path/to/asset] → embed the specified assets
+  - Code: [code snippet] → generate the code (JS & HTML), save to separate files (under `visualizations` folder), and inject via iframe into the slide. If the file is already there, don't modify
+- `---` should split slides

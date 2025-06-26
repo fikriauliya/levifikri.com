@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Terrain Model</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            font-family: 'Arial', sans-serif;
+            color: white;
+            overflow: hidden;
+        }
+        
+        .terrain-container {
+            position: relative;
+            width: 100%;
+            height: 460px;
+            background: linear-gradient(180deg, #87CEEB 0%, #98D8E8 50%, #90EE90 100%);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .terrain-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: all 0.5s ease;
+        }
+        
+        .elevation-layer {
+            background: 
+                radial-gradient(ellipse at 30% 60%, rgba(139, 69, 19, 0.8) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 40%, rgba(160, 82, 45, 0.6) 0%, transparent 40%),
+                radial-gradient(ellipse at 50% 80%, rgba(34, 139, 34, 0.7) 0%, transparent 30%);
+        }
+        
+        .climate-layer {
+            background: 
+                linear-gradient(45deg, rgba(135, 206, 235, 0.6) 0%, transparent 30%),
+                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.8) 0%, transparent 20%),
+                radial-gradient(circle at 80% 30%, rgba(255, 140, 0, 0.5) 0%, transparent 25%);
+            opacity: 0;
+        }
+        
+        .population-layer {
+            background: 
+                radial-gradient(circle at 40% 30%, rgba(255, 255, 0, 0.8) 0%, transparent 15%),
+                radial-gradient(circle at 60% 60%, rgba(255, 165, 0, 0.7) 0%, transparent 12%),
+                radial-gradient(circle at 20% 70%, rgba(255, 69, 0, 0.6) 0%, transparent 10%);
+            opacity: 0;
+        }
+        
+        .mountain {
+            position: absolute;
+            bottom: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            animation: mountainGrow 2s ease-out;
+        }
+        
+        .mountain-1 {
+            left: 25%;
+            border-left: 40px solid transparent;
+            border-right: 40px solid transparent;
+            border-bottom: 80px solid #8B4513;
+        }
+        
+        .mountain-2 {
+            left: 55%;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+            border-bottom: 60px solid #A0522D;
+        }
+        
+        .mountain-3 {
+            left: 10%;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-bottom: 50px solid #CD853F;
+        }
+        
+        @keyframes mountainGrow {
+            from { transform: scaleY(0); }
+            to { transform: scaleY(1); }
+        }
+        
+        .city {
+            position: absolute;
+            display: flex;
+            align-items: end;
+            gap: 2px;
+        }
+        
+        .building {
+            background: #555;
+            animation: buildingRise 1s ease-out;
+        }
+        
+        .city-1 {
+            bottom: 20px;
+            left: 35%;
+        }
+        
+        .city-2 {
+            bottom: 20px;
+            left: 65%;
+        }
+        
+        .city-3 {
+            bottom: 20px;
+            left: 15%;
+        }
+        
+        @keyframes buildingRise {
+            from { height: 0; }
+            to { height: var(--building-height); }
+        }
+        
+        .controls-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            min-width: 200px;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+        
+        .control-label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #4a90e2;
+        }
+        
+        .layer-toggle {
+            background: rgba(74, 144, 226, 0.8);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .layer-toggle.active {
+            background: rgba(74, 144, 226, 1);
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
+        }
+        
+        .layer-toggle:hover {
+            background: rgba(74, 144, 226, 1);
+        }
+        
+        .legend {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 250px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            margin-right: 10px;
+        }
+        
+        .data-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            min-width: 180px;
+        }
+        
+        .data-point {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .data-value {
+            color: #4a90e2;
+            font-weight: bold;
+        }
+        
+        .weather-cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .cloud-1 {
+            top: 10%;
+            left: 20%;
+            width: 60px;
+            height: 30px;
+            animation-delay: 0s;
+        }
+        
+        .cloud-2 {
+            top: 15%;
+            right: 30%;
+            width: 80px;
+            height: 40px;
+            animation-delay: 1s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="terrain-container">
+        <!-- Base terrain -->
+        <div class="terrain-layer elevation-layer"></div>
+        <div class="terrain-layer climate-layer" id="climate-layer"></div>
+        <div class="terrain-layer population-layer" id="population-layer"></div>
+        
+        <!-- Mountains -->
+        <div class="mountain mountain-1"></div>
+        <div class="mountain mountain-2"></div>
+        <div class="mountain mountain-3"></div>
+        
+        <!-- Cities -->
+        <div class="city city-1">
+            <div class="building" style="--building-height: 25px; width: 8px; height: 25px;"></div>
+            <div class="building" style="--building-height: 35px; width: 8px; height: 35px;"></div>
+            <div class="building" style="--building-height: 20px; width: 8px; height: 20px;"></div>
+            <div class="building" style="--building-height: 30px; width: 8px; height: 30px;"></div>
+        </div>
+        
+        <div class="city city-2">
+            <div class="building" style="--building-height: 40px; width: 8px; height: 40px;"></div>
+            <div class="building" style="--building-height: 25px; width: 8px; height: 25px;"></div>
+            <div class="building" style="--building-height: 35px; width: 8px; height: 35px;"></div>
+            <div class="building" style="--building-height: 45px; width: 8px; height: 45px;"></div>
+            <div class="building" style="--building-height: 30px; width: 8px; height: 30px;"></div>
+        </div>
+        
+        <div class="city city-3">
+            <div class="building" style="--building-height: 15px; width: 8px; height: 15px;"></div>
+            <div class="building" style="--building-height: 20px; width: 8px; height: 20px;"></div>
+            <div class="building" style="--building-height: 18px; width: 8px; height: 18px;"></div>
+        </div>
+        
+        <!-- Weather elements -->
+        <div class="weather-cloud cloud-1"></div>
+        <div class="weather-cloud cloud-2"></div>
+    </div>
+    
+    <!-- Controls -->
+    <div class="controls-panel">
+        <div class="control-group">
+            <label class="control-label">Data Layers</label>
+            <button class="layer-toggle active" onclick="toggleLayer('elevation')">Elevation</button>
+            <button class="layer-toggle" onclick="toggleLayer('climate')">Climate</button>
+            <button class="layer-toggle" onclick="toggleLayer('population')">Population</button>
+        </div>
+    </div>
+    
+    <!-- Data overlay -->
+    <div class="data-overlay">
+        <div class="data-point">
+            <span>Max Elevation:</span>
+            <span class="data-value">2,847m</span>
+        </div>
+        <div class="data-point">
+            <span>Avg Temperature:</span>
+            <span class="data-value">22°C</span>
+        </div>
+        <div class="data-point">
+            <span>Population:</span>
+            <span class="data-value">2.3M</span>
+        </div>
+        <div class="data-point">
+            <span>Rainfall:</span>
+            <span class="data-value">1,200mm</span>
+        </div>
+    </div>
+    
+    <!-- Legend -->
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-color" style="background: #8B4513;"></div>
+            <span>High Elevation</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #228B22;"></div>
+            <span>Low Elevation</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #87CEEB;"></div>
+            <span>Cool/Wet Climate</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #FF8C00;"></div>
+            <span>Warm/Dry Climate</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #FFD700;"></div>
+            <span>High Population</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #FF4500;"></div>
+            <span>Medium Population</span>
+        </div>
+    </div>
+    
+    <script>
+        let activeLayers = ['elevation'];
+        
+        function toggleLayer(layerName) {
+            const button = event.target;
+            const layer = document.getElementById(layerName + '-layer');
+            
+            if (activeLayers.includes(layerName)) {
+                // Remove layer
+                activeLayers = activeLayers.filter(l => l !== layerName);
+                button.classList.remove('active');
+                if (layer) layer.style.opacity = '0';
+            } else {
+                // Add layer
+                activeLayers.push(layerName);
+                button.classList.add('active');
+                if (layer) layer.style.opacity = '1';
+            }
+            
+            updateVisualization();
+        }
+        
+        function updateVisualization() {
+            // Update data based on active layers
+            const dataOverlay = document.querySelector('.data-overlay');
+            const elevationActive = activeLayers.includes('elevation');
+            const climateActive = activeLayers.includes('climate');
+            const populationActive = activeLayers.includes('population');
+            
+            // Simulate data changes based on visible layers
+            if (climateActive && populationActive) {
+                // Show correlation data
+                updateDataPoint('Correlation:', '+0.85');
+            } else {
+                // Show individual metrics
+                updateDataPoint('Max Elevation:', '2,847m');
+            }
+        }
+        
+        function updateDataPoint(label, value) {
+            const dataPoints = document.querySelectorAll('.data-point');
+            if (dataPoints.length > 0) {
+                dataPoints[0].innerHTML = `<span>${label}</span><span class="data-value">${value}</span>`;
+            }
+        }
+        
+        // Initialize with slight delay for animation effect
+        setTimeout(() => {
+            const elevationLayer = document.querySelector('.elevation-layer');
+            elevationLayer.style.transform = 'translateZ(0)';
+        }, 500);
+        
+        // Add interactive hover effects
+        document.querySelectorAll('.mountain, .city').forEach(element => {
+            element.addEventListener('mouseenter', () => {
+                element.style.transform = 'scale(1.1)';
+                element.style.transition = 'transform 0.3s ease';
+            });
+            
+            element.addEventListener('mouseleave', () => {
+                element.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>

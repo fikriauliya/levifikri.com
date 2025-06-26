@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Fraction Visualization</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Arial', sans-serif;
+            color: white;
+            overflow: hidden;
+        }
+        
+        .fraction-container {
+            position: relative;
+            width: 100%;
+            height: 460px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+        
+        .current-fraction {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .fraction-display {
+            font-size: 48px;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 10px;
+        }
+        
+        .fraction-text {
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .visualization-area {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .viz-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+        }
+        
+        .viz-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #495057;
+        }
+        
+        /* Pizza Visualization */
+        .pizza-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+        }
+        
+        .pizza {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #ffa500;
+            position: relative;
+            border: 3px solid #d2691e;
+            overflow: hidden;
+        }
+        
+        .pizza-slice {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            background: #ff6347;
+            transform-origin: 100% 100%;
+            transition: all 0.5s ease;
+        }
+        
+        .pizza-slice.filled {
+            background: #ff6347;
+        }
+        
+        .pizza-slice.empty {
+            background: #ffeaa7;
+        }
+        
+        /* Number Line */
+        .number-line {
+            position: relative;
+            width: 100%;
+            height: 60px;
+            margin: 20px 0;
+        }
+        
+        .line {
+            position: absolute;
+            top: 30px;
+            left: 10%;
+            right: 10%;
+            height: 4px;
+            background: #333;
+            border-radius: 2px;
+        }
+        
+        .tick {
+            position: absolute;
+            width: 2px;
+            height: 20px;
+            background: #333;
+            top: 20px;
+        }
+        
+        .tick-label {
+            position: absolute;
+            font-size: 12px;
+            top: 45px;
+            transform: translateX(-50%);
+        }
+        
+        .fraction-marker {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #e74c3c;
+            border-radius: 50%;
+            top: 24px;
+            transform: translateX(-50%);
+            transition: all 0.5s ease;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        /* Bar Visualization */
+        .bar-container {
+            width: 100%;
+            height: 40px;
+            background: #e9ecef;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            margin: 20px 0;
+        }
+        
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            border-radius: 20px;
+            transition: width 0.8s ease;
+            position: relative;
+        }
+        
+        .bar-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            color: white;
+            font-size: 14px;
+        }
+        
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(52, 73, 94, 0.1);
+            border-radius: 10px;
+        }
+        
+        .fraction-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .input-label {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .number-input {
+            width: 50px;
+            height: 40px;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .fraction-line {
+            width: 30px;
+            height: 2px;
+            background: #333;
+            margin: 0 10px;
+        }
+        
+        .preset-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .preset-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .preset-btn:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        
+        /* Animations */
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .viz-section {
+            animation: slideIn 0.6s ease-out;
+        }
+        
+        .viz-section:nth-child(1) { animation-delay: 0.1s; }
+        .viz-section:nth-child(2) { animation-delay: 0.2s; }
+        .viz-section:nth-child(3) { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <div class="fraction-container">
+        <div class="current-fraction">
+            <div class="fraction-display" id="fraction-display">1/2</div>
+            <div class="fraction-text">One Half</div>
+        </div>
+        
+        <div class="visualization-area">
+            <!-- Pizza Visualization -->
+            <div class="viz-section">
+                <div class="viz-title">🍕 Pizza Slices</div>
+                <div class="pizza-container">
+                    <div class="pizza" id="pizza">
+                        <!-- Pizza slices will be generated by JavaScript -->
+                    </div>
+                </div>
+                <div style="margin-top: 10px; font-size: 14px;" id="pizza-text">1 out of 2 slices</div>
+            </div>
+            
+            <!-- Number Line -->
+            <div class="viz-section">
+                <div class="viz-title">📏 Number Line</div>
+                <div class="number-line">
+                    <div class="line"></div>
+                    <div class="tick" style="left: 10%;"><div class="tick-label">0</div></div>
+                    <div class="tick" style="left: 90%;"><div class="tick-label">1</div></div>
+                    <div class="fraction-marker" id="line-marker" style="left: 50%;"></div>
+                </div>
+                <div style="margin-top: 10px; font-size: 14px;" id="line-text">Halfway between 0 and 1</div>
+            </div>
+            
+            <!-- Bar Chart -->
+            <div class="viz-section">
+                <div class="viz-title">📊 Progress Bar</div>
+                <div class="bar-container">
+                    <div class="bar-fill" id="bar-fill" style="width: 50%;">
+                        <div class="bar-text" id="bar-text">50%</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 14px;" id="bar-description">Half completed</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="fraction-input">
+                <div class="input-group">
+                    <label class="input-label">Numerator</label>
+                    <input type="number" class="number-input" id="numerator" value="1" min="0" max="12">
+                </div>
+                <div class="fraction-line"></div>
+                <div class="input-group">
+                    <label class="input-label">Denominator</label>
+                    <input type="number" class="number-input" id="denominator" value="2" min="1" max="12">
+                </div>
+            </div>
+            
+            <div class="preset-buttons">
+                <button class="preset-btn" onclick="setFraction(1, 4)">1/4</button>
+                <button class="preset-btn" onclick="setFraction(1, 3)">1/3</button>
+                <button class="preset-btn" onclick="setFraction(1, 2)">1/2</button>
+                <button class="preset-btn" onclick="setFraction(2, 3)">2/3</button>
+                <button class="preset-btn" onclick="setFraction(3, 4)">3/4</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function updateVisualization() {
+            const numerator = parseInt(document.getElementById('numerator').value) || 0;
+            const denominator = parseInt(document.getElementById('denominator').value) || 1;
+            
+            // Ensure valid fraction
+            if (denominator === 0) {
+                document.getElementById('denominator').value = 1;
+                return;
+            }
+            
+            const fraction = numerator / denominator;
+            const percentage = Math.round(fraction * 100);
+            
+            // Update main display
+            document.getElementById('fraction-display').textContent = `${numerator}/${denominator}`;
+            
+            // Update pizza visualization
+            updatePizza(numerator, denominator);
+            
+            // Update number line
+            const linePosition = 10 + (fraction * 80); // 10% to 90% of line
+            document.getElementById('line-marker').style.left = linePosition + '%';
+            document.getElementById('line-text').textContent = 
+                fraction === 0 ? 'At zero' :
+                fraction === 1 ? 'At one' :
+                fraction < 0.5 ? 'Less than halfway' :
+                fraction > 0.5 ? 'More than halfway' :
+                'Exactly halfway';
+            
+            // Update bar chart
+            document.getElementById('bar-fill').style.width = Math.min(100, percentage) + '%';
+            document.getElementById('bar-text').textContent = percentage + '%';
+            document.getElementById('bar-description').textContent = 
+                percentage === 0 ? 'Nothing completed' :
+                percentage === 100 ? 'Fully completed' :
+                percentage < 50 ? 'Less than half done' :
+                percentage > 50 ? 'More than half done' :
+                'Half completed';
+            
+            // Update text descriptions
+            document.getElementById('pizza-text').textContent = `${numerator} out of ${denominator} slices`;
+            
+            // Update fraction word
+            const fractionWords = {
+                '1/2': 'One Half',
+                '1/3': 'One Third', '2/3': 'Two Thirds',
+                '1/4': 'One Quarter', '2/4': 'Two Quarters', '3/4': 'Three Quarters',
+                '1/5': 'One Fifth', '2/5': 'Two Fifths', '3/5': 'Three Fifths', '4/5': 'Four Fifths',
+                '1/6': 'One Sixth', '5/6': 'Five Sixths',
+                '1/8': 'One Eighth', '3/8': 'Three Eighths', '5/8': 'Five Eighths', '7/8': 'Seven Eighths'
+            };
+            
+            const fractionKey = `${numerator}/${denominator}`;
+            const wordForm = fractionWords[fractionKey] || `${numerator} out of ${denominator}`;
+            document.querySelector('.fraction-text').textContent = wordForm;
+        }
+        
+        function updatePizza(numerator, denominator) {
+            const pizza = document.getElementById('pizza');
+            pizza.innerHTML = ''; // Clear existing slices
+            
+            const anglePerSlice = 360 / denominator;
+            
+            for (let i = 0; i < denominator; i++) {
+                const slice = document.createElement('div');
+                slice.className = 'pizza-slice ' + (i < numerator ? 'filled' : 'empty');
+                
+                const rotation = i * anglePerSlice;
+                const skew = 90 - anglePerSlice;
+                
+                slice.style.transform = `rotate(${rotation}deg) skewY(${skew}deg)`;
+                slice.style.transformOrigin = '100% 100%';
+                
+                // Add animation delay
+                slice.style.animationDelay = (i * 0.1) + 's';
+                
+                pizza.appendChild(slice);
+            }
+        }
+        
+        function setFraction(num, den) {
+            document.getElementById('numerator').value = num;
+            document.getElementById('denominator').value = den;
+            updateVisualization();
+            
+            // Add visual feedback
+            document.getElementById('fraction-display').style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                document.getElementById('fraction-display').style.transform = 'scale(1)';
+            }, 200);
+        }
+        
+        // Event listeners
+        document.getElementById('numerator').addEventListener('input', updateVisualization);
+        document.getElementById('denominator').addEventListener('input', updateVisualization);
+        
+        // Initialize
+        updateVisualization();
+        
+        // Add some interactive effects
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+        
+        // Auto-demo mode (cycles through fractions)
+        let demoMode = false;
+        const demoFractions = [[1,4], [1,3], [1,2], [2,3], [3,4], [1,1]];
+        let demoIndex = 0;
+        
+        setTimeout(() => {
+            setInterval(() => {
+                if (Math.random() < 0.3) { // 30% chance every 3 seconds
+                    const [num, den] = demoFractions[demoIndex % demoFractions.length];
+                    setFraction(num, den);
+                    demoIndex++;
+                }
+            }, 3000);
+        }, 2000); // Start after 2 seconds
+    </script>
+</body>
+</html>

@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Economic Supply & Demand Simulation</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            font-family: 'Arial', sans-serif;
+            color: white;
+            overflow: hidden;
+        }
+        
+        .simulation-container {
+            position: relative;
+            width: 100%;
+            height: 460px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chart-area {
+            flex: 1;
+            position: relative;
+            margin: 20px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background: #f9f9f9;
+        }
+        
+        .axis {
+            position: absolute;
+            background: #333;
+        }
+        
+        .y-axis {
+            left: 40px;
+            top: 20px;
+            width: 2px;
+            height: calc(100% - 60px);
+        }
+        
+        .x-axis {
+            bottom: 40px;
+            left: 40px;
+            height: 2px;
+            width: calc(100% - 80px);
+        }
+        
+        .axis-label {
+            position: absolute;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .y-label {
+            left: 10px;
+            top: 50%;
+            transform: rotate(-90deg);
+            transform-origin: center;
+        }
+        
+        .x-label {
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .supply-curve, .demand-curve {
+            position: absolute;
+            stroke-width: 3;
+            fill: none;
+            transition: all 0.5s ease;
+        }
+        
+        .supply-curve {
+            stroke: #e74c3c;
+        }
+        
+        .demand-curve {
+            stroke: #3498db;
+        }
+        
+        .equilibrium-point {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #f39c12;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.5s ease;
+            box-shadow: 0 0 10px rgba(243, 156, 18, 0.5);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+        }
+        
+        .price-line, .quantity-line {
+            position: absolute;
+            border: 1px dashed #f39c12;
+            opacity: 0.7;
+            transition: all 0.5s ease;
+        }
+        
+        .price-line {
+            height: 1px;
+            left: 42px;
+        }
+        
+        .quantity-line {
+            width: 1px;
+            bottom: 42px;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            background: rgba(52, 73, 94, 0.1);
+            border-radius: 0 0 15px 15px;
+        }
+        
+        .control-group {
+            text-align: center;
+        }
+        
+        .control-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .control-button {
+            background: #3498db;
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            margin: 0 2px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .control-button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .control-button.increase {
+            background: #27ae60;
+        }
+        
+        .control-button.decrease {
+            background: #e74c3c;
+        }
+        
+        .control-button.increase:hover {
+            background: #229954;
+        }
+        
+        .control-button.decrease:hover {
+            background: #c0392b;
+        }
+        
+        .info-panel {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background: rgba(44, 62, 80, 0.9);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            min-width: 180px;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .info-value {
+            font-weight: bold;
+            color: #f39c12;
+        }
+        
+        .market-scenario {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(44, 62, 80, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .legend {
+            position: absolute;
+            bottom: 60px;
+            right: 20px;
+            background: rgba(44, 62, 80, 0.9);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 3px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="simulation-container">
+        <div class="market-scenario" id="scenario">Market in Equilibrium</div>
+        
+        <div class="chart-area">
+            <!-- Axes -->
+            <div class="y-axis"></div>
+            <div class="x-axis"></div>
+            <div class="axis-label y-label">Price ($)</div>
+            <div class="axis-label x-label">Quantity</div>
+            
+            <!-- Chart lines -->
+            <svg style="position: absolute; width: 100%; height: 100%; pointer-events: none;">
+                <path class="supply-curve" id="supply-curve" d="M 60 300 Q 200 250 350 100"></path>
+                <path class="demand-curve" id="demand-curve" d="M 60 100 Q 200 200 350 300"></path>
+            </svg>
+            
+            <!-- Equilibrium point -->
+            <div class="equilibrium-point" id="equilibrium" style="left: 200px; top: 200px;"></div>
+            
+            <!-- Price and quantity lines -->
+            <div class="price-line" id="price-line" style="top: 200px; width: 160px;"></div>
+            <div class="quantity-line" id="quantity-line" style="left: 200px; height: 160px;"></div>
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <span class="control-label">Supply</span>
+                <button class="control-button increase" onclick="adjustSupply(1)">⬆ Increase</button>
+                <button class="control-button decrease" onclick="adjustSupply(-1)">⬇ Decrease</button>
+            </div>
+            
+            <div class="control-group">
+                <span class="control-label">Demand</span>
+                <button class="control-button increase" onclick="adjustDemand(1)">⬆ Increase</button>
+                <button class="control-button decrease" onclick="adjustDemand(-1)">⬇ Decrease</button>
+            </div>
+            
+            <div class="control-group">
+                <span class="control-label">Reset</span>
+                <button class="control-button" onclick="resetMarket()">🔄 Reset</button>
+            </div>
+        </div>
+        
+        <div class="info-panel">
+            <div class="info-item">
+                <span>Equilibrium Price:</span>
+                <span class="info-value" id="eq-price">$50</span>
+            </div>
+            <div class="info-item">
+                <span>Equilibrium Quantity:</span>
+                <span class="info-value" id="eq-quantity">100</span>
+            </div>
+            <div class="info-item">
+                <span>Market Status:</span>
+                <span class="info-value" id="market-status">Balanced</span>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #e74c3c;"></div>
+                <span>Supply Curve</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #3498db;"></div>
+                <span>Demand Curve</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #f39c12;"></div>
+                <span>Equilibrium Point</span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let supplyLevel = 0; // -2 to 2 scale
+        let demandLevel = 0; // -2 to 2 scale
+        
+        const scenarios = {
+            'balanced': 'Market in Equilibrium',
+            'shortage': 'Market Shortage - High Demand',
+            'surplus': 'Market Surplus - High Supply',
+            'recession': 'Economic Downturn',
+            'boom': 'Economic Boom'
+        };
+        
+        function adjustSupply(change) {
+            supplyLevel = Math.max(-2, Math.min(2, supplyLevel + change));
+            updateMarket();
+        }
+        
+        function adjustDemand(change) {
+            demandLevel = Math.max(-2, Math.min(2, demandLevel + change));
+            updateMarket();
+        }
+        
+        function resetMarket() {
+            supplyLevel = 0;
+            demandLevel = 0;
+            updateMarket();
+        }
+        
+        function updateMarket() {
+            // Calculate new curves based on supply and demand levels
+            const supplyCurve = document.getElementById('supply-curve');
+            const demandCurve = document.getElementById('demand-curve');
+            const equilibrium = document.getElementById('equilibrium');
+            const priceLine = document.getElementById('price-line');
+            const quantityLine = document.getElementById('quantity-line');
+            
+            // Adjust supply curve (shift up/down)
+            const supplyShift = supplyLevel * 30;
+            const newSupplyPath = `M 60 ${300 + supplyShift} Q 200 ${250 + supplyShift} 350 ${100 + supplyShift}`;
+            supplyCurve.setAttribute('d', newSupplyPath);
+            
+            // Adjust demand curve (shift left/right)
+            const demandShift = demandLevel * 30;
+            const newDemandPath = `M ${60 - demandShift} 100 Q ${200 - demandShift} 200 ${350 - demandShift} 300`;
+            demandCurve.setAttribute('d', newDemandPath);
+            
+            // Calculate new equilibrium point
+            const eqX = 200 - (demandShift * 0.5) + (supplyShift * 0.2);
+            const eqY = 200 - (demandShift * 0.5) - (supplyShift * 0.5);
+            
+            equilibrium.style.left = eqX + 'px';
+            equilibrium.style.top = eqY + 'px';
+            
+            // Update price and quantity lines
+            priceLine.style.top = eqY + 'px';
+            priceLine.style.width = (eqX - 42) + 'px';
+            quantityLine.style.left = eqX + 'px';
+            quantityLine.style.height = (360 - eqY) + 'px';
+            
+            // Update info panel
+            const basePrice = 50;
+            const baseQuantity = 100;
+            const newPrice = Math.round(basePrice + (200 - eqY) * 0.5);
+            const newQuantity = Math.round(baseQuantity + (eqX - 200) * 0.5);
+            
+            document.getElementById('eq-price').textContent = '$' + newPrice;
+            document.getElementById('eq-quantity').textContent = newQuantity;
+            
+            // Determine market status and scenario
+            let scenario = 'balanced';
+            let status = 'Balanced';
+            
+            if (demandLevel > supplyLevel + 1) {
+                scenario = 'shortage';
+                status = 'Shortage';
+            } else if (supplyLevel > demandLevel + 1) {
+                scenario = 'surplus';
+                status = 'Surplus';
+            } else if (demandLevel < -1 && supplyLevel < -1) {
+                scenario = 'recession';
+                status = 'Recession';
+            } else if (demandLevel > 1 && supplyLevel > 1) {
+                scenario = 'boom';
+                status = 'Boom';
+            }
+            
+            document.getElementById('market-status').textContent = status;
+            document.getElementById('scenario').textContent = scenarios[scenario];
+            
+            // Add visual effects based on scenario
+            const container = document.querySelector('.simulation-container');
+            container.className = 'simulation-container ' + scenario;
+        }
+        
+        // Add some interactive animations
+        document.querySelectorAll('.control-button').forEach(button => {
+            button.addEventListener('click', () => {
+                button.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    button.style.transform = '';
+                }, 150);
+            });
+        });
+        
+        // Initialize market
+        updateMarket();
+        
+        // Add random market fluctuations every 5 seconds for demo
+        setInterval(() => {
+            if (Math.random() < 0.3) { // 30% chance of fluctuation
+                const randomSupply = Math.random() < 0.5 ? 1 : -1;
+                const randomDemand = Math.random() < 0.5 ? 1 : -1;
+                
+                if (Math.random() < 0.5) {
+                    adjustSupply(randomSupply * 0.5);
+                } else {
+                    adjustDemand(randomDemand * 0.5);
+                }
+            }
+        }, 5000);
+    </script>
+</body>
+</html>
