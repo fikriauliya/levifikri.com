@@ -1255,7 +1255,7 @@ body {
 /* Accessibility Demo */
 .accessibility-demo {
     background: transparent;
-    padding: 2rem;
+    padding: 0;
     border-radius: 20px;
 }
 
@@ -1264,61 +1264,80 @@ body {
     font-size: 2.5rem;
     font-weight: 700;
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
 }
 
 .access-examples {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 3rem;
-    margin-top: 2rem;
-    max-width: 1200px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 1rem;
+    max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
 }
 
 .access-example {
     background: rgba(255, 255, 255, 0.1);
-    padding: 2.5rem;
-    border-radius: 20px;
+    padding: 2rem;
+    border-radius: 15px;
     transition: all 0.3s ease;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .access-example:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.2);
     transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .icon-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 60px;
-    height: 60px;
-    background: rgba(255, 255, 255, 0.1);
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
     border-radius: 50%;
-    margin: 0 auto 1rem;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 8px 25px rgba(251, 191, 36, 0.3);
 }
 
 .icon-wrapper i {
-    font-size: 1.8rem;
-    color: #fbbf24;
+    font-size: 2.2rem;
+    color: white;
 }
 
 .access-example h4 {
     color: #e2e8f0;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     text-align: center;
+    font-size: 1.3rem;
+    font-weight: 600;
 }
 
 .access-example ul {
     list-style: none;
     padding: 0;
+    text-align: left;
 }
 
 .access-example li {
-    padding: 0.5rem 0;
+    padding: 0.8rem 0;
     color: #cbd5e1;
+    font-size: 1rem;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.access-example li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #10b981;
+    font-weight: bold;
 }
 
 /* Homework Transformation */
@@ -1464,7 +1483,7 @@ body {
 /* Learning Pathways */
 .pathways-visualization {
     text-align: center;
-    padding: 2rem;
+    padding: 0;
 }
 
 .pathways-visualization h3 {
@@ -1476,32 +1495,32 @@ body {
 
 .pathway-map {
     position: relative;
-    margin-top: 2rem;
-    min-height: 500px;
-    max-width: 1200px;
+    margin-top: 1rem;
+    min-height: 400px;
+    max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
 }
 
 .central-topic {
     position: absolute;
-    top: 30%;
+    top: 25%;
     left: 50%;
     transform: translate(-50%, -50%);
     background: linear-gradient(135deg, #6366f1, #8b5cf6);
-    width: 150px;
-    height: 150px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 10;
-    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
 }
 
 .central-topic i {
-    font-size: 2.5rem;
+    font-size: 2rem;
     margin-bottom: 0.5rem;
     color: white;
 }
@@ -1509,55 +1528,58 @@ body {
 .central-topic span {
     color: white;
     font-weight: 600;
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 .pathway-branches {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 3rem;
-    margin-top: 280px;
+    gap: 2rem;
+    margin-top: 200px;
 }
 
 .branch {
     background: rgba(255, 255, 255, 0.1);
-    padding: 2rem;
-    border-radius: 20px;
+    padding: 1.5rem;
+    border-radius: 15px;
     text-align: center;
     transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .branch:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.2);
     transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .branch > span {
     color: #e2e8f0;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     font-weight: 600;
     display: block;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .sub-topics {
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
-    margin-top: 1rem;
+    gap: 0.6rem;
+    margin-top: 0.8rem;
 }
 
 .sub-topics span {
     background: rgba(255, 255, 255, 0.15);
-    padding: 0.8rem 1.2rem;
-    border-radius: 25px;
-    font-size: 0.95rem;
+    padding: 0.6rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
     color: #cbd5e1;
     transition: all 0.3s ease;
 }
 
 .sub-topics span:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.25);
     color: #e2e8f0;
 }
 
@@ -1615,7 +1637,7 @@ body {
 /* Dashboard Container */
 .dashboard-container {
     background: transparent;
-    padding: 2rem;
+    padding: 0;
     border-radius: 20px;
 }
 
@@ -1624,36 +1646,40 @@ body {
     font-size: 2.5rem;
     font-weight: 700;
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
 }
 
 .dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 3rem;
-    margin-top: 2rem;
-    max-width: 1400px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 1rem;
+    max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
 }
 
 .dashboard-widget {
     background: rgba(255, 255, 255, 0.1);
-    padding: 2rem;
-    border-radius: 20px;
+    padding: 1.5rem;
+    border-radius: 15px;
     transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .dashboard-widget:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.2);
     transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .dashboard-widget h4 {
     color: #e2e8f0;
-    margin-bottom: 1.5rem;
-    font-size: 1.3rem;
+    margin-bottom: 1.2rem;
+    font-size: 1.2rem;
     font-weight: 600;
+    text-align: center;
 }
 
 .journey-map {
@@ -1766,10 +1792,10 @@ body {
 /* Future Vision */
 .future-vision {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 4rem;
-    margin: 4rem 0;
-    max-width: 1200px;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2.5rem;
+    margin: 2rem 0;
+    max-width: 900px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -1777,46 +1803,53 @@ body {
 .vision-element {
     text-align: center;
     transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2rem 1.5rem;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .vision-element:hover {
-    transform: translateY(-10px);
+    transform: translateY(-8px);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
 }
 
 .icon-circle {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     background: linear-gradient(135deg, #6366f1, #8b5cf6);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 2rem;
-    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
     transition: all 0.3s ease;
 }
 
 .vision-element:hover .icon-circle {
-    box-shadow: 0 20px 40px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 15px 35px rgba(99, 102, 241, 0.5);
     transform: scale(1.05);
 }
 
 .icon-circle i {
-    font-size: 3rem;
+    font-size: 2.5rem;
     color: white;
 }
 
 .vision-element h3 {
-    color: #e2e8f0;
-    margin-bottom: 1rem;
-    font-size: 1.5rem;
+    color: #0f172a;
+    margin-bottom: 0.8rem;
+    font-size: 1.3rem;
     font-weight: 600;
 }
 
 .vision-element p {
-    color: #cbd5e1;
-    font-size: 1.1rem;
-    line-height: 1.6;
+    color: #334155;
+    font-size: 1rem;
+    line-height: 1.5;
 }
 
 /* Responsive adjustments for new elements */
