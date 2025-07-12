@@ -1,4 +1,13 @@
 /.quarto/
 /_site/
 .DS_Store
-venv
+
+# Python/UV
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.uv/
+uv.lock
