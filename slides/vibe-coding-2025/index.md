@@ -6,61 +6,71 @@ format:
 
 # Vibe Coding 2025
 
-# Claude Code
+## Claude Code
+
+![](./assets/logo.png)
+
+# Why?
+
+## Hype
 
 ![](./assets/claude-code-cursor.png)
 
-# Flat Subscription
+## Flat Subscription
 
 ![](./assets/pricing.png)
 
-# `/init`
+# 101
 
-# `/permission`
+## `/init`
+
+## `/permission`
 
 CLAUDE.MD
 
-# Plan Mode
+## IDE Integration
 
-# Extended Thinking
+# Tips
+
+## Plan Mode
+
+## Extended Thinking
 
 - `Think`
 - `Think hard`
 - `Think harder`
 - `Ultrathink`
 
-# Parallel Agent
+## Parallel Agent
 
 Git worktree
 
-# IDE Integration
-
-# Github Integration
+## Github Integration
 
 `gh`
 
-# TDD/Test
+## TDD/Test
 
-# Custom Slash
+## Custom Slash
 
 `#$ARGUMENTS`
 
-# Screenshot
+## Screenshot
 
-# Prompts
+## Prompts
 
 ![](./assets/poor-vs-good-prompt.png)
 
-# Interrupt early
+## Interrupt early
 
 - Plan
 - Interrupt
 
-# Commit often
+## Commit often
 
 ...or at least `git add`
 
-# `/clear`
+## `/clear`
 
 # MCP
 
@@ -70,27 +80,33 @@ https://code.visualstudio.com/mcp
 - Playwright
 - Convex
 
-# `.mcp.json`
+## `.mcp.json`
 
-# Database MCP
+## Database MCP
 
-# Make a PR
+# Git
+
+## Make a PR
 
 `/pr`
 
-# Always Allow
+## Always Allow
 
-# ipynb
+# Others
 
-# Code based Q & A
+## ipynb
 
-# Presentation
+# Use Cases
 
-# Simulation
+## Code based Q & A
 
-# Documentation
+## Presentation
 
-# Refactoring
+## Simulation
+
+## Documentation
+
+## Refactoring
 
 - Ask what to refactor
 - Make test cases first
@@ -98,4 +114,6 @@ https://code.visualstudio.com/mcp
 - Ask to refactor
 - Retest
 
-# Github Copilot ($10) + Claude
+# My Setup
+
+Github Copilot ($10) + Claude
