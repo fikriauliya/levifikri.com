@@ -1,0 +1,23 @@
+[project]
+name = "levifikri-com"
+version = "0.1.0"
+description = "Educational website combining visual coding, competitive programming, and Rust tutorials"
+requires-python = ">=3.11"
+authors = [
+    { name = "Pahlevi Fikri Auliya" }
+]
+
+dependencies = [
+    "jupyter>=1.0.0",
+    "matplotlib>=3.7.0",
+    "numpy>=1.24.0",
+    "ipykernel>=6.29.0",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "ipython>=8.0.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = []

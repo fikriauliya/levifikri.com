@@ -1,0 +1,210 @@
+/*-- scss:defaults --*/
+
+// fonts
+$font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif !default;
+$font-family-monospace: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace !default;
+
+// colors
+$body-bg: #000000 !default;
+$body-color: #ffffff !default;
+$link-color: #e62b1e !default;
+$selection-bg: #e62b1e !default;
+$selection-color: #ffffff !default;
+
+// headings
+$presentation-heading-font: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif !default;
+$presentation-heading-color: #ffffff !default;
+$presentation-heading-text-transform: none !default;
+$presentation-heading-font-weight: 700 !default;
+$presentation-h1-font-size: 2.5em !default;
+$presentation-h2-font-size: 1.8em !default;
+$presentation-h3-font-size: 1.3em !default;
+
+// text
+$presentation-font-size-root: 42px !default;
+$presentation-line-height: 1.5 !default;
+
+// code
+$code-bg: #1a1a1a !default;
+$code-color: #f8f8f2 !default;
+
+/*-- scss:rules --*/
+
+.reveal {
+  font-weight: 300;
+  letter-spacing: -0.01em;
+}
+
+.reveal .slides {
+  text-align: left;
+}
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4,
+.reveal h5,
+.reveal h6 {
+  text-align: center;
+  margin-bottom: 0.7em;
+  letter-spacing: -0.02em;
+}
+
+.reveal h1 {
+  margin-top: 0.5em;
+}
+
+.reveal p {
+  margin-bottom: 0.7em;
+}
+
+.reveal a {
+  line-height: 1.3em;
+  font-weight: 400;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: border-bottom-color 0.3s ease;
+}
+
+.reveal a:hover {
+  border-bottom-color: $link-color;
+}
+
+// Code blocks
+.reveal pre {
+  font-size: 0.7em;
+  border-radius: 8px;
+  padding: 1em;
+  background: $code-bg;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.reveal code {
+  font-family: $font-family-monospace;
+  background: $code-bg;
+  color: $code-color;
+  padding: 0.1em 0.3em;
+  border-radius: 4px;
+}
+
+.reveal pre code {
+  padding: 0;
+  background: none;
+}
+
+// Lists
+.reveal ul,
+.reveal ol {
+  margin-left: 1em;
+  margin-bottom: 0.7em;
+}
+
+.reveal li {
+  margin-bottom: 0.5em;
+}
+
+// Images
+.reveal section img {
+  border: none;
+  box-shadow: none;
+  max-height: 600px;
+  display: block;
+  margin: 0 auto;
+}
+
+// Center images vertically when they're the only content
+.reveal section:has(> img:only-child),
+.reveal section:has(> p:only-child > img:only-child) {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+// Progress bar
+.reveal .progress {
+  color: $link-color;
+  height: 4px;
+}
+
+// Controls
+.reveal .controls {
+  color: $link-color;
+}
+
+// Slide number
+.reveal .slide-number {
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.8em;
+}
+
+// Blockquotes
+.reveal blockquote {
+  width: 90%;
+  margin: 1em auto;
+  padding: 0.5em 1em;
+  font-style: italic;
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 4px solid $link-color;
+  box-shadow: none;
+}
+
+// Tables
+.reveal table {
+  margin: 1em auto;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.reveal table th,
+.reveal table td {
+  padding: 0.5em 1em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.reveal table th {
+  font-weight: 600;
+  text-align: left;
+}
+
+// Special classes for emphasis
+.reveal .big {
+  font-size: 1.4em;
+  font-weight: 400;
+}
+
+.reveal .accent {
+  color: $link-color;
+  font-weight: 600;
+}
+
+// Center content vertically
+.reveal .center-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  text-align: center;
+}
+
+// Fragment animations
+.reveal .fragment {
+  transition: all 0.4s ease;
+}
+
+.reveal .fragment.fade-in-then-semi-out {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.reveal .fragment.fade-in-then-semi-out.visible {
+  opacity: 0.5;
+  visibility: visible;
+}
+
+.reveal .fragment.fade-in-then-semi-out.current-fragment {
+  opacity: 1;
+}

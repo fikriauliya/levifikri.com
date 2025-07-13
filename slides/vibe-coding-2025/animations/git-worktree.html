@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git Worktree Animation</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+            overflow: hidden;
+        }
+        
+        .container {
+            width: 800px;
+            height: 400px;
+            position: relative;
+            overflow: visible;
+        }
+        
+        .branch {
+            position: absolute;
+            width: 120px;
+            height: 60px;
+            border: 2px solid #e62b1e;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(230, 43, 30, 0.1);
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .main-branch {
+            top: 140px;
+            left: 50px;
+            background: rgba(0, 255, 127, 0.1);
+            border-color: #00ff7f;
+        }
+        
+        .feature-branch {
+            top: 50px;
+            left: 300px;
+            background: rgba(255, 165, 0, 0.1);
+            border-color: #ffa500;
+        }
+        
+        .hotfix-branch {
+            top: 230px;
+            left: 300px;
+            background: rgba(255, 69, 0, 0.1);
+            border-color: #ff4500;
+        }
+        
+        .worktree-line {
+            position: absolute;
+            height: 2px;
+            background: #666;
+            opacity: 0;
+        }
+        
+        .line1 {
+            top: 140px;
+            left: 170px;
+            width: 130px;
+            transform: rotate(-25deg);
+            transform-origin: left center;
+        }
+        
+        .line2 {
+            top: 170px;
+            left: 170px;
+            width: 130px;
+            transform: rotate(25deg);
+            transform-origin: left center;
+        }
+        
+        .terminal {
+            position: absolute;
+            bottom: -20px;
+            left: 50px;
+            right: 50px;
+            height: 80px;
+            background: #2d2d2d;
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 12px;
+            border: 1px solid #555;
+        }
+        
+        .command {
+            opacity: 0;
+            color: #00ff7f;
+        }
+        
+        .arrow {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 12px solid #e62b1e;
+            opacity: 0;
+        }
+        
+        .arrow1 {
+            top: 30px;
+            left: 330px;
+        }
+        
+        .arrow2 {
+            top: 210px;
+            left: 330px;
+        }
+        
+        .label {
+            position: absolute;
+            font-size: 12px;
+            color: #ccc;
+            opacity: 0;
+        }
+        
+        .label1 {
+            top: 10px;
+            left: 260px;
+        }
+        
+        .label2 {
+            top: 190px;
+            left: 260px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="branch main-branch">main</div>
+        <div class="branch feature-branch">feature/ui</div>
+        <div class="branch hotfix-branch">hotfix/bug</div>
+        
+        <div class="worktree-line line1"></div>
+        <div class="worktree-line line2"></div>
+        
+        <div class="arrow arrow1"></div>
+        <div class="arrow arrow2"></div>
+        
+        <div class="label label1">git worktree add</div>
+        <div class="label label2">git worktree add</div>
+        
+        <div class="terminal">
+            <div class="command" id="cmd1">$ git worktree add ../feature-ui feature/ui</div>
+            <div class="command" id="cmd2">$ git worktree add ../hotfix-branch hotfix/bug</div>
+            <div class="command" id="cmd3">$ git worktree list</div>
+        </div>
+    </div>
+
+    <script>
+        function runAnimation() {
+            const tl = gsap.timeline({ repeat: -1, repeatDelay: 2 });
+            
+            // Initial state - show main branch
+            tl.set('.main-branch', { opacity: 1, scale: 1 })
+              .set(['.feature-branch', '.hotfix-branch'], { opacity: 0, scale: 0.8 })
+              .set(['.worktree-line', '.arrow', '.label', '.command'], { opacity: 0 })
+              
+              // Show first command
+              .to('#cmd1', { opacity: 1, duration: 0.5 }, 1)
+              
+              // Create first worktree
+              .to('.feature-branch', { opacity: 1, scale: 1, duration: 0.8, ease: "back.out(1.7)" }, 1.5)
+              .to('.line1', { opacity: 1, duration: 0.5 }, 2)
+              .to('.arrow1', { opacity: 1, duration: 0.3 }, 2.2)
+              .to('.label1', { opacity: 1, duration: 0.3 }, 2.2)
+              
+              // Show second command
+              .to('#cmd2', { opacity: 1, duration: 0.5 }, 3)
+              
+              // Create second worktree
+              .to('.hotfix-branch', { opacity: 1, scale: 1, duration: 0.8, ease: "back.out(1.7)" }, 3.5)
+              .to('.line2', { opacity: 1, duration: 0.5 }, 4)
+              .to('.arrow2', { opacity: 1, duration: 0.3 }, 4.2)
+              .to('.label2', { opacity: 1, duration: 0.3 }, 4.2)
+              
+              // Show list command
+              .to('#cmd3', { opacity: 1, duration: 0.5 }, 5)
+              
+              // Highlight all branches
+              .to(['.main-branch', '.feature-branch', '.hotfix-branch'], { 
+                  scale: 1.1, 
+                  duration: 0.3, 
+                  yoyo: true, 
+                  repeat: 1 
+              }, 5.5)
+              
+              // Hold for a moment
+              .set({}, {}, 7)
+              
+              // Fade out everything for restart
+              .to(['.feature-branch', '.hotfix-branch', '.worktree-line', '.arrow', '.label', '.command'], { 
+                  opacity: 0, 
+                  duration: 0.5 
+              }, 7.5);
+        }
+        
+        // Start animation when page loads
+        window.addEventListener('load', runAnimation);
+    </script>
+</body>
+</html>

@@ -11,7 +11,7 @@ website:
   google-analytics: "G-HZ27R5K5M2"
   navbar:
     search: true
-    background: "danger"
+    background: "light"
     right: 
       - text: "Fun Visual Coding"
         href: "fun-visual-coding/introduction.md"
@@ -19,8 +19,6 @@ website:
         href: "competitive-programming/introduction.ipynb"
       - text: "Demystifying Rust"
         href: "rust/introduction.ipynb"
-      - text: "State of AI 2025"
-        href: "slides/state-of-ai-2025/index.html"
     pinned: true
   bread-crumbs: false
   sidebar:
@@ -28,6 +26,13 @@ website:
     collapse-level: 3
     border: true
     contents: 
+      - section: "Presentations"
+        contents:
+        - text: "AI & Education"
+          href: "slides/state-of-ai-2025/index.html"
+        - text: "Vibe Coding @2025"
+          href: "slides/vibe-coding-2025/index.html"
+      - text: "---"
       - section: "Demystifying Rust"
         contents: "rust/*.ipynb"
       - text: "---"
