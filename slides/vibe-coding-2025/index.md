@@ -57,6 +57,10 @@ format:
 
 ---
 
+<iframe width="100%" height="400" src="https://www.youtube.com/embed/CYIteJeNcuw" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+---
+
 ![](./assets/claude-code-logo.png)
 
 # Why Claude Code?
@@ -141,8 +145,11 @@ Clears chat context when you need a fresh start
 
 [Curated List](https://code.visualstudio.com/mcp)
 
-- Context7
-- Playwright
+- [Context7](https://context7.com/)
+- [Playwright](https://github.com/microsoft/playwright-mcp)
+- MySQL/PG/etc
+- [Firecrawl](https://www.firecrawl.dev/mcp)
+- [Sequential Thinkin](https://github.com/modelcontextprotocol/servers/tree/main/src/sequentialthinking)
 - Convex
 
 ## Config: `.mcp.json`
@@ -165,8 +172,6 @@ Clears chat context when you need a fresh start
   }
 }
 ```
-
-## Database MCP
 
 # Git
 
@@ -265,6 +270,14 @@ Just say `/pr` (custom command)
 - Test everything
 
 # The Future is Here
+
+## Fundamental Knowledge Is More Important Than Ever
+
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">The future belongs to those who can think alongside AI, not compete against it. <a href="https://t.co/xyz123">pic.twitter.com/xyz123</a></p>&mdash; lynxluna (@lynxluna) <a href="https://twitter.com/lynxluna/status/1944237907184955657?ref_src=twsrc%5Etfw">January 9, 2025</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+---
+
+![](./assets/fundamental-truth.png)
 
 ## Don't Just Watch
 
