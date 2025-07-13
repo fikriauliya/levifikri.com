@@ -1,14 +1,65 @@
 ---
+author: "Pahlevi Fikri Auliya"
 format:
   revealjs:
     theme: custom.scss
+    incremental: false
+    slide-number: true
+    embed-resources: false
+    transition: slide
+    background-transition: fade
 ---
 
 # Vibe Coding 2025
 
-## Claude Code
+---
 
-![](./assets/logo.png)
+![](./assets/definition.png)
+
+---
+
+# Flash Back DX
+
+---
+
+## Syntax Highlighting
+
+![](./assets/syntax-highlighting.png)
+
+## Autocomplete
+
+![](./assets/autocomplete.png)
+
+## AI Autocomplete
+
+<video controls width="100%">
+  <source src="https://code.visualstudio.com/assets/docs/copilot/inline-suggestions/nes-video.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+## Inline Chat
+
+![](https://code.visualstudio.com/assets/docs/copilot/chat/copilot-chat/inline-chat-no-recursion.png)
+
+## Next Change Prediction
+
+<video controls width="100%">
+  <source src="https://cursor.com/assets/landing/tab-video-dark.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+# Agent
+
+---
+
+<video controls width="100%">
+  <source src="https://code.visualstudio.com/assets/docs/copilot/overview/agent-mode-blog-video.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+---
+
+![](./assets/claude-code-logo.png)
 
 # Why?
 
@@ -20,7 +71,7 @@ format:
 
 ![](./assets/pricing.png)
 
-# 101
+# Claude Code 101
 
 ## `/init`
 
@@ -74,7 +125,7 @@ Git worktree
 
 # MCP
 
-https://code.visualstudio.com/mcp
+[Curated List](https://code.visualstudio.com/mcp)
 
 - Context7
 - Playwright

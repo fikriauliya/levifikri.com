@@ -11,7 +11,7 @@ website:
   google-analytics: "G-HZ27R5K5M2"
   navbar:
     search: true
-    background: "danger"
+    background: "light"
     right: 
       - text: "Fun Visual Coding"
         href: "fun-visual-coding/introduction.md"
