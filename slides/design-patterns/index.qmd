@@ -2,7 +2,7 @@
 author: "Pahlevi Fikri Auliya"
 format:
   revealjs:
-    theme: custom.scss
+    theme: [dracula, custom.scss]
     incremental: false
     slide-number: true
     embed-resources: false
@@ -409,10 +409,210 @@ for file_path in iterate_files("/some/path"):
 
 # Observer
 
+## Simple Example
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|9-11|22-23"}
+class WeatherStation:
+    def __init__(self):
+        self.temperature = 0
+        self.display1 = Display1()
+        self.display2 = Display2()
+    
+    def set_temperature(self, temp):
+        self.temperature = temp
+        # Tightly coupled - WeatherStation knows about specific displays
+        self.display1.update(temp)
+        self.display2.update(temp)
+
+class Display1:
+    def update(self, temp):
+        print(f"Display 1: Temperature is {temp}°C")
+
+class Display2:
+    def update(self, temp):
+        print(f"Display 2: Current temp: {temp}°C")
+
+# Usage
+weather = WeatherStation()
+weather.set_temperature(25)
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|6-7, 9-10|18|29-32"}
+class WeatherStation:
+    def __init__(self):
+        self.temperature = 0
+        self.observers = []
+    
+    def add_observer(self, observer):
+        self.observers.append(observer)
+    
+    def remove_observer(self, observer):
+        self.observers.remove(observer)
+    
+    def notify_observers(self):
+        for observer in self.observers:
+            observer.update(self.temperature)
+    
+    def set_temperature(self, temp):
+        self.temperature = temp
+        self.notify_observers()
+
+class Display1:
+    def update(self, temp):
+        print(f"Display 1: Temperature is {temp}°C")
+
+class Display2:
+    def update(self, temp):
+        print(f"Display 2: Current temp: {temp}°C")
+
+# Usage
+weather = WeatherStation()
+weather.add_observer(Display1())
+weather.add_observer(Display2())
+weather.set_temperature(25)
+```
+:::
+::::
+
 ## React `useState`
 
-# State Machine
+:::: {.columns}
 
-## 
+::: {.column width="50%"}
+```{.javascript code-line-numbers="|13|6-9"}
+// When you call useState, React internally does something like this:
+function useState(initialValue) {
+  let state = initialValue;
+  const observers = []; // List of components watching this state
+  
+  const setState = (newValue) => {
+    state = newValue;
+    // Notify all observers (re-render components)
+    observers.forEach(component => component.reRender());
+  };
+  
+  // Register this component as an observer
+  observers.push(currentComponent);
+  
+  return [state, setState];
+}
+```
+:::
+
+::: {.column width="50%"}
+```{.javascript code-line-numbers="|2|7"}
+function Counter() {
+  const [count, setCount] = useState(0);
+  
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>
+        Increment
+      </button>
+    </div>
+  );
+}
+```
+:::
+::::
+
+## Applications
+
+- Google Sheet / Excel
+- Notification System
+
+---
+
+# State
+
+<!-- TODO -->
+
+# Factory
+
+<!-- TODO -->
+
+# Builder
+
+<!-- TODO -->
+
+# Singleton
+
+<!-- TODO -->
+
+# Decorator
+
+<!-- TODO -->
+
+## Python Decorators
+
+<!-- TODO -->
+
+## HoC
+
+<!-- TODO -->
+
+## Hooks
+
+<!-- TODO -->
+
+# Proxy
+
+<!-- TODO -->
+
+# Adapter
+
+<!-- TODO -->
+
+# Composite
+
+<!-- TODO -->
+
+## React Component
+
+<!-- TODO -->
+
+# Chain of Responsibility
+
+<!-- TODO -->
+
+## Middleware
+
+<!-- TODO -->
+
+# Command
+
+<!-- TODO -->
+
+## Redux
+
+<!-- TODO -->
+
+# Strategy
+
+<!-- TODO -->
+
+# Template Method
+
+<!-- TODO -->
+
+## React Class Component
+
+<!-- TODO -->
+
+# Visitor
+
+<!-- TODO -->
+
+# Dependency Injection
+
+<!-- TODO -->
 
 # DSL
+
+<!-- TODO -->
