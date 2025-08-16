@@ -39,6 +39,424 @@ Pahlevi Fikri Auliya
 
 # We Are All Becoming Architects
 
+# SOLID Principle
+
+## Single Responsibility Principle (SRP)
+
+A class should have only one reason to change, meaning that a class should only have one job or responsibility. This makes the system easier to understand and maintain.
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-15|17-19"}
+# Violates SRP - Multiple responsibilities
+class UserManager:
+    def __init__(self):
+        self.users = []
+    
+    def add_user(self, user):
+        # User management responsibility
+        self.users.append(user)
+    
+    def send_email(self, user, message):
+        # Email responsibility - different reason to change!
+        print(f"Sending email to {user.email}: {message}")
+    
+    def save_to_database(self, user):
+        # Persistence responsibility - another reason to change!
+        print(f"Saving {user.name} to database")
+    
+    def generate_report(self):
+        # Reporting responsibility - yet another reason to change!
+        return f"Total users: {len(self.users)}"
+
+# Problem: Changes to email system, database, or reporting
+# all require modifying this class
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-6|8-12|14-18"}
+# Follows SRP - Single responsibility per class
+class UserManager:
+    def __init__(self):
+        self.users = []
+    
+    def add_user(self, user):
+        self.users.append(user)
+
+class EmailService:
+    def send_email(self, user, message):
+        print(f"Sending email to {user.email}: {message}")
+
+class UserRepository:
+    def save(self, user):
+        print(f"Saving {user.name} to database")
+
+class ReportGenerator:
+    def generate_user_report(self, users):
+        return f"Total users: {len(users)}"
+
+# Usage with composition
+user_manager = UserManager()
+email_service = EmailService()
+user_repo = UserRepository()
+report_gen = ReportGenerator()
+
+# Each class has one reason to change
+# Easy to test, modify, and extend independently
+```
+:::
+::::
+
+## Open/Closed Principle (OCP)
+
+Software entities (classes, modules, functions, etc.) should be open for extension but closed for modification. This means you should be able to add new functionality without changing existing code, which helps to prevent bugs and reduce the risk of introducing new issues.
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|6-15|17-19"}
+# Violates OCP - Must modify existing code for new shapes
+class AreaCalculator:
+    def calculate_area(self, shapes):
+        total_area = 0
+        for shape in shapes:
+            if shape.type == "rectangle":
+                total_area += shape.width * shape.height
+            elif shape.type == "circle":
+                total_area += 3.14159 * shape.radius ** 2
+            elif shape.type == "triangle":
+                total_area += 0.5 * shape.base * shape.height
+            # Adding new shape requires modifying this method!
+            # elif shape.type == "pentagon":
+            #     total_area += pentagon_area_formula(shape)
+        return total_area
+
+# Problem: Every new shape requires modifying AreaCalculator
+# Risk of breaking existing functionality
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-5|7-17|19-26"}
+# Follows OCP - Open for extension, closed for modification
+from abc import ABC, abstractmethod
+
+class Shape(ABC):
+    @abstractmethod
+    def area(self):
+        pass
+
+class Rectangle(Shape):
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+    
+    def area(self):
+        return self.width * self.height
+
+class Circle(Shape):
+    def __init__(self, radius):
+        self.radius = radius
+    
+    def area(self):
+        return 3.14159 * self.radius ** 2
+
+class AreaCalculator:
+    def calculate_area(self, shapes):
+        return sum(shape.area() for shape in shapes)
+
+# Adding new shapes doesn't require changing existing code
+class Triangle(Shape):
+    def __init__(self, base, height):
+        self.base = base
+        self.height = height
+    
+    def area(self):
+        return 0.5 * self.base * self.height
+
+# AreaCalculator works with new shapes without modification!
+```
+:::
+::::
+
+## Liskov Substitution Principle (LSP)
+
+Objects of a superclass should be replaceable with objects of a subclass without affecting the correctness of the program. This means that subclasses should extend the behavior of the superclass without changing its expected behavior.
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|7-12|14-19"}
+# Violates LSP - Penguin changes expected behavior
+class Bird:
+    def fly(self):
+        print("Flying high in the sky")
+    
+    def make_sound(self):
+        print("Chirp chirp")
+
+class Penguin(Bird):
+    def fly(self):
+        # Violates LSP - changes expected behavior
+        raise Exception("Penguins can't fly!")
+    
+    def make_sound(self):
+        print("Squawk")
+
+# Problem: Code breaks when substituting subclass
+def make_bird_fly(bird: Bird):
+    bird.fly()  # Works with Bird, breaks with Penguin!
+
+# This will crash!
+penguin = Penguin()
+make_bird_fly(penguin)  # Exception: Penguins can't fly!
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-6|8-18|20-29"}
+# Follows LSP - Subclasses are substitutable
+from abc import ABC, abstractmethod
+
+class Bird(ABC):
+    @abstractmethod
+    def make_sound(self):
+        pass
+
+class FlyingBird(Bird):
+    def fly(self):
+        print("Flying high in the sky")
+    
+    def make_sound(self):
+        print("Chirp chirp")
+
+class FlightlessBird(Bird):
+    def walk(self):
+        print("Walking on the ground")
+    
+    def make_sound(self):
+        print("Squawk")
+
+class Sparrow(FlyingBird):
+    pass
+
+class Penguin(FlightlessBird):
+    def swim(self):
+        print("Swimming gracefully")
+
+# Code works correctly with all substitutions
+def make_bird_sound(bird: Bird):
+    bird.make_sound()  # Works with all bird types
+
+def make_flying_bird_fly(bird: FlyingBird):
+    bird.fly()  # Only accepts birds that can fly
+
+# All substitutions work as expected
+sparrow = Sparrow()
+penguin = Penguin()
+make_bird_sound(sparrow)  # Works
+make_bird_sound(penguin)  # Works
+make_flying_bird_fly(sparrow)  # Works
+# make_flying_bird_fly(penguin)  # Type error - prevented at compile time
+```
+:::
+::::
+
+## Interface Segregation Principle (ISP)
+
+Clients should not be forced to depend on interfaces they do not use. This means that you should create smaller, more specific interfaces rather than a large, general-purpose interface.
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-11|13-22"}
+# Violates ISP - Fat interface with unused methods
+from abc import ABC, abstractmethod
+
+class Worker(ABC):
+    @abstractmethod
+    def work(self):
+        pass
+    
+    @abstractmethod
+    def eat(self):
+        pass
+    
+    @abstractmethod
+    def sleep(self):
+        pass
+
+class HumanWorker(Worker):
+    def work(self):
+        print("Human working")
+    
+    def eat(self):
+        print("Human eating")
+    
+    def sleep(self):
+        print("Human sleeping")
+
+class RobotWorker(Worker):
+    def work(self):
+        print("Robot working")
+    
+    def eat(self):
+        # Forced to implement unused method!
+        raise NotImplementedError("Robots don't eat")
+    
+    def sleep(self):
+        # Forced to implement unused method!
+        raise NotImplementedError("Robots don't sleep")
+
+# Problem: RobotWorker forced to implement irrelevant methods
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-6|8-16|18-27"}
+# Follows ISP - Segregated interfaces
+from abc import ABC, abstractmethod
+
+class Workable(ABC):
+    @abstractmethod
+    def work(self):
+        pass
+
+class Eatable(ABC):
+    @abstractmethod
+    def eat(self):
+        pass
+
+class Sleepable(ABC):
+    @abstractmethod
+    def sleep(self):
+        pass
+
+class HumanWorker(Workable, Eatable, Sleepable):
+    def work(self):
+        print("Human working")
+    
+    def eat(self):
+        print("Human eating")
+    
+    def sleep(self):
+        print("Human sleeping")
+
+class RobotWorker(Workable):
+    def work(self):
+        print("Robot working")
+    # Only implements what it needs!
+
+# Manager works with specific interfaces
+class WorkManager:
+    def manage_work(self, worker: Workable):
+        worker.work()
+    
+    def manage_lunch(self, worker: Eatable):
+        worker.eat()
+
+# Clean usage - no forced implementations
+work_manager = WorkManager()
+human = HumanWorker()
+robot = RobotWorker()
+
+work_manager.manage_work(human)  # Works
+work_manager.manage_work(robot)  # Works
+work_manager.manage_lunch(human)  # Works
+# work_manager.manage_lunch(robot)  # Type error - prevented!
+```
+:::
+::::
+
+## Dependency Inversion Principle (DIP)
+
+High-level modules should not depend on low-level modules. Both should depend on abstractions (e.g., interfaces). This helps to reduce the coupling between different parts of the system and makes it easier to change or replace components.
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|8-11|13-18"}
+# Violates DIP - High-level depends on low-level concrete classes
+class MySQLDatabase:
+    def save(self, data):
+        print(f"Saving to MySQL: {data}")
+
+class EmailService:
+    def send(self, message):
+        print(f"Sending email: {message}")
+
+class OrderProcessor:
+    def __init__(self):
+        # High-level module depends on concrete low-level modules
+        self.database = MySQLDatabase()
+        self.email_service = EmailService()
+    
+    def process_order(self, order):
+        self.database.save(order)
+        self.email_service.send(f"Order {order.id} processed")
+
+# Problem: Hard to change database or email provider
+# Hard to test with mocks
+# Tightly coupled to specific implementations
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-9|11-20|22-31"}
+# Follows DIP - Both depend on abstractions
+from abc import ABC, abstractmethod
+
+class Database(ABC):
+    @abstractmethod
+    def save(self, data):
+        pass
+
+class NotificationService(ABC):
+    @abstractmethod
+    def send(self, message):
+        pass
+
+class OrderProcessor:
+    def __init__(self, database: Database, notification: NotificationService):
+        # High-level module depends on abstractions
+        self.database = database
+        self.notification = notification
+    
+    def process_order(self, order):
+        self.database.save(order)
+        self.notification.send(f"Order {order.id} processed")
+
+# Low-level modules implement abstractions
+class MySQLDatabase(Database):
+    def save(self, data):
+        print(f"Saving to MySQL: {data}")
+
+class PostgreSQLDatabase(Database):
+    def save(self, data):
+        print(f"Saving to PostgreSQL: {data}")
+
+class EmailService(NotificationService):
+    def send(self, message):
+        print(f"Sending email: {message}")
+
+class SMSService(NotificationService):
+    def send(self, message):
+        print(f"Sending SMS: {message}")
+
+# Easy to switch implementations
+mysql_db = MySQLDatabase()
+email_service = EmailService()
+processor = OrderProcessor(mysql_db, email_service)
+
+# Or use different implementations
+postgres_db = PostgreSQLDatabase()
+sms_service = SMSService()
+processor2 = OrderProcessor(postgres_db, sms_service)
+```
+:::
+::::
 
 # Iterator
 
