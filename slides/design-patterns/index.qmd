@@ -263,6 +263,7 @@ def determine_user_priority(user):
 ::::
 
 ---
+
 ## Long Class
 
 :::: {.columns}
