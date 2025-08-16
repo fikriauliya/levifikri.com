@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iterator Pattern - BookShelf</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 40px;
+        }
+        .side {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        .bookshelf {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            margin: 20px auto;
+            background: #8B4513;
+            border: 5px solid #654321;
+            border-radius: 5px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 10px;
+            gap: 10px;
+        }
+        .book {
+            width: 60px;
+            height: 120px;
+            background: linear-gradient(to right, #2196F3 0%, #1976D2 90%, #0D47A1 100%);
+            border: 2px solid #0D47A1;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .book.active {
+            transform: translateY(-20px) rotate(-10deg);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        .iterator {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: #FF5722;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            opacity: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .output {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 5px;
+            font-family: monospace;
+            min-height: 100px;
+            white-space: pre-wrap;
+        }
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #1976D2;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .bad { color: #d32f2f; }
+        .good { color: #388e3c; }
+        .code-snippet {
+            background: #263238;
+            color: #aed581;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        .internal-access {
+            color: #ff5252;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="side">
+            <h2 class="bad">Without Iterator Pattern</h2>
+            <div class="bookshelf" id="shelf1">
+                <div class="book" data-title="Design Patterns">Design Patterns</div>
+                <div class="book" data-title="Clean Code">Clean Code</div>
+                <div class="book" data-title="Refactoring">Refactoring</div>
+            </div>
+            <div class="code-snippet">
+# Direct access to internal list
+for i in range(len(shelf._books)):
+    print(shelf._books[i])
+<span class="internal-access">↑ Breaks encapsulation!</span>
+            </div>
+            <div class="output" id="output1">Ready to access books...</div>
+            <div class="controls">
+                <button onclick="animateBad()">Access Books (Direct)</button>
+            </div>
+        </div>
+        
+        <div class="side">
+            <h2 class="good">With Iterator Pattern</h2>
+            <div class="bookshelf" id="shelf2">
+                <div class="book" data-title="Design Patterns">Design Patterns</div>
+                <div class="book" data-title="Clean Code">Clean Code</div>
+                <div class="book" data-title="Refactoring">Refactoring</div>
+                <div class="iterator" id="iterator">📖</div>
+            </div>
+            <div class="code-snippet">
+# Clean iteration interface
+for book in shelf:
+    print(f"Book: {book}")
+<span style="color: #4caf50;">✓ Encapsulation preserved!</span>
+            </div>
+            <div class="output" id="output2">Ready to iterate...</div>
+            <div class="controls">
+                <button onclick="animateGood()">Iterate Books (Iterator)</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function animateBad() {
+            const books = document.querySelectorAll('#shelf1 .book');
+            const output = document.getElementById('output1');
+            const tl = gsap.timeline();
+            
+            output.textContent = 'Accessing internal _books array:\n';
+            
+            books.forEach((book, index) => {
+                tl.to(book, {
+                    duration: 0.3,
+                    y: -20,
+                    rotation: -10,
+                    onStart: function() {
+                        output.textContent += `shelf._books[${index}] = "${book.dataset.title}"\n`;
+                    }
+                })
+                .to(book, {
+                    duration: 0.3,
+                    y: 0,
+                    rotation: 0
+                });
+            });
+            
+            tl.call(() => {
+                output.textContent += '\n⚠️ Client knows internal structure!\n';
+                output.textContent += '⚠️ Can modify _books directly!\n';
+                output.textContent += '⚠️ Breaks if internal structure changes!';
+            });
+        }
+        
+        function animateGood() {
+            const books = document.querySelectorAll('#shelf2 .book');
+            const output = document.getElementById('output2');
+            const iterator = document.getElementById('iterator');
+            const shelf = document.getElementById('shelf2');
+            const tl = gsap.timeline();
+            
+            output.textContent = 'Using Iterator Pattern:\n';
+            
+            // Show iterator appearing
+            tl.set(iterator, { 
+                opacity: 1,
+                left: '10px',
+                top: '20px'
+            });
+            
+            books.forEach((book, index) => {
+                const bookRect = book.getBoundingClientRect();
+                const shelfRect = shelf.getBoundingClientRect();
+                
+                tl.to(iterator, {
+                    duration: 0.5,
+                    left: bookRect.left - shelfRect.left + 10,
+                    top: bookRect.top - shelfRect.top - 30,
+                    ease: "power2.inOut"
+                })
+                .to(book, {
+                    duration: 0.3,
+                    y: -20,
+                    rotation: -10,
+                    onComplete: function() {
+                        output.textContent += `Book: ${book.dataset.title}\n`;
+                    }
+                }, "-=0.3")
+                .to(book, {
+                    duration: 0.3,
+                    y: 0,
+                    rotation: 0
+                });
+            });
+            
+            tl.to(iterator, { 
+                opacity: 0, 
+                duration: 0.3,
+                onComplete: function() {
+                    output.textContent += '\n✅ Clean interface!\n';
+                    output.textContent += '✅ Internal structure hidden!\n';
+                    output.textContent += '✅ Implementation can change freely!';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

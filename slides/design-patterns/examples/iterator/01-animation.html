@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iterator Pattern for Tree</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 40px;
+        }
+        .side {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        .tree {
+            position: relative;
+            height: 300px;
+            margin: 20px 0;
+        }
+        .node {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .node.active {
+            background: #FF5722;
+            transform: scale(1.2);
+        }
+        .edge {
+            position: absolute;
+            background: #999;
+            height: 2px;
+            transform-origin: left center;
+        }
+        .output {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 5px;
+            font-family: monospace;
+            min-height: 60px;
+        }
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #1976D2;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .bad { color: #d32f2f; }
+        .good { color: #388e3c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="side">
+            <h2 class="bad">Without Iterator Pattern</h2>
+            <div class="tree" id="tree1">
+                <div class="edge" style="left: 100px; top: 40px; width: 60px; transform: rotate(30deg);"></div>
+                <div class="edge" style="left: 100px; top: 40px; width: 60px; transform: rotate(-30deg);"></div>
+                <div class="edge" style="left: 40px; top: 100px; width: 60px; transform: rotate(30deg);"></div>
+                <div class="edge" style="left: 40px; top: 100px; width: 60px; transform: rotate(-30deg);"></div>
+                
+                <div class="node" style="left: 80px; top: 20px;" data-value="A">A</div>
+                <div class="node" style="left: 20px; top: 80px;" data-value="B">B</div>
+                <div class="node" style="left: 140px; top: 80px;" data-value="C">C</div>
+                <div class="node" style="left: 0px; top: 140px;" data-value="D">D</div>
+                <div class="node" style="left: 60px; top: 140px;" data-value="E">E</div>
+            </div>
+            <div class="output" id="output1">Custom traversal function needed each time</div>
+            <div class="controls">
+                <button onclick="animateBad()">Traverse (Custom Function)</button>
+            </div>
+        </div>
+        
+        <div class="side">
+            <h2 class="good">With Iterator Pattern</h2>
+            <div class="tree" id="tree2">
+                <div class="edge" style="left: 100px; top: 40px; width: 60px; transform: rotate(30deg);"></div>
+                <div class="edge" style="left: 100px; top: 40px; width: 60px; transform: rotate(-30deg);"></div>
+                <div class="edge" style="left: 40px; top: 100px; width: 60px; transform: rotate(30deg);"></div>
+                <div class="edge" style="left: 40px; top: 100px; width: 60px; transform: rotate(-30deg);"></div>
+                
+                <div class="node" style="left: 80px; top: 20px;" data-value="A">A</div>
+                <div class="node" style="left: 20px; top: 80px;" data-value="B">B</div>
+                <div class="node" style="left: 140px; top: 80px;" data-value="C">C</div>
+                <div class="node" style="left: 0px; top: 140px;" data-value="D">D</div>
+                <div class="node" style="left: 60px; top: 140px;" data-value="E">E</div>
+            </div>
+            <div class="output" id="output2">Standard iteration interface: for value in tree</div>
+            <div class="controls">
+                <button onclick="animateGood()">Iterate (Iterator Pattern)</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function animateBad() {
+            const nodes = document.querySelectorAll('#tree1 .node');
+            const output = document.getElementById('output1');
+            const tl = gsap.timeline();
+            
+            output.textContent = 'Traversing: ';
+            
+            // Manual traversal order: A, B, D, E, C
+            const traversalOrder = [0, 1, 3, 4, 2];
+            
+            traversalOrder.forEach((index, i) => {
+                tl.to(nodes[index], {
+                    duration: 0.3,
+                    scale: 1.2,
+                    backgroundColor: '#FF5722',
+                    onComplete: function() {
+                        output.textContent += nodes[index].dataset.value + ' ';
+                    }
+                })
+                .to(nodes[index], {
+                    duration: 0.3,
+                    scale: 1,
+                    backgroundColor: '#4CAF50'
+                });
+            });
+            
+            tl.call(() => {
+                output.textContent += '\n⚠️ Required custom traversal logic';
+            });
+        }
+        
+        function animateGood() {
+            const nodes = document.querySelectorAll('#tree2 .node');
+            const output = document.getElementById('output2');
+            const tl = gsap.timeline();
+            
+            output.textContent = 'Iterating: ';
+            
+            // Iterator pattern traversal order (same as bad, but implementation is encapsulated)
+            const traversalOrder = [0, 1, 3, 4, 2];
+            
+            // Visual iterator indicator
+            const iterator = document.createElement('div');
+            iterator.style.cssText = `
+                position: absolute;
+                width: 50px;
+                height: 50px;
+                border: 3px solid #2196F3;
+                border-radius: 50%;
+                pointer-events: none;
+                opacity: 0;
+            `;
+            document.getElementById('tree2').appendChild(iterator);
+            
+            tl.set(iterator, { opacity: 1 });
+            
+            traversalOrder.forEach((index, i) => {
+                const node = nodes[index];
+                const rect = node.getBoundingClientRect();
+                const treeRect = document.getElementById('tree2').getBoundingClientRect();
+                
+                tl.to(iterator, {
+                    duration: 0.5,
+                    left: rect.left - treeRect.left - 5,
+                    top: rect.top - treeRect.top - 5,
+                    ease: "power2.inOut"
+                })
+                .to(node, {
+                    duration: 0.3,
+                    scale: 1.2,
+                    backgroundColor: '#FF5722',
+                    onComplete: function() {
+                        output.textContent += node.dataset.value + ' ';
+                    }
+                }, "-=0.3")
+                .to(node, {
+                    duration: 0.3,
+                    scale: 1,
+                    backgroundColor: '#4CAF50'
+                });
+            });
+            
+            tl.to(iterator, { opacity: 0, duration: 0.3 })
+              .call(() => {
+                output.textContent += '\n✅ Standard Python iteration!';
+                iterator.remove();
+            });
+        }
+    </script>
+</body>
+</html>

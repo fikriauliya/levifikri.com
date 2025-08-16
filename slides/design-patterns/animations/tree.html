@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Animated Tree with GSAP</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+        background: linear-gradient(135deg, #87ceeb, #e0f6ff);
+        font-family: Arial, sans-serif;
+      }
+      .controls {
+        text-align: center;
+        margin-bottom: 10px;
+        color: #2c3e50;
+      }
+      .controls button {
+        background: #3498db;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 0 5px;
+        font-size: 14px;
+        transition: background 0.3s;
+      }
+      .controls button:hover {
+        background: #2980b9;
+      }
+      .controls button:disabled {
+        background: #95a5a6;
+        cursor: not-allowed;
+      }
+      #canvas-container {
+        display: flex;
+        justify-content: center;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="canvas-container"></div>
+
+    <script>
+      let tree = [];
+      let animationStage = 0; // 0: ready, 1: main branches, 2: sub-branches
+      let isAnimating = false;
+      let autoGrow = false;
+      let autoGrowTimeline;
+
+      class Branch {
+        constructor(start, end, generation = 0, parentIndex = -1) {
+          this.start = start.copy();
+          this.end = end.copy();
+          this.generation = generation;
+          this.parentIndex = parentIndex;
+          this.currentEnd = start.copy();
+          this.isComplete = false;
+          this.thickness = max(0.5, 4 - generation * 1); // Thinner branches
+          this.color = color(101, 67, 33); // All branches are brown
+
+          // GSAP animation properties
+          this.progress = 0;
+          this.leafOpacity = 0;
+          this.leafScale = 0;
+        }
+
+        updateCurrentEnd() {
+          this.currentEnd = p5.Vector.lerp(this.start, this.end, this.progress);
+          this.isComplete = this.progress >= 1;
+        }
+
+        display() {
+          stroke(this.color);
+          strokeWeight(this.thickness);
+          line(
+            this.start.x,
+            this.start.y,
+            this.currentEnd.x,
+            this.currentEnd.y
+          );
+
+          // Add animated leaves for final generation
+          if (this.generation === 2 && this.progress > 0.7) {
+            this.drawLeaves();
+          }
+        }
+
+        drawLeaves() {
+          push();
+          translate(this.currentEnd.x, this.currentEnd.y);
+          scale(this.leafScale);
+          fill(34, 139, 34, this.leafOpacity * 255);
+          noStroke();
+
+          // Draw multiple small leaves
+          for (let i = 0; i < 3; i++) {
+            let angle = (i * TWO_PI) / 3 + frameCount * 0.01; // Gentle sway
+            let distance = 8 + sin(frameCount * 0.02 + i) * 2;
+            let leafX = cos(angle) * distance;
+            let leafY = sin(angle) * distance;
+
+            push();
+            translate(leafX, leafY);
+            rotate(angle + PI / 2);
+            ellipse(0, 0, 8, 12);
+            pop();
+          }
+          pop();
+        }
+      }
+
+      function setup() {
+        let canvas = createCanvas(800, 600);
+        canvas.parent("canvas-container");
+
+        // Initialize with trunk
+        let trunk = new Branch(
+          createVector(width / 2, height - 50),
+          createVector(width / 2, height - 300), // Longer trunk
+          0
+        );
+        tree.push(trunk);
+
+        // Animate trunk growing initially
+        gsap.to(trunk, {
+          duration: 1,
+          progress: 1,
+          ease: "power2.out",
+          onUpdate: () => trunk.updateCurrentEnd(),
+        });
+      }
+
+      function draw() {
+        // Gradient background
+        for (let i = 0; i <= height; i++) {
+          let inter = map(i, 0, height, 0, 1);
+          let c = lerpColor(color(135, 206, 250), color(255, 255, 255), inter);
+          stroke(c);
+          line(0, i, width, i);
+        }
+
+        // Draw ground with subtle animation
+        fill(101, 67, 33);
+        noStroke();
+        rect(0, height - 50, width, 50);
+
+        // Add some grass blades
+        drawGrass();
+
+        // Display all branches
+        for (let branch of tree) {
+          branch.display();
+        }
+
+        // Draw instruction text if ready for interaction
+        if (!isAnimating && animationStage === 0) {
+          // Remove instruction text
+        }
+      }
+
+      function drawGrass() {
+        stroke(34, 139, 34);
+        strokeWeight(1);
+        for (let x = 0; x < width; x += 20) {
+          let grassHeight = 15 + sin(frameCount * 0.01 + x * 0.1) * 3;
+          line(x, height - 50, x, height - 50 - grassHeight);
+        }
+      }
+
+      function drawInstructions() {
+        // Instructions removed
+      }
+
+      function mousePressed() {
+        if (mouseX < 0 || mouseX > width || mouseY < 0 || mouseY > height)
+          return;
+        if (isAnimating) return;
+
+        if (animationStage === 0) {
+          createAndAnimateMainBranches();
+        } else if (animationStage === 1) {
+          createAndAnimateSubBranches();
+        }
+      }
+
+      function createAndAnimateMainBranches() {
+        if (isAnimating) return;
+
+        isAnimating = true;
+        animationStage = 1;
+
+        let trunk = tree[0];
+        let newBranches = [];
+
+        // Create 10 main branches from the trunk's end point
+        for (let i = 0; i < 10; i++) {
+          let startPoint = trunk.end.copy(); // Always start from trunk's end
+
+          // Distribute branches evenly around a semicircle with some variation
+          let baseAngle = map(i, 0, 9, -PI / 2.5, PI / 2.5); // Spread from -72° to +72°
+          let angleVariation = random(-PI / 8, PI / 8); // Add small random variation
+          let angle = baseAngle + angleVariation;
+
+          let length = random(80, 150); // Longer branches
+
+          let endX = startPoint.x + cos(angle - PI / 2) * length;
+          let endY = startPoint.y + sin(angle - PI / 2) * length;
+
+          if (endY < height - 50) {
+            let endPoint = createVector(endX, endY);
+            let branch = new Branch(startPoint, endPoint, 1, 0);
+            tree.push(branch);
+            newBranches.push(branch);
+          }
+        }
+
+        // Create GSAP timeline for staggered branch growth
+        let tl = gsap.timeline({
+          onComplete: () => {
+            isAnimating = false;
+          },
+        });
+
+        // Animate branches with stagger effect
+        tl.to(newBranches, {
+          duration: 0.8,
+          progress: 1,
+          ease: "power2.out",
+          stagger: {
+            amount: 2, // Total stagger duration
+            from: "random",
+          },
+          onUpdate: function () {
+            newBranches.forEach((branch) => branch.updateCurrentEnd());
+          },
+        });
+
+        // Add some screen shake effect
+        tl.to(
+          document.getElementById("canvas-container"),
+          {
+            duration: 0.1,
+            x: 3,
+            yoyo: true,
+            repeat: 5,
+            ease: "power2.inOut",
+          },
+          0
+        );
+      }
+
+      function createAndAnimateSubBranches() {
+        if (isAnimating) return;
+
+        isAnimating = true;
+        animationStage = 2;
+
+        let mainBranches = tree.filter((branch) => branch.generation === 1);
+        let newBranches = [];
+
+        // Create sub-branches from the end of each main branch
+        for (let mainBranch of mainBranches) {
+          // Calculate the parent branch direction
+          let parentDirection = p5.Vector.sub(mainBranch.end, mainBranch.start);
+          let parentAngle = atan2(parentDirection.y, parentDirection.x);
+
+          for (let i = 0; i < 3; i++) {
+            let startPoint = mainBranch.end.copy(); // Always start from parent's end
+
+            // Create sub-branches with controlled spread from parent direction
+            let angleDelta = map(i, 0, 2, -PI / 3, PI / 3); // Spread from -60° to +60°
+            let angleVariation = random(-PI / 6, PI / 6); // Add small random variation
+            let branchAngle = parentAngle + angleDelta + angleVariation;
+
+            let length = random(50, 90); // Longer sub-branches
+
+            let endX = startPoint.x + cos(branchAngle) * length;
+            let endY = startPoint.y + sin(branchAngle) * length;
+
+            let endPoint = createVector(endX, endY);
+            let subBranch = new Branch(
+              startPoint,
+              endPoint,
+              2,
+              tree.indexOf(mainBranch)
+            );
+            tree.push(subBranch);
+            newBranches.push(subBranch);
+          }
+        }
+
+        // Create timeline for sub-branches with leaf animations
+        let tl = gsap.timeline({
+          onComplete: () => {
+            isAnimating = false;
+            animationStage = 0; // Ready for reset
+          },
+        });
+
+        // Animate sub-branches
+        tl.to(newBranches, {
+          duration: 0.6,
+          progress: 1,
+          ease: "power2.out",
+          stagger: {
+            amount: 1.5,
+            from: "random",
+          },
+          onUpdate: function () {
+            newBranches.forEach((branch) => branch.updateCurrentEnd());
+          },
+        });
+
+        // Animate leaves appearing
+        tl.to(
+          newBranches,
+          {
+            duration: 0.8,
+            leafOpacity: 1,
+            leafScale: 1,
+            ease: "back.out(1.7)",
+            stagger: 0.05,
+          },
+          "-=0.3"
+        );
+      }
+
+      function resetTree() {
+        // Kill any running animations
+        gsap.killTweensOf("*");
+
+        tree = [];
+        let trunk = new Branch(
+          createVector(width / 2, height - 50),
+          createVector(width / 2, height - 300), // Longer trunk
+          0
+        );
+        tree.push(trunk);
+
+        animationStage = 0;
+        isAnimating = false;
+
+        // Animate trunk growing
+        gsap.to(trunk, {
+          duration: 1,
+          progress: 1,
+          ease: "power2.out",
+          onUpdate: () => trunk.updateCurrentEnd(),
+        });
+
+        // Reset canvas position
+        gsap.set(document.getElementById("canvas-container"), { x: 0 });
+      }
+
+      // Remove the toggle auto-grow and skip functions since buttons are removed
+    </script>
+  </body>
+</html>

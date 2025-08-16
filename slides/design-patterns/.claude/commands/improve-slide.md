@@ -1,0 +1,3 @@
+- Improve the language of the slide #$ARGUMENTS (if any)
+- Use casual language
+- Keep it short
