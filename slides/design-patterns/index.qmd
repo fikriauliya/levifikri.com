@@ -53,7 +53,6 @@ Pahlevi Fikri Auliya
 :::: {.columns}
 
 ::: {.column width="50%"}
-**❌**
 
 ```{.python code-line-numbers="|18-21|23,24"}
 class BookShelf:
@@ -84,7 +83,6 @@ books.clear()  # This breaks encapsulation!
 :::
 
 ::: {.column width="50%"}
-**✅**
 
 ```{.python code-line-numbers="|11-14|32-36"}
 class BookShelf:
@@ -315,9 +313,99 @@ second_file = next(iterator)
 
 ## `yield`
 
+```{.python code-line-numbers="|3,5,7"}
+def simple_counter():
+    print("Starting...")
+    yield 1
+    print("After first yield")
+    yield 2
+    print("After second yield")
+    yield 3
+    print("Done!")
 
+# Usage
+counter = simple_counter()  # Creates generator, doesn't run yet!
+print("Generator created")
 
-# 
+print(next(counter))  # Starting... 1
+print(next(counter))  # After first yield 2
+print(next(counter))  # After second yield 3
+# print(next(counter))  # Done! StopIteration
+```
+
+---
+
+## `yield` vs `return`
+
+```{.python code-line-numbers="|3-5,9-11"}
+# With return - function ends
+def with_return():
+    return 1
+    return 2  # Never reached!
+    return 3  # Never reached!
+
+# With yield - function pauses
+def with_yield():
+    yield 1   # Pause here, remember state
+    yield 2   # Resume here next time
+    yield 3   # Resume here next time
+
+print(list(with_yield()))  # [1, 2, 3]
+```
+
+---
+
+## Lazy Generator
+
+```{.python code-line-numbers="|3-5|11-14"}
+def count_up_to(max_num):
+    count = 1
+    while count <= max_num:
+        yield count
+        count += 1
+
+# Usage
+for num in count_up_to(5):
+    print(num)  # 1, 2, 3, 4, 5
+
+# Memory efficient - generates one number at a time!
+numbers = count_up_to(1000000)  # Doesn't create million numbers in memory
+print(next(numbers))  # 1
+print(next(numbers))  # 2
+```
+
+---
+
+## Directory Traversal with `yield`
+
+```{.python code-line-numbers="|11|22-26"}
+import os
+
+def iterate_files(path):
+    """Generator function using yield"""
+    stack = [path]
+    
+    while stack:
+        current_path = stack.pop()
+        
+        if os.path.isfile(current_path):
+            yield current_path  # Pause here, return file path
+        
+        elif os.path.isdir(current_path):
+            try:
+                items = os.listdir(current_path)
+                for item in reversed(items):
+                    item_path = os.path.join(current_path, item)
+                    stack.append(item_path)
+            except PermissionError:
+                continue
+
+# Usage - same as Iterator pattern but much simpler!
+for file_path in iterate_files("/some/path"):
+    print(file_path)
+    if file_path.endswith('.txt'):
+        break  # Can still break early!
+```
 
 # Observer
 
