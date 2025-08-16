@@ -18,7 +18,7 @@ By: Pahlevi Fikri Auliya
 
 ---
 
-<iframe width="100%" height="100%" src="animations/tree.html" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="100%" height="100%" src="./animations/tree.html" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ---
 
