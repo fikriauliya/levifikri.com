@@ -3042,7 +3042,7 @@ function App() {
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python}
+```{.python code-line-numbers="|3,9,15|22"}
 # Without Chain of Responsibility - Complex if/else
 def handle_purchase(amount, user):
     if amount < 100:
@@ -3071,7 +3071,7 @@ handle_purchase(500, vip_user)
 :::
 
 ::: {.column width="50%"}
-```{.python}
+```{.python code-line-numbers="|3,7,11-12|16,17,21,22|24,25,29,30|32,33,36,37|39-42|44|46-49"}
 from abc import ABC, abstractmethod
 
 class PurchaseHandler(ABC):
@@ -3127,7 +3127,7 @@ small.handle(5000, vip_user)
 
 ## Express.js Middleware
 
-```{.javascript}
+```{.javascript code-line-numbers="|4,5,8|14,15,17|20,23|30-32|42"}
 const express = require('express');
 const app = express();
 
