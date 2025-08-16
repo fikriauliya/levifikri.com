@@ -178,7 +178,7 @@ def log_transaction(order, total):
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-25"}
+```{.python}
 # Code Smell: Deeply Nested Method
 def process_user_data(users):
     valid_users = []
@@ -212,7 +212,7 @@ def process_user_data(users):
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-8|10-18|20-28"}
+```{.python}
 # Clean: Early Returns and Guard Clauses
 def process_user_data(users):
     valid_users = []
@@ -269,7 +269,7 @@ def determine_user_priority(user):
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-30"}
+```{.python code-line-numbers="|12-17|19-26|28-35|37-44|46-49|51-58"}
 # Code Smell: Long Class with too many responsibilities
 class UserAccount:
     def __init__(self, user_id):
@@ -335,7 +335,7 @@ class UserAccount:
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-6|8-15|17-25|27-35"}
+```{.python code-line-numbers="|2-8|10-20|22-33|35-46|48-56"}
 # Clean: Separated into focused classes
 class User:
     def __init__(self, user_id):
@@ -404,7 +404,7 @@ class OrderManager:
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-20"}
+```{.python code-line-numbers="|3,8,13,18,23"}
 # Code Smell: Complex Switch Statement
 def calculate_shipping_cost(shipping_type, weight, distance):
     if shipping_type == "standard":
@@ -436,7 +436,7 @@ def calculate_shipping_cost(shipping_type, weight, distance):
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-7|9-25|27-32"}
+```{.python code-line-numbers="|4-7|9-14|16-21|23-28|30-42|32-35,39-42"}
 # Clean: Strategy Pattern (Polymorphism)
 from abc import ABC, abstractmethod
 
@@ -492,7 +492,7 @@ Comments should explain WHY not, WHAT
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-15"}
+```{.python code-line-numbers="|1,3,5,7,9,12,15"}
 # Code Smell: Explaining WHAT instead of WHY
 def calculate_discount(user, order_total):
     # Check if user is VIP
@@ -516,7 +516,7 @@ def calculate_discount(user, order_total):
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-8|10-18"}
+```{.python code-line-numbers="|3-4,8|14-17|19"}
 # Clean: Self-documenting code + WHY comments
 def calculate_discount(user, order_total):
     # Business rule: VIP customers get priority discount
@@ -551,7 +551,7 @@ DRY: Don't Repeat Yourself
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-17|19-34"}
+```{.python code-line-numbers="|3-11,20-28|13-17,30-34"}
 # Code Smell: Duplicate Code
 def send_welcome_email(user):
     subject = "Welcome to Our Platform!"
@@ -593,7 +593,7 @@ def send_password_reset_email(user, reset_link):
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-11|13-24|26-32"}
+```{.python code-line-numbers="|9-14|36-44"}
 # Clean: Extract Common Functionality
 class EmailService:
     def __init__(self):
@@ -650,7 +650,7 @@ class UserNotificationService:
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-18|20-35"}
+```{.python code-line-numbers="|20-26|31-42"}
 # Code Smell: Premature abstraction
 class PaymentProcessor:
     def __init__(self):
@@ -700,7 +700,7 @@ class PaymentProcessor:
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-12|14-18"}
+```{.python code-line-numbers="|1"}
 # Clean: Simple solution for current needs
 class PaymentProcessor:
     def process_credit_card_payment(self, card_number, amount):
