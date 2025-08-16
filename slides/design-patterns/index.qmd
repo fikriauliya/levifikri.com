@@ -2,7 +2,7 @@
 author: "Pahlevi Fikri Auliya"
 format:
   revealjs:
-    theme: [dracula, custom.scss]
+    theme: [dark, custom.scss]
     incremental: false
     slide-number: true
     embed-resources: false
@@ -2297,6 +2297,208 @@ test_service = UserService(test_email, test_db, test_logger)
 :::
 ::::
 
+## AngularJS Dependency Injection
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.javascript code-line-numbers="|4-7|14-17"}
+// Without DI - Hard dependencies
+function UserController() {
+  // Controller creates its own dependencies
+  this.httpService = new HttpService();
+  this.userService = new UserService(this.httpService);
+  this.loggerService = new LoggerService('console');
+  
+  this.loadUsers = function() {
+    this.userService.getUsers().then(function(users) {
+      // Handle users
+    });
+  };
+}
+
+// Problem: Hard to test, tightly coupled
+// Can't easily mock dependencies
+var controller = new UserController();
+```
+:::
+
+::: {.column width="50%"}
+```{.javascript code-line-numbers="|2-3|8-11|17-20"}
+// With AngularJS DI - Dependencies injected
+function UserController($http, UserService, $log) {
+  // Dependencies injected by Angular
+  this.httpService = $http;
+  this.userService = UserService;
+  this.logger = $log;
+  
+  this.loadUsers = function() {
+    this.userService.getUsers().then(function(users) {
+      this.logger.info('Users loaded:', users.length);
+    });
+  };
+}
+
+// Register with Angular's DI container
+angular.module('myApp')
+  .controller('UserController', [
+    '$http', 'UserService', '$log', 
+    UserController
+  ]);
+
+// Easy to test with injected mocks
+// Angular handles dependency resolution
+```
+:::
+::::
+
+## Spring Dependency Injection
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.java code-line-numbers="|4-7|13-15"}
+// Without DI - Hard dependencies
+public class OrderService {
+    // Creates its own dependencies
+    private PaymentService paymentService = new PaymentService();
+    private EmailService emailService = new EmailService();
+    private InventoryService inventoryService = new InventoryService();
+    
+    public void processOrder(Order order) {
+        inventoryService.reserveItems(order.getItems());
+        paymentService.processPayment(order.getPayment());
+        emailService.sendConfirmation(order.getCustomerEmail());
+    }
+}
+
+// Hard to test - can't mock services
+// Hard to change implementations
+OrderService service = new OrderService();
+```
+:::
+
+::: {.column width="50%"}
+```{.java code-line-numbers="|2-5|11-14|20-24"}
+// With Spring DI - Dependencies injected
+@Service
+public class OrderService {
+    @Autowired
+    private PaymentService paymentService;
+    @Autowired 
+    private EmailService emailService;
+    @Autowired
+    private InventoryService inventoryService;
+    
+    public void processOrder(Order order) {
+        inventoryService.reserveItems(order.getItems());
+        paymentService.processPayment(order.getPayment());
+        emailService.sendConfirmation(order.getCustomerEmail());
+    }
+}
+
+// Spring configuration
+@Configuration
+public class AppConfig {
+    @Bean
+    public PaymentService paymentService() {
+        return new StripePaymentService(); // Can easily switch implementations
+    }
+    
+    @Bean
+    public EmailService emailService() {
+        return new SMTPEmailService();
+    }
+}
+
+// Easy testing with @MockBean
+@SpringBootTest
+class OrderServiceTest {
+    @MockBean
+    private PaymentService paymentService;
+    
+    @Test
+    void testProcessOrder() {
+        // Test with mocked dependencies
+    }
+}
+```
+:::
+::::
+
+## Effect TS Dependency Injection
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.typescript code-line-numbers="|6-9|15-17"}
+// Without DI - Hard dependencies
+import { HttpClient } from './http';
+import { Logger } from './logger';
+
+class UserService {
+  // Creates its own dependencies
+  private http = new HttpClient('https://api.example.com');
+  private logger = new Logger('console');
+  
+  async getUser(id: string): Promise<User> {
+    this.logger.info(`Fetching user ${id}`);
+    return this.http.get(`/users/${id}`);
+  }
+}
+
+// Problem: Hard to test, tightly coupled
+const userService = new UserService();
+userService.getUser('123');
+```
+:::
+
+::: {.column width="50%"}
+```{.typescript code-line-numbers="|4-7|9-15|23-28"}
+// With Effect TS - Dependencies as services
+import { Effect, Context } from 'effect';
+
+// Define service interfaces
+interface HttpService {
+  get: (url: string) => Effect.Effect<any, HttpError>;
+}
+
+interface LoggerService {
+  info: (message: string) => Effect.Effect<void>;
+}
+
+// Create service tags
+const HttpService = Context.GenericTag<HttpService>('HttpService');
+const LoggerService = Context.GenericTag<LoggerService>('LoggerService');
+
+// Service implementation using Effect
+const getUser = (id: string) =>
+  Effect.gen(function* () {
+    const http = yield* HttpService;
+    const logger = yield* LoggerService;
+    
+    yield* logger.info(`Fetching user ${id}`);
+    const user = yield* http.get(`/users/${id}`);
+    return user;
+  });
+
+// Provide implementations
+const program = getUser('123').pipe(
+  Effect.provideService(HttpService, {
+    get: (url) => Effect.succeed({ data: 'mock' })
+  }),
+  Effect.provideService(LoggerService, {
+    info: (msg) => Effect.sync(() => console.log(msg))
+  })
+);
+
+// Easy to test with different implementations
+Effect.runSync(program);
+```
+:::
+::::
+
+
 # DSL (Domain-Specific Language)
 
 ---
@@ -2379,3 +2581,87 @@ recent_active_adults = (UserQuery("users")
 ```
 :::
 ::::
+
+
+## LINQ (Language Integrated Query)
+
+```{.csharp code-line-numbers="|2-8|10-15"}
+// LINQ is a DSL for querying data in C#
+var products = new List<Product> 
+{
+    new Product { Name = "Laptop", Price = 1000, Category = "Electronics" },
+    new Product { Name = "Book", Price = 20, Category = "Education" },
+    new Product { Name = "Phone", Price = 800, Category = "Electronics" }
+};
+
+// Method syntax - fluent DSL
+var expensiveElectronics = products
+    .Where(p => p.Category == "Electronics")
+    .Where(p => p.Price > 500)
+    .OrderBy(p => p.Price)
+    .Select(p => new { p.Name, p.Price })
+    .ToList();
+
+// Query syntax - SQL-like DSL
+var cheapItems = from p in products
+                 where p.Price < 100
+                 orderby p.Name
+                 select p.Name;
+
+// LINQ provides a domain-specific language for data queries
+// that reads naturally and compiles to efficient code
+```
+
+## LISP (Domain-Specific Language)
+
+```{.lisp code-line-numbers="|2-5|7-10"}
+;; LISP itself is a DSL for symbolic computation
+;; Code as data - homoiconicity
+(defun factorial (n)
+  (if (<= n 1)
+      1
+      (* n (factorial (- n 1)))))
+
+;; Macros allow you to create your own DSL syntax
+(defmacro when (condition &body body)
+  `(if ,condition (progn ,@body)))
+
+;; Usage looks like built-in syntax
+(when (> x 10)
+  (print "x is greater than 10")
+  (setf y (* x 2)))
+
+;; The macro expands to:
+;; (if (> x 10) (progn (print "x is greater than 10") (setf y (* x 2))))
+
+;; LISP's uniform syntax makes it perfect for creating DSLs
+;; Everything is a list, so you can manipulate code as data
+```
+
+## Rust Macro (DSL)
+
+```{.rust code-line-numbers="|2-8|10-17"}
+// Rust macros allow creating domain-specific languages
+// Define a macro for creating HTML
+macro_rules! html {
+    ( $tag:ident { $($content:tt)* } ) => {
+        format!("<{}>{}</{}>", stringify!($tag), html!($($content)*), stringify!($tag))
+    };
+    ( $text:literal ) => { $text };
+    ( $($content:tt)* ) => { concat!($( html!($content) ),*) };
+}
+
+// Usage looks like a mini HTML DSL
+let page = html! {
+    html {
+        body {
+            h1 { "Welcome to Rust!" }
+            p { "This is generated by a macro" }
+        }
+    }
+};
+
+// The macro expands to proper HTML string generation
+// Rust macros are hygienic and type-safe at compile time
+// Perfect for creating readable DSLs while maintaining performance
+```
