@@ -20,11 +20,13 @@ Pahlevi Fikri Auliya
 
 <iframe width="100%" height="100%" src="animations/tree.html" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-# Target Audience
+# Audience
+
+Intended Audience
 
 - Junior-Senior Software Engineers
 
-# Non-Target Audience
+Non-Target Audience
 
 - Those who are just learning to code
 
@@ -39,11 +41,672 @@ Pahlevi Fikri Auliya
 
 # We Are All Becoming Architects
 
+# ETC Principles
+
+Easy to Change, Test, and Extend
+
+# Common Code Smells
+
+## Large Method
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-25"}
+# Code Smell: Large Method
+def process_order(order):
+    # Validate order
+    if not order.customer_id:
+        raise ValueError("Customer ID required")
+    if not order.items:
+        raise ValueError("Order must have items")
+    for item in order.items:
+        if item.quantity <= 0:
+            raise ValueError("Invalid quantity")
+    
+    # Calculate totals
+    subtotal = sum(item.price * item.quantity for item in order.items)
+    tax = subtotal * 0.08
+    shipping = 10 if subtotal < 50 else 0
+    total = subtotal + tax + shipping
+    
+    # Update inventory
+    for item in order.items:
+        inventory = get_inventory(item.product_id)
+        if inventory.quantity < item.quantity:
+            raise ValueError("Insufficient inventory")
+        inventory.quantity -= item.quantity
+        save_inventory(inventory)
+    
+    # Process payment
+    payment_result = charge_credit_card(
+        order.customer.card_number,
+        total,
+        order.customer.card_cvv,
+        order.customer.card_expiry
+    )
+    
+    # Send email
+    email_body = f"Order #{order.id} confirmed. Total: ${total}"
+    send_email(order.customer.email, "Order Confirmation", email_body)
+    
+    # Log transaction
+    log_entry = f"Order {order.id} processed for ${total}"
+    write_to_log(log_entry)
+    
+    return order
+
+# Problem: Too many responsibilities in one method
+# Hard to test, understand, and maintain
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-6|8-14|16-22"}
+# Clean: Extracted Methods
+def process_order(order):
+    validate_order(order)
+    total = calculate_order_total(order)
+    update_inventory(order)
+    process_payment(order, total)
+    send_confirmation_email(order, total)
+    log_transaction(order, total)
+    return order
+
+def validate_order(order):
+    if not order.customer_id:
+        raise ValueError("Customer ID required")
+    if not order.items:
+        raise ValueError("Order must have items")
+    for item in order.items:
+        if item.quantity <= 0:
+            raise ValueError("Invalid quantity")
+
+def calculate_order_total(order):
+    subtotal = sum(item.price * item.quantity for item in order.items)
+    tax = subtotal * 0.08
+    shipping = 10 if subtotal < 50 else 0
+    return subtotal + tax + shipping
+
+def update_inventory(order):
+    for item in order.items:
+        inventory = get_inventory(item.product_id)
+        if inventory.quantity < item.quantity:
+            raise ValueError("Insufficient inventory")
+        inventory.quantity -= item.quantity
+        save_inventory(inventory)
+
+def process_payment(order, total):
+    return charge_credit_card(
+        order.customer.card_number, total,
+        order.customer.card_cvv, order.customer.card_expiry
+    )
+
+def send_confirmation_email(order, total):
+    email_body = f"Order #{order.id} confirmed. Total: ${total}"
+    send_email(order.customer.email, "Order Confirmation", email_body)
+
+def log_transaction(order, total):
+    log_entry = f"Order {order.id} processed for ${total}"
+    write_to_log(log_entry)
+
+# Benefits: Single responsibility, easy to test, reusable
+```
+:::
+::::
+
+## Complex Switch Statements
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-20"}
+# Code Smell: Complex Switch Statement
+def calculate_shipping_cost(shipping_type, weight, distance):
+    if shipping_type == "standard":
+        base_rate = 5.0
+        weight_rate = 0.5 * weight
+        distance_rate = 0.01 * distance
+        return base_rate + weight_rate + distance_rate
+    elif shipping_type == "express":
+        base_rate = 15.0
+        weight_rate = 1.0 * weight
+        distance_rate = 0.02 * distance
+        return base_rate + weight_rate + distance_rate
+    elif shipping_type == "overnight":
+        base_rate = 25.0
+        weight_rate = 2.0 * weight
+        distance_rate = 0.05 * distance
+        return base_rate + weight_rate + distance_rate
+    elif shipping_type == "international":
+        base_rate = 50.0
+        weight_rate = 3.0 * weight
+        customs_fee = 10.0
+        return base_rate + weight_rate + customs_fee
+    else:
+        raise ValueError(f"Unknown shipping type: {shipping_type}")
+
+# Problem: Adding new shipping types requires modifying this function
+# Violates Open/Closed Principle
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-7|9-25|27-32"}
+# Clean: Strategy Pattern (Polymorphism)
+from abc import ABC, abstractmethod
+
+class ShippingCalculator(ABC):
+    @abstractmethod
+    def calculate_cost(self, weight, distance):
+        pass
+
+class StandardShipping(ShippingCalculator):
+    def calculate_cost(self, weight, distance):
+        base_rate = 5.0
+        weight_rate = 0.5 * weight
+        distance_rate = 0.01 * distance
+        return base_rate + weight_rate + distance_rate
+
+class ExpressShipping(ShippingCalculator):
+    def calculate_cost(self, weight, distance):
+        base_rate = 15.0
+        weight_rate = 1.0 * weight
+        distance_rate = 0.02 * distance
+        return base_rate + weight_rate + distance_rate
+
+class OvernightShipping(ShippingCalculator):
+    def calculate_cost(self, weight, distance):
+        base_rate = 25.0
+        weight_rate = 2.0 * weight
+        distance_rate = 0.05 * distance
+        return base_rate + weight_rate + distance_rate
+
+class ShippingService:
+    def __init__(self):
+        self.calculators = {
+            "standard": StandardShipping(),
+            "express": ExpressShipping(),
+            "overnight": OvernightShipping()
+        }
+    
+    def calculate_cost(self, shipping_type, weight, distance):
+        calculator = self.calculators.get(shipping_type)
+        if not calculator:
+            raise ValueError(f"Unknown shipping type: {shipping_type}")
+        return calculator.calculate_cost(weight, distance)
+
+# Benefits: Easy to extend, follows Open/Closed Principle
+# Each strategy is testable independently
+```
+:::
+::::
+
+## Comments
+Comments should explain WHY not, WHAT
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-15"}
+# Code Smell: Explaining WHAT instead of WHY
+def calculate_discount(user, order_total):
+    # Check if user is VIP
+    if user.membership_type == "VIP":
+        # Apply 20% discount
+        discount = order_total * 0.20
+    # Check if order is over $100
+    elif order_total > 100:
+        # Apply 10% discount
+        discount = order_total * 0.10
+    else:
+        # No discount
+        discount = 0
+    
+    # Subtract discount from total
+    return order_total - discount
+
+# Problem: Comments explain obvious code
+# Code should be self-documenting
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-8|10-18"}
+# Clean: Self-documenting code + WHY comments
+def calculate_discount(user, order_total):
+    # Business rule: VIP customers get priority discount
+    # to increase retention and lifetime value
+    if user.is_vip_member():
+        return order_total * VIP_DISCOUNT_RATE
+    
+    # Encourage larger orders by rewarding bulk purchases
+    if order_total > BULK_ORDER_THRESHOLD:
+        return order_total * BULK_DISCOUNT_RATE
+    
+    return 0
+
+# Constants make intent clear
+VIP_DISCOUNT_RATE = 0.20
+BULK_DISCOUNT_RATE = 0.10
+BULK_ORDER_THRESHOLD = 100
+
+def apply_discount(order_total, discount_amount):
+    return order_total - discount_amount
+
+# Benefits: Code explains itself, comments explain business reasoning
+# Much easier to understand the intent and business rules
+```
+:::
+::::
+
+
+## Duplicate Code
+DRY: Don't Repeat Yourself
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-17|19-34"}
+# Code Smell: Duplicate Code
+def send_welcome_email(user):
+    subject = "Welcome to Our Platform!"
+    body = f"""
+    Dear {user.name},
+    
+    Welcome to our platform! We're excited to have you.
+    
+    Best regards,
+    The Team
+    """
+    
+    smtp_server = smtplib.SMTP('smtp.gmail.com', 587)
+    smtp_server.starttls()
+    smtp_server.login('noreply@company.com', 'password')
+    smtp_server.send_message(user.email, subject, body)
+    smtp_server.quit()
+
+def send_password_reset_email(user, reset_link):
+    subject = "Password Reset Request"
+    body = f"""
+    Dear {user.name},
+    
+    Click here to reset your password: {reset_link}
+    
+    Best regards,
+    The Team
+    """
+    
+    smtp_server = smtplib.SMTP('smtp.gmail.com', 587)
+    smtp_server.starttls()
+    smtp_server.login('noreply@company.com', 'password')
+    smtp_server.send_message(user.email, subject, body)
+    smtp_server.quit()
+
+# Problem: SMTP setup code is duplicated
+# Changes to email config require updating multiple places
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-11|13-24|26-32"}
+# Clean: Extract Common Functionality
+class EmailService:
+    def __init__(self):
+        self.smtp_host = 'smtp.gmail.com'
+        self.smtp_port = 587
+        self.email = 'noreply@company.com'
+        self.password = 'password'
+    
+    def send_email(self, to_email, subject, body):
+        smtp_server = smtplib.SMTP(self.smtp_host, self.smtp_port)
+        smtp_server.starttls()
+        smtp_server.login(self.email, self.password)
+        smtp_server.send_message(to_email, subject, body)
+        smtp_server.quit()
+
+class UserNotificationService:
+    def __init__(self, email_service):
+        self.email_service = email_service
+    
+    def send_welcome_email(self, user):
+        subject = "Welcome to Our Platform!"
+        body = self._create_email_body(
+            f"Welcome to our platform! We're excited to have you.", 
+            user.name
+        )
+        self.email_service.send_email(user.email, subject, body)
+    
+    def send_password_reset_email(self, user, reset_link):
+        subject = "Password Reset Request"
+        body = self._create_email_body(
+            f"Click here to reset your password: {reset_link}", 
+            user.name
+        )
+        self.email_service.send_email(user.email, subject, body)
+    
+    def _create_email_body(self, message, user_name):
+        return f"""
+        Dear {user_name},
+        
+        {message}
+        
+        Best regards,
+        The Team
+        """
+
+# Benefits: Single source of truth, easy to modify email config
+# Email template logic is also reusable
+```
+:::
+::::
+
+## You Aren't Gonna Need It (YAGNI)
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-18|20-35"}
+# Code Smell: Premature abstraction
+class PaymentProcessor:
+    def __init__(self):
+        # Preparing for multiple payment methods that don't exist yet
+        self.payment_strategies = {}
+        self.payment_validators = {}
+        self.payment_loggers = {}
+        self.payment_retry_policies = {}
+        self.payment_notification_handlers = {}
+    
+    def register_payment_method(self, name, strategy, validator, 
+                               logger, retry_policy, notifier):
+        self.payment_strategies[name] = strategy
+        self.payment_validators[name] = validator
+        self.payment_loggers[name] = logger
+        self.payment_retry_policies[name] = retry_policy
+        self.payment_notification_handlers[name] = notifier
+    
+    def process_payment(self, payment_method, amount):
+        # Complex logic for handling different payment methods
+        if payment_method not in self.payment_strategies:
+            raise ValueError("Unknown payment method")
+        
+        validator = self.payment_validators[payment_method]
+        if not validator.validate(amount):
+            return False
+        
+        strategy = self.payment_strategies[payment_method]
+        retry_policy = self.payment_retry_policies[payment_method]
+        
+        # Retry logic that we don't actually need
+        attempts = 0
+        while attempts < retry_policy.max_attempts:
+            try:
+                result = strategy.process(amount)
+                self.payment_loggers[payment_method].log(result)
+                self.payment_notification_handlers[payment_method].notify(result)
+                return result
+            except Exception as e:
+                attempts += 1
+                if attempts >= retry_policy.max_attempts:
+                    raise
+
+# Problem: Over-engineered for requirements that may never come
+# Current requirement: Only process credit card payments
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-12|14-18"}
+# Clean: Simple solution for current needs
+class PaymentProcessor:
+    def process_credit_card_payment(self, card_number, amount):
+        # Validate amount
+        if amount <= 0:
+            raise ValueError("Amount must be positive")
+        
+        # Process payment
+        result = self.charge_card(card_number, amount)
+        
+        # Log transaction
+        self.log_transaction(f"Charged ${amount} to card {card_number[-4:]}")
+        return result
+    
+    def charge_card(self, card_number, amount):
+        # Actual payment processing logic
+        return {"status": "success", "transaction_id": "TXN123"}
+    
+    def log_transaction(self, message):
+        print(f"[{datetime.now()}] {message}")
+
+# Benefits: 
+# - Simple and direct
+# - Easy to understand and test
+# - Can be refactored when new requirements arrive
+# - No wasted effort on unused abstractions
+```
+:::
+::::
+
+## Tell, Don't Ask
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-14|16-26"}
+# Code Smell: Asking for data instead of telling to do
+class ShoppingCart:
+    def __init__(self):
+        self.items = []
+    
+    def get_items(self):
+        return self.items
+
+class CheckoutService:
+    def calculate_total(self, cart):
+        # Asking cart for data and doing the work ourselves
+        items = cart.get_items()
+        total = 0
+        for item in items:
+            total += item.price * item.quantity
+        return total
+    
+    def apply_discount(self, cart, discount_percentage):
+        # Again asking for data
+        items = cart.get_items()
+        total = 0
+        for item in items:
+            total += item.price * item.quantity
+        
+        discount = total * (discount_percentage / 100)
+        return total - discount
+
+# Problem: CheckoutService knows too much about cart internals
+# Violates encapsulation - cart should manage its own data
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-16|18-24"}
+# Clean: Tell objects what to do
+class ShoppingCart:
+    def __init__(self):
+        self.items = []
+    
+    def add_item(self, item):
+        self.items.append(item)
+    
+    def calculate_total(self):
+        # Cart knows how to calculate its own total
+        return sum(item.price * item.quantity for item in self.items)
+    
+    def apply_discount(self, discount_percentage):
+        # Cart manages its own discount logic
+        total = self.calculate_total()
+        discount = total * (discount_percentage / 100)
+        return total - discount
+
+class CheckoutService:
+    def process_checkout(self, cart, discount_percentage=0):
+        # Tell cart what to do, don't ask for its data
+        if discount_percentage > 0:
+            return cart.apply_discount(discount_percentage)
+        else:
+            return cart.calculate_total()
+
+# Benefits:
+# - Better encapsulation
+# - Cart is responsible for its own data
+# - Easier to change cart implementation
+# - Less coupling between classes
+```
+:::
+::::
+
+## Keep It Simple, Stupid (KISS)
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-22"}
+# Code Smell: Overly complex solution
+def validate_email(email):
+    # Complex regex that's hard to understand and maintain
+    import re
+    
+    # RFC 5322 compliant email regex (simplified version)
+    pattern = r'''
+        ^(?:[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*|
+        "(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|
+        \\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@
+        (?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)*[a-zA-Z0-9]
+        (?:[a-zA-Z0-9-]*[a-zA-Z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|
+        1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|
+        1[0-9][0-9]|[1-9]?[0-9])|[a-zA-Z0-9-]*[a-zA-Z0-9]:
+        (?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|
+        \\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$
+    '''
+    
+    if re.match(pattern, email, re.VERBOSE):
+        return True
+    return False
+
+# Problem: Overly complex for 99% of use cases
+# Hard to understand, debug, or modify
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-10|12-20"}
+# Clean: Simple solution that works for most cases
+def validate_email(email):
+    # Simple check that handles 99% of real-world cases
+    if not email or '@' not in email:
+        return False
+    
+    local, domain = email.rsplit('@', 1)
+    
+    # Basic checks
+    if not local or not domain:
+        return False
+    
+    # Check for valid characters and structure
+    if '.' not in domain:
+        return False
+    
+    # Additional simple validations
+    if '..' in email or email.startswith('.') or email.endswith('.'):
+        return False
+    
+    return True
+
+# For production use, consider:
+# - Using a well-tested library (e.g., email-validator)
+# - Sending a confirmation email (only way to truly validate)
+
+# Benefits:
+# - Easy to understand and maintain
+# - Covers most real-world cases
+# - Can be enhanced if needed
+# - Clear intent
+```
+:::
+::::
+
+## Feature Envy
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|8-14|16-19"}
+# Code Smell: Feature Envy
+class Customer:
+    def __init__(self, name, address, phone):
+        self.name = name
+        self.address = address
+        self.phone = phone
+
+class InvoiceService:
+    def generate_customer_summary(self, customer):
+        # This method is more interested in Customer data than its own
+        full_address = f"{customer.address.street}, {customer.address.city}"
+        contact_info = f"{customer.name} - {customer.phone}"
+        formatted_address = f"Address: {full_address}"
+        return f"{contact_info}\n{formatted_address}"
+    
+    def format_customer_for_display(self, customer):
+        # Another method obsessed with Customer's internals
+        return f"{customer.name.upper()} ({customer.address.city})"
+
+# Problem: InvoiceService knows too much about Customer structure
+# Methods belong more to Customer than InvoiceService
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|8-16|18-25"}
+# Clean: Move Methods to Appropriate Class
+class Customer:
+    def __init__(self, name, address, phone):
+        self.name = name
+        self.address = address
+        self.phone = phone
+    
+    def get_contact_summary(self):
+        # Method belongs here - it knows Customer's structure
+        full_address = f"{self.address.street}, {self.address.city}"
+        contact_info = f"{self.name} - {self.phone}"
+        formatted_address = f"Address: {full_address}"
+        return f"{contact_info}\n{formatted_address}"
+    
+    def get_display_name(self):
+        return f"{self.name.upper()} ({self.address.city})"
+
+class InvoiceService:
+    def generate_customer_summary(self, customer):
+        # Now delegates to Customer - proper encapsulation
+        return customer.get_contact_summary()
+    
+    def format_customer_for_display(self, customer):
+        return customer.get_display_name()
+    
+    def calculate_invoice_total(self, line_items):
+        # InvoiceService focuses on its own responsibilities
+        return sum(item.price * item.quantity for item in line_items)
+
+# Benefits: Better encapsulation, methods are where they belong
+# Each class focuses on its own data and behavior
+```
+:::
+::::
+
+---
+
+
 # SOLID Principle
 
 ## Single Responsibility Principle (SRP)
 
-A class should have only one reason to change, meaning that a class should only have one job or responsibility. This makes the system easier to understand and maintain.
+A class should have only one responsibility and one reason to change.
 
 :::: {.columns}
 
@@ -111,7 +774,7 @@ report_gen = ReportGenerator()
 
 ## Open/Closed Principle (OCP)
 
-Software entities (classes, modules, functions, etc.) should be open for extension but closed for modification. This means you should be able to add new functionality without changing existing code, which helps to prevent bugs and reduce the risk of introducing new issues.
+Software entities should be open for extension but closed for modification. You should be able to add new functionality without changing existing code.
 
 :::: {.columns}
 
@@ -183,7 +846,7 @@ class Triangle(Shape):
 
 ## Liskov Substitution Principle (LSP)
 
-Objects of a superclass should be replaceable with objects of a subclass without affecting the correctness of the program. This means that subclasses should extend the behavior of the superclass without changing its expected behavior.
+Objects of a superclass should be replaceable with objects of its subclasses without breaking the program.
 
 :::: {.columns}
 
@@ -266,7 +929,7 @@ make_flying_bird_fly(sparrow)  # Works
 
 ## Interface Segregation Principle (ISP)
 
-Clients should not be forced to depend on interfaces they do not use. This means that you should create smaller, more specific interfaces rather than a large, general-purpose interface.
+Clients should not be forced to depend on interfaces they do not use.
 
 :::: {.columns}
 
@@ -457,6 +1120,7 @@ processor2 = OrderProcessor(postgres_db, sms_service)
 ```
 :::
 ::::
+
 
 # Iterator
 
