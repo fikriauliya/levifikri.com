@@ -1366,7 +1366,16 @@ processor2 = OrderProcessor(postgres_db, sms_service)
 
 # Iterator
 
----
+## Use Case
+
+Use the Iterator pattern when:
+
+- You need to traverse complex data structures (trees, graphs) without exposing their internal representation
+- You want to provide multiple ways to traverse the same collection
+- You need to support lazy evaluation of large datasets
+- You want to implement foreach-style loops in languages that don't have them built-in
+
+## Animation
 
 <iframe width="100%" height="100%" src="examples/iterator/00-animation.html" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
@@ -1742,6 +1751,15 @@ for file_path in iterate_files("/some/path"):
 
 # Observer
 
+## Use Case
+
+Use the Observer pattern when:
+
+- Multiple objects need to be notified when another object changes state
+- You need to maintain consistency between related objects without tight coupling
+- You want to broadcast events to multiple listeners (publish-subscribe)
+- Building reactive UIs where views update automatically when data changes
+
 ## Simple Example
 
 :::: {.columns}
@@ -1862,7 +1880,14 @@ function Counter() {
 
 # State Machine
 
----
+## Use Case
+
+Use the State Machine pattern when:
+
+- An object's behavior depends on its state and must change at runtime
+- You have complex conditional logic based on an object's state
+- State transitions follow specific rules that need to be enforced
+- Building workflow systems, game character behaviors, or protocol implementations
 
 ## Traffic Light Example
 
@@ -2095,7 +2120,14 @@ end
 
 # Factory
 
----
+## Use Case
+
+Use the Factory pattern when:
+
+- You need to create objects without specifying their exact classes
+- The creation logic is complex or varies based on conditions
+- You want to centralize object creation for better maintenance
+- Different environments require different implementations of the same interface
 
 ## Database Connection Example
 
@@ -2176,7 +2208,14 @@ print(db.connect())
 
 # Builder
 
----
+## Use Case
+
+Use the Builder pattern when:
+
+- Creating complex objects with many optional parameters
+- You need to create different representations of the same object
+- Construction process must allow different representations
+- Building fluent interfaces for better readability (method chaining)
 
 ## SQL Query Example
 
@@ -2344,7 +2383,14 @@ val layout = UIBuilder(context)
 
 # Singleton
 
----
+## Use Case
+
+Use the Singleton pattern when:
+
+- Exactly one instance of a class must exist throughout the application
+- You need global access to a single resource (database connection, config)
+- Resource creation is expensive and should happen only once
+- Coordinating actions across the system (logging, caching)
 
 ## Configuration Manager Example
 
@@ -2416,7 +2462,14 @@ print(id(config1), id(config2))  # Same object ID
 
 # Decorator
 
----
+## Use Case
+
+Use the Decorator pattern when:
+
+- You need to add responsibilities to objects dynamically
+- Extension by subclassing is impractical (explosion of subclasses)
+- You want to add/remove features at runtime
+- Multiple independent extensions need to be combined
 
 ## Coffee Shop Example
 
@@ -2704,7 +2757,14 @@ function ProductList() {
 
 # Proxy
 
----
+## Use Case
+
+Use the Proxy pattern when:
+
+- You need to control access to an object (security proxy)
+- The real object is expensive to create or access (virtual proxy)
+- You want to add caching without changing the original object
+- Remote objects need local representation (remote proxy)
 
 ## API Caching Example
 
@@ -2783,7 +2843,14 @@ print(proxy.get_weather("London"))  # Fast (cache hit)
 
 # Adapter
 
----
+## Use Case
+
+Use the Adapter pattern when:
+
+- You need to use an existing class with an incompatible interface
+- You want to create a reusable class that cooperates with unrelated classes
+- Multiple sources need to be accessed through a common interface
+- Integrating third-party libraries or legacy code
 
 ## Payment Gateway Example
 
@@ -2883,7 +2950,14 @@ for name, gateway in gateways.items():
 
 # Composite
 
----
+## Use Case
+
+Use the Composite pattern when:
+
+- You need to represent part-whole hierarchies of objects
+- Clients should treat individual objects and compositions uniformly
+- Building tree structures like file systems, UI components, or org charts
+- Operations need to be performed recursively over a structure
 
 ## File System Example
 
@@ -3035,7 +3109,14 @@ function App() {
 
 # Chain of Responsibility
 
----
+## Use Case
+
+Use the Chain of Responsibility pattern when:
+
+- Multiple objects can handle a request, but the handler isn't known beforehand
+- You want to issue a request without specifying the receiver explicitly
+- The set of handlers should be specified dynamically
+- Building middleware pipelines, event bubbling, or approval workflows
 
 ## Event Handling Example
 
@@ -3174,7 +3255,14 @@ app.get('/api/data', (req, res) => {
 
 # Command
 
----
+## Use Case
+
+Use the Command pattern when:
+
+- You need to parameterize objects with operations
+- You want to queue, log, or undo/redo operations
+- Building macro recording, job queues, or transactional systems
+- Decoupling the sender of a request from its receiver
 
 ## Text Editor Example
 
@@ -3334,7 +3422,14 @@ store.dispatch(addTodo('Learn Command Pattern'));
 
 # Strategy
 
----
+## Use Case
+
+Use the Strategy pattern when:
+
+- You have multiple algorithms for a specific task
+- You want to switch algorithms at runtime
+- Algorithms are complex and should be encapsulated
+- Avoiding conditional statements for selecting behaviors
 
 ## Sorting Example
 
@@ -3418,7 +3513,14 @@ popular_first = products.sort_products()
 
 # Template Method
 
----
+## Use Case
+
+Use the Template Method pattern when:
+
+- You have an algorithm with invariant parts and variable parts
+- Subclasses should extend only certain steps of an algorithm
+- You want to control the extension points in your code
+- Common behavior should be centralized to avoid code duplication
 
 ## Data Mining Example
 
@@ -3573,7 +3675,14 @@ class DataFetcher extends React.Component {
 
 # Visitor
 
----
+## Use Case
+
+Use the Visitor pattern when:
+
+- You need to perform operations on elements of a complex object structure
+- Many unrelated operations need to be performed on objects
+- The object structure rarely changes but operations change frequently
+- You want to gather related operations into a single class
 
 ## File System Operations Example
 
@@ -3703,7 +3812,14 @@ print(searcher.results)  # ['main.py']
 
 # Dependency Injection
 
----
+## Use Case
+
+Use Dependency Injection when:
+
+- You want to reduce coupling between classes
+- Testing requires mocking external dependencies
+- Different implementations might be needed in different contexts
+- Following the Dependency Inversion Principle (SOLID)
 
 ## Service Example
 
@@ -3996,7 +4112,14 @@ Effect.runSync(program);
 
 # DSL (Domain-Specific Language)
 
----
+## Use Case
+
+Use a DSL when:
+
+- You need to express complex domain logic in a readable way
+- Non-programmers need to understand or write business rules
+- You want to create a mini-language for a specific problem domain
+- Building configuration files, query builders, or testing frameworks
 
 ## Query Builder DSL
 
