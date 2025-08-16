@@ -32,6 +32,8 @@ website:
           href: "slides/state-of-ai-2025/index.html"
         - text: "Vibe Coding @2025"
           href: "slides/vibe-coding-2025/index.html"
+        - text: "Design Patterns"
+          href: "slides/design-patterns/index.qmd"
       - text: "---"
       - section: "Demystifying Rust"
         contents: "rust/*.ipynb"
