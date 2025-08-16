@@ -736,7 +736,7 @@ class PaymentProcessor:
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-14|16-26"}
+```{.python code-line-numbers="|11-12,19-20|13-16,21-26"}
 # Code Smell: Asking for data instead of telling to do
 class ShoppingCart:
     def __init__(self):
@@ -770,7 +770,7 @@ class CheckoutService:
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-16|18-24"}
+```{.python code-line-numbers="|9-17|21,23,25"}
 # Clean: Tell objects what to do
 class ShoppingCart:
     def __init__(self):
@@ -811,7 +811,7 @@ class CheckoutService:
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-22"}
+```{.python code-line-numbers="|7-17"}
 # Code Smell: Overly complex solution
 def validate_email(email):
     # Complex regex that's hard to understand and maintain
@@ -840,7 +840,7 @@ def validate_email(email):
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-10|12-20"}
+```{.python code-line-numbers="|2-21"}
 # Clean: Simple solution that works for most cases
 def validate_email(email):
     # Simple check that handles 99% of real-world cases
@@ -881,7 +881,7 @@ def validate_email(email):
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|8-14|16-19"}
+```{.python code-line-numbers="|11-14,18"}
 # Code Smell: Feature Envy
 class Customer:
     def __init__(self, name, address, phone):
@@ -907,7 +907,7 @@ class InvoiceService:
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|8-16|18-25"}
+```{.python code-line-numbers="|8-16|21,24"}
 # Clean: Move Methods to Appropriate Class
 class Customer:
     def __init__(self, name, address, phone):
@@ -943,8 +943,6 @@ class InvoiceService:
 :::
 ::::
 
----
-
 
 # SOLID Principle
 
@@ -955,7 +953,7 @@ A class should have only one responsibility and one reason to change.
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-15|17-19"}
+```{.python code-line-numbers="|6,10,14,18|22,23"}
 # Violates SRP - Multiple responsibilities
 class UserManager:
     def __init__(self):
@@ -983,7 +981,7 @@ class UserManager:
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-6|8-12|14-18"}
+```{.python code-line-numbers="|2,9,13,17|27,28"}
 # Follows SRP - Single responsibility per class
 class UserManager:
     def __init__(self):
@@ -1023,7 +1021,7 @@ Software entities should be open for extension but closed for modification. You 
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|6-15|17-19"}
+```{.python code-line-numbers="|6-11|12-14"}
 # Violates OCP - Must modify existing code for new shapes
 class AreaCalculator:
     def calculate_area(self, shapes):
@@ -1046,7 +1044,7 @@ class AreaCalculator:
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-5|7-17|19-26"}
+```{.python code-line-numbers="|6|9,17|14-15,21-22|25-26|28-29"}
 # Follows OCP - Open for extension, closed for modification
 from abc import ABC, abstractmethod
 
@@ -1095,7 +1093,7 @@ Objects of a superclass should be replaceable with objects of its subclasses wit
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|7-12|14-19"}
+```{.python code-line-numbers="|2-3,9-10|11-12|18-19|23"}
 # Violates LSP - Penguin changes expected behavior
 class Bird:
     def fly(self):
@@ -1123,7 +1121,7 @@ make_bird_fly(penguin)  # Exception: Penguins can't fly!
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-6|8-18|20-29"}
+```{.python code-line-numbers="|9,16|23,26|31,34|38-43"}
 # Follows LSP - Subclasses are substitutable
 from abc import ABC, abstractmethod
 
@@ -1178,7 +1176,7 @@ Clients should not be forced to depend on interfaces they do not use.
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-11|13-22"}
+```{.python code-line-numbers="|4,6,10,14|17,18,21,24|27,28,31,35|31-33,35-37"}
 # Violates ISP - Fat interface with unused methods
 from abc import ABC, abstractmethod
 
@@ -1222,7 +1220,7 @@ class RobotWorker(Worker):
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-6|8-16|18-27"}
+```{.python code-line-numbers="|4,6|9,11|14,16|19,20,23,26|29,30|36,39|42-50"}
 # Follows ISP - Segregated interfaces
 from abc import ABC, abstractmethod
 
@@ -1279,12 +1277,12 @@ work_manager.manage_lunch(human)  # Works
 
 ## Dependency Inversion Principle (DIP)
 
-High-level modules should not depend on low-level modules. Both should depend on abstractions (e.g., interfaces). This helps to reduce the coupling between different parts of the system and makes it easier to change or replace components.
+High-level modules should not depend on low-level modules. Both should depend on abstractions.
 
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|8-11|13-18"}
+```{.python code-line-numbers="|13-14|20-21"}
 # Violates DIP - High-level depends on low-level concrete classes
 class MySQLDatabase:
     def save(self, data):
@@ -1311,7 +1309,7 @@ class OrderProcessor:
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-9|11-20|22-31"}
+```{.python code-line-numbers="|4,9|25,29,33,37|15,17,18|41-44|46-49"}
 # Follows DIP - Both depend on abstractions
 from abc import ABC, abstractmethod
 
@@ -1410,7 +1408,7 @@ books.clear()  # This breaks encapsulation!
 
 ::: {.column width="50%"}
 
-```{.python code-line-numbers="|11-14|32-36"}
+```{.python code-line-numbers="|11-14|19-24|32-34|37-43"}
 class BookShelf:
     def __init__(self):
         self._books = []
@@ -1446,6 +1444,15 @@ shelf.add_book("Refactoring")
 for book in shelf:
     print(f"Book: {book}")
 
+# Using while loop with iterator manually
+iterator = iter(shelf)
+while True:
+    try:
+        book = next(iterator)
+        print(f"Manual iteration: {book}")
+    except StopIteration:
+        break
+
 # Can't modify internal state - better encapsulation!
 ```
 :::
@@ -1456,7 +1463,7 @@ for book in shelf:
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|27-29"}
+```{.python code-line-numbers="|9-19|27-29"}
 class TreeNode:
     def __init__(self, value):
         self.value = value
@@ -1490,7 +1497,7 @@ print(values)  # ['A', 'B', 'D', 'C']
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|37-39|41-44"}
+```{.python code-line-numbers="|13-29|37-39|41-44"}
 class TreeNode:
     def __init__(self, value):
         self.value = value
@@ -1639,7 +1646,7 @@ second_file = next(iterator)
 
 ## `yield`
 
-```{.python code-line-numbers="|3,5,7"}
+```{.python code-line-numbers="|14|3|15|5|16|7"}
 def simple_counter():
     print("Starting...")
     yield 1
@@ -1683,7 +1690,7 @@ print(list(with_yield()))  # [1, 2, 3]
 
 ## Lazy Generator
 
-```{.python code-line-numbers="|3-5|11-14"}
+```{.python code-line-numbers="|3-5|8-9|11-14"}
 def count_up_to(max_num):
     count = 1
     while count <= max_num:
@@ -1740,7 +1747,7 @@ for file_path in iterate_files("/some/path"):
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|9-11|22-23"}
+```{.python code-line-numbers="|22-23|7-8|9-11|13-14,17-18"}
 class WeatherStation:
     def __init__(self):
         self.temperature = 0
@@ -1768,7 +1775,7 @@ weather.set_temperature(25)
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|6-7, 9-10|18|29-32"}
+```{.python code-line-numbers="|29-31|6-7|32|16-17|18|12-14|20-22,24-26"}
 class WeatherStation:
     def __init__(self):
         self.temperature = 0
@@ -1810,7 +1817,7 @@ weather.set_temperature(25)
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.javascript code-line-numbers="|13|6-9"}
+```{.javascript code-line-numbers="|13|6-10|15"}
 // When you call useState, React internally does something like this:
 function useState(initialValue) {
   let state = initialValue;
@@ -1831,7 +1838,7 @@ function useState(initialValue) {
 :::
 
 ::: {.column width="50%"}
-```{.javascript code-line-numbers="|2|7"}
+```{.javascript code-line-numbers="|2|7|6"}
 function Counter() {
   const [count, setCount] = useState(0);
   
@@ -1853,9 +1860,7 @@ function Counter() {
 - Google Sheet / Excel
 - Notification System
 
----
-
-# State
+# State Machine
 
 ---
 
