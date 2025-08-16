@@ -531,88 +531,1851 @@ function Counter() {
 
 # State
 
-<!-- TODO -->
+---
+
+## Traffic Light Example
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|6-15|17-26"}
+class TrafficLight:
+    def __init__(self):
+        self.state = "RED"
+    
+    def change(self):
+        # Messy conditional logic
+        if self.state == "RED":
+            self.state = "GREEN"
+            print("Green light - Go!")
+        elif self.state == "GREEN":
+            self.state = "YELLOW"
+            print("Yellow light - Slow down!")
+        elif self.state == "YELLOW":
+            self.state = "RED"
+            print("Red light - Stop!")
+    
+    def pedestrian_request(self):
+        # More complex logic spread across method
+        if self.state == "RED":
+            print("Already red, safe to cross")
+        elif self.state == "GREEN":
+            print("Will change to red soon")
+            self.state = "YELLOW"
+        elif self.state == "YELLOW":
+            print("Wait for red light")
+
+# Usage
+light = TrafficLight()
+light.change()  # Green light - Go!
+light.change()  # Yellow light - Slow down!
+light.pedestrian_request()  # Wait for red light
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|29-31|33-37|39-43"}
+class TrafficLightState:
+    def change(self, light):
+        pass
+    
+    def pedestrian_request(self, light):
+        pass
+
+class RedState(TrafficLightState):
+    def change(self, light):
+        print("Green light - Go!")
+        light.state = GreenState()
+    
+    def pedestrian_request(self, light):
+        print("Already red, safe to cross")
+
+class GreenState(TrafficLightState):
+    def change(self, light):
+        print("Yellow light - Slow down!")
+        light.state = YellowState()
+    
+    def pedestrian_request(self, light):
+        print("Will change to red soon")
+        light.state = YellowState()
+
+class YellowState(TrafficLightState):
+    def change(self, light):
+        print("Red light - Stop!")
+        light.state = RedState()
+    
+    def pedestrian_request(self, light):
+        print("Wait for red light")
+
+class TrafficLight:
+    def __init__(self):
+        self.state = RedState()
+    
+    def change(self):
+        self.state.change(self)
+    
+    def pedestrian_request(self):
+        self.state.pedestrian_request(self)
+
+# Usage - same interface
+light = TrafficLight()
+light.change()  # Green light - Go!
+light.change()  # Yellow light - Slow down!
+light.pedestrian_request()  # Wait for red light
+```
+:::
+::::
 
 # Factory
 
-<!-- TODO -->
+---
+
+## Database Connection Example
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|8-17|25-27"}
+class PostgresConnection:
+    def connect(self):
+        return "Connected to PostgreSQL"
+
+class MySQLConnection:
+    def connect(self):
+        return "Connected to MySQL"
+
+def create_database(db_type):
+    # Tight coupling - client knows all implementations
+    if db_type == "postgres":
+        return PostgresConnection()
+    elif db_type == "mysql":
+        return MySQLConnection()
+    else:
+        raise ValueError("Unknown database type")
+
+# Usage
+db = create_database("postgres")
+print(db.connect())
+
+# Problem: Adding new DB requires modifying this function
+# Also, what if we need different configs for test/prod?
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|17-22|24-29|37-39"}
+from abc import ABC, abstractmethod
+
+class Database(ABC):
+    @abstractmethod
+    def connect(self):
+        pass
+
+class PostgresConnection(Database):
+    def connect(self):
+        return "Connected to PostgreSQL"
+
+class MySQLConnection(Database):
+    def connect(self):
+        return "Connected to MySQL"
+
+class DatabaseFactory:
+    @staticmethod
+    def create_database(db_type: str) -> Database:
+        factories = {
+            "postgres": PostgresConnection,
+            "mysql": MySQLConnection,
+        }
+        
+        db_class = factories.get(db_type)
+        if not db_class:
+            raise ValueError(f"Unknown database type: {db_type}")
+        
+        return db_class()
+
+# Can also have specialized factories
+class TestDatabaseFactory:
+    @staticmethod
+    def create_database(db_type: str) -> Database:
+        # Return test-specific implementations
+        pass
+
+# Usage
+db = DatabaseFactory.create_database("postgres")
+print(db.connect())
+```
+:::
+::::
 
 # Builder
 
-<!-- TODO -->
+---
+
+## SQL Query Example
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-8|14-16"}
+# Without Builder - Complex constructor
+query = SQLQuery(
+    select=["id", "name", "email"],
+    from_table="users",
+    joins=[{"type": "LEFT", "table": "orders", "on": "users.id = orders.user_id"}],
+    where=["age > 18", "status = 'active'"],
+    order_by="created_at DESC",
+    limit=10
+)
+
+# Or string concatenation - error prone
+query = "SELECT id, name, email "
+query += "FROM users "
+query += "LEFT JOIN orders ON users.id = orders.user_id "
+query += "WHERE age > 18 AND status = 'active' "
+query += "ORDER BY created_at DESC LIMIT 10"
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|29-35|37-39"}
+class SQLQueryBuilder:
+    def __init__(self):
+        self.query_parts = {
+            "select": [],
+            "from": "",
+            "joins": [],
+            "where": [],
+            "order_by": "",
+            "limit": None
+        }
+    
+    def select(self, *columns):
+        self.query_parts["select"].extend(columns)
+        return self
+    
+    def from_table(self, table):
+        self.query_parts["from"] = table
+        return self
+    
+    def left_join(self, table, on):
+        self.query_parts["joins"].append(f"LEFT JOIN {table} ON {on}")
+        return self
+    
+    def where(self, condition):
+        self.query_parts["where"].append(condition)
+        return self
+    
+    def order_by(self, column, direction="ASC"):
+        self.query_parts["order_by"] = f"{column} {direction}"
+        return self
+    
+    def limit(self, count):
+        self.query_parts["limit"] = count
+        return self
+    
+    def build(self):
+        # Build the actual query string
+        parts = []
+        
+        if self.query_parts["select"]:
+            parts.append(f"SELECT {', '.join(self.query_parts['select'])}")
+        
+        if self.query_parts["from"]:
+            parts.append(f"FROM {self.query_parts['from']}")
+        
+        for join in self.query_parts["joins"]:
+            parts.append(join)
+        
+        if self.query_parts["where"]:
+            parts.append(f"WHERE {' AND '.join(self.query_parts['where'])}")
+        
+        if self.query_parts["order_by"]:
+            parts.append(f"ORDER BY {self.query_parts['order_by']}")
+        
+        if self.query_parts["limit"]:
+            parts.append(f"LIMIT {self.query_parts['limit']}")
+        
+        return " ".join(parts)
+
+# Usage - Fluent interface
+query = (SQLQueryBuilder()
+    .select("id", "name", "email")
+    .from_table("users")
+    .left_join("orders", "users.id = orders.user_id")
+    .where("age > 18")
+    .where("status = 'active'")
+    .order_by("created_at", "DESC")
+    .limit(10)
+    .build()
+)
+
+print(query)
+```
+:::
+::::
 
 # Singleton
 
-<!-- TODO -->
+---
+
+## Configuration Manager Example
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|13-15|17-19"}
+class ConfigManager:
+    def __init__(self):
+        print("Loading configuration...")
+        self.config = self._load_config()
+    
+    def _load_config(self):
+        # Expensive operation
+        return {"api_key": "secret", "debug": True}
+    
+    def get(self, key):
+        return self.config.get(key)
+
+# Problem: Multiple instances
+config1 = ConfigManager()  # Loading configuration...
+config2 = ConfigManager()  # Loading configuration... (again!)
+
+# Wastes resources, may cause inconsistencies
+print(config1 is config2)  # False
+print(id(config1), id(config2))  # Different objects
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-3,5-10|23-25"}
+class ConfigManager:
+    _instance = None
+    _initialized = False
+    
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+    
+    def __init__(self):
+        # Ensure initialization happens only once
+        if not ConfigManager._initialized:
+            print("Loading configuration...")
+            self.config = self._load_config()
+            ConfigManager._initialized = True
+    
+    def _load_config(self):
+        # Expensive operation
+        return {"api_key": "secret", "debug": True}
+    
+    def get(self, key):
+        return self.config.get(key)
+
+# Usage - Same instance always
+config1 = ConfigManager()  # Loading configuration...
+config2 = ConfigManager()  # No loading, returns same instance
+
+print(config1 is config2)  # True
+print(id(config1), id(config2))  # Same object ID
+
+# Modern Python alternative: modules are singletons
+# config.py
+# _config = load_config()
+# def get(key): return _config.get(key)
+```
+:::
+::::
 
 # Decorator
 
-<!-- TODO -->
+---
+
+## Coffee Shop Example
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-11|13-22"}
+# Without Decorator - Class explosion
+class Coffee:
+    def cost(self):
+        return 5
+
+class CoffeeWithMilk:
+    def cost(self):
+        return 5 + 2  # base + milk
+
+class CoffeeWithMilkAndSugar:
+    def cost(self):
+        return 5 + 2 + 1  # base + milk + sugar
+
+class CoffeeWithMilkAndSugarAndWhip:
+    def cost(self):
+        return 5 + 2 + 1 + 3  # base + milk + sugar + whip
+
+# Problem: Need a new class for every combination!
+# What about CoffeeWithSugar? CoffeeWithWhip?
+# What about double milk? Triple sugar?
+
+coffee = CoffeeWithMilkAndSugar()
+print(f"Cost: ${coffee.cost()}")
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|18-22|31-35"}
+from abc import ABC, abstractmethod
+
+class Beverage(ABC):
+    @abstractmethod
+    def cost(self):
+        pass
+
+class Coffee(Beverage):
+    def cost(self):
+        return 5
+
+class BeverageDecorator(Beverage):
+    def __init__(self, beverage: Beverage):
+        self.beverage = beverage
+    
+    def cost(self):
+        return self.beverage.cost()
+
+class Milk(BeverageDecorator):
+    def cost(self):
+        return self.beverage.cost() + 2
+
+class Sugar(BeverageDecorator):
+    def cost(self):
+        return self.beverage.cost() + 1
+
+class Whip(BeverageDecorator):
+    def cost(self):
+        return self.beverage.cost() + 3
+
+# Usage - Flexible composition
+coffee = Coffee()
+coffee = Milk(coffee)
+coffee = Sugar(coffee)
+coffee = Whip(coffee)
+
+print(f"Cost: ${coffee.cost()}")  # $11
+
+# Can create any combination dynamically
+double_milk_coffee = Milk(Milk(Coffee()))
+print(f"Double milk: ${double_milk_coffee.cost()}")  # $9
+```
+:::
+::::
 
 ## Python Decorators
 
-<!-- TODO -->
+:::: {.columns}
 
-## HoC
+::: {.column width="50%"}
+```{.python code-line-numbers="|5-7|9-11"}
+# Manual decoration
+def greet(name):
+    return f"Hello, {name}!"
 
-<!-- TODO -->
+# Add logging manually
+def greet_with_logging(name):
+    print(f"Calling greet with {name}")
+    result = f"Hello, {name}!"
+    print(f"Returned: {result}")
+    return result
 
-## Hooks
+# Add timing manually
+import time
 
-<!-- TODO -->
+def greet_with_timing(name):
+    start = time.time()
+    result = f"Hello, {name}!"
+    end = time.time()
+    print(f"Took {end - start:.4f} seconds")
+    return result
+
+# Problem: Lots of duplicate code
+# What if we want both logging AND timing?
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-9|11-18|27|28"}
+# Decorator functions
+def log_calls(func):
+    def wrapper(*args, **kwargs):
+        print(f"Calling {func.__name__} with {args}")
+        result = func(*args, **kwargs)
+        print(f"Returned: {result}")
+        return result
+    return wrapper
+
+def time_it(func):
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        print(f"{func.__name__} took {end - start:.4f} seconds")
+        return result
+    return wrapper
+
+# Apply decorators
+@log_calls
+@time_it
+def greet(name):
+    return f"Hello, {name}!"
+
+# Usage
+greet("Alice")
+# Calling greet with ('Alice',)
+# greet took 0.0001 seconds
+# Returned: Hello, Alice!
+
+# Decorators compose - order matters!
+@time_it
+@log_calls
+def farewell(name):
+    return f"Goodbye, {name}!"
+```
+:::
+::::
+
+## HoC (Higher-Order Components)
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.javascript code-line-numbers="|2-11|13-22"}
+// Repetitive authentication logic
+function UserProfile({ user }) {
+  if (!user) {
+    return <div>Please login to view profile</div>;
+  }
+  
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      <p>{user.email}</p>
+    </div>
+  );
+}
+
+function UserSettings({ user }) {
+  if (!user) {
+    return <div>Please login to access settings</div>;
+  }
+  
+  return (
+    <div>
+      <h2>Settings for {user.name}</h2>
+      {/* Settings UI */}
+    </div>
+  );
+}
+
+// Problem: Duplicate auth check in every component
+```
+:::
+
+::: {.column width="50%"}
+```{.javascript code-line-numbers="|2-14|17-22|24-29"}
+// Higher-Order Component
+function withAuth(WrappedComponent) {
+  return function AuthenticatedComponent(props) {
+    const { user } = props;
+    
+    if (!user) {
+      return <div>Please login to continue</div>;
+    }
+    
+    // Pass through all props to wrapped component
+    return <WrappedComponent {...props} />;
+  };
+}
+
+// Clean components without auth logic
+function UserProfile({ user }) {
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      <p>{user.email}</p>
+    </div>
+  );
+}
+
+function UserSettings({ user }) {
+  return (
+    <div>
+      <h2>Settings for {user.name}</h2>
+      {/* Settings UI */}
+    </div>
+  );
+}
+
+// Apply the HoC
+const ProtectedProfile = withAuth(UserProfile);
+const ProtectedSettings = withAuth(UserSettings);
+
+// Usage
+<ProtectedProfile user={currentUser} />
+<ProtectedSettings user={currentUser} />
+```
+:::
+::::
+
+## Hooks (Custom Hooks as Decorators)
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.javascript code-line-numbers="|2-16|18-32"}
+// Repetitive data fetching logic
+function UserList() {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  useEffect(() => {
+    fetch('/api/users')
+      .then(res => res.json())
+      .then(data => {
+        setUsers(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err);
+        setLoading(false);
+      });
+  }, []);
+  
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+  
+  return (
+    <ul>
+      {users.map(user => (
+        <li key={user.id}>{user.name}</li>
+      ))}
+    </ul>
+  );
+}
+
+// Similar pattern repeated in ProductList, OrderList, etc.
+```
+:::
+
+::: {.column width="50%"}
+```{.javascript code-line-numbers="|2-21|24-31"}
+// Custom Hook - Reusable data fetching logic
+function useFetch(url) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  useEffect(() => {
+    setLoading(true);
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        setData(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err);
+        setLoading(false);
+      });
+  }, [url]);
+  
+  return { data, loading, error };
+}
+
+// Clean component using the hook
+function UserList() {
+  const { data: users, loading, error } = useFetch('/api/users');
+  
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+  
+  return (
+    <ul>
+      {users.map(user => (
+        <li key={user.id}>{user.name}</li>
+      ))}
+    </ul>
+  );
+}
+
+// Reuse for any data fetching
+function ProductList() {
+  const { data: products, loading, error } = useFetch('/api/products');
+  // Similar UI logic
+}
+```
+:::
+::::
 
 # Proxy
 
-<!-- TODO -->
+---
+
+## API Caching Example
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|7-10|17-19"}
+import requests
+import time
+
+class WeatherAPI:
+    def __init__(self):
+        self.api_key = "secret_key"
+    
+    def get_weather(self, city):
+        print(f"Fetching weather for {city}...")
+        # Simulated API call
+        time.sleep(1)  # Slow network call
+        return f"Sunny in {city}, 25°C"
+
+# Direct usage
+api = WeatherAPI()
+
+# Problem: Every call hits the API
+print(api.get_weather("London"))  # Slow
+print(api.get_weather("London"))  # Slow again!
+print(api.get_weather("London"))  # Still slow!
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|18-28|35-38"}
+import requests
+import time
+from datetime import datetime, timedelta
+
+class WeatherAPI:
+    def __init__(self):
+        self.api_key = "secret_key"
+    
+    def get_weather(self, city):
+        print(f"Fetching weather for {city}...")
+        # Simulated API call
+        time.sleep(1)  # Slow network call
+        return f"Sunny in {city}, 25°C"
+
+class CachedWeatherProxy:
+    def __init__(self, weather_api):
+        self.api = weather_api
+        self.cache = {}
+        self.cache_duration = timedelta(minutes=10)
+    
+    def get_weather(self, city):
+        # Check cache first
+        if city in self.cache:
+            cached_data, timestamp = self.cache[city]
+            if datetime.now() - timestamp < self.cache_duration:
+                print(f"Returning cached weather for {city}")
+                return cached_data
+        
+        # Cache miss - call real API
+        result = self.api.get_weather(city)
+        self.cache[city] = (result, datetime.now())
+        return result
+
+# Usage with proxy
+api = WeatherAPI()
+proxy = CachedWeatherProxy(api)
+
+print(proxy.get_weather("London"))  # Slow (cache miss)
+print(proxy.get_weather("London"))  # Fast (cache hit)
+print(proxy.get_weather("London"))  # Fast (cache hit)
+```
+:::
+::::
 
 # Adapter
 
-<!-- TODO -->
+---
+
+## Payment Gateway Example
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-8|10-16|21-27"}
+# Different payment gateways with different interfaces
+class PayPalGateway:
+    def make_payment(self, amount):
+        print(f"PayPal: Processing ${amount}")
+        return {"status": "success", "transaction_id": "PP123"}
+    
+    def get_balance(self):
+        return 1000.00
+
+class StripeGateway:
+    def charge(self, amount_cents):
+        print(f"Stripe: Charging {amount_cents} cents")
+        return {"outcome": "succeeded", "id": "ST456"}
+    
+    def retrieve_balance(self):
+        return {"available": 150000}  # in cents
+
+# Problem: Different interfaces for same functionality
+# Client code needs to know specifics of each gateway
+
+# PayPal uses dollars
+paypal = PayPalGateway()
+paypal.make_payment(100)
+
+# Stripe uses cents and different method names
+stripe = StripeGateway()
+stripe.charge(10000)  # $100 in cents
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|5-9|11-18|20-29|37-41"}
+from abc import ABC, abstractmethod
+
+# Common interface
+class PaymentGateway(ABC):
+    @abstractmethod
+    def process_payment(self, amount):
+        pass
+    
+    @abstractmethod
+    def get_balance(self):
+        pass
+
+# Adapter for PayPal
+class PayPalAdapter(PaymentGateway):
+    def __init__(self):
+        self.gateway = PayPalGateway()
+    
+    def process_payment(self, amount):
+        result = self.gateway.make_payment(amount)
+        return {
+            "success": result["status"] == "success",
+            "transaction_id": result["transaction_id"]
+        }
+    
+    def get_balance(self):
+        return self.gateway.get_balance()
+
+# Adapter for Stripe
+class StripeAdapter(PaymentGateway):
+    def __init__(self):
+        self.gateway = StripeGateway()
+    
+    def process_payment(self, amount):
+        amount_cents = int(amount * 100)
+        result = self.gateway.charge(amount_cents)
+        return {
+            "success": result["outcome"] == "succeeded",
+            "transaction_id": result["id"]
+        }
+    
+    def get_balance(self):
+        balance_cents = self.gateway.retrieve_balance()["available"]
+        return balance_cents / 100
+
+# Uniform usage
+gateways = {
+    "paypal": PayPalAdapter(),
+    "stripe": StripeAdapter()
+}
+
+for name, gateway in gateways.items():
+    print(f"\n{name}:")
+    gateway.process_payment(100)
+    print(f"Balance: ${gateway.get_balance()}")
+```
+:::
+::::
 
 # Composite
 
-<!-- TODO -->
+---
 
-## React Component
+## File System Example
 
-<!-- TODO -->
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|17-26|28-32"}
+class File:
+    def __init__(self, name, size):
+        self.name = name
+        self.size = size
+    
+    def get_size(self):
+        return self.size
+
+class Directory:
+    def __init__(self, name):
+        self.name = name
+        self.files = []
+        self.directories = []
+    
+    def add_file(self, file):
+        self.files.append(file)
+    
+    def add_directory(self, directory):
+        self.directories.append(directory)
+    
+    def get_size(self):
+        # Complex logic to handle both files and directories
+        total = 0
+        for file in self.files:
+            total += file.get_size()
+        for directory in self.directories:
+            total += directory.get_size()
+        return total
+
+# Usage is awkward - different methods for files vs directories
+root = Directory("root")
+root.add_file(File("readme.txt", 100))
+root.add_directory(Directory("src"))
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-7|9-16|18-30|38-42"}
+# Common interface
+class FileSystemItem:
+    def __init__(self, name):
+        self.name = name
+    
+    def get_size(self):
+        raise NotImplementedError
+
+class File(FileSystemItem):
+    def __init__(self, name, size):
+        super().__init__(name)
+        self._size = size
+    
+    def get_size(self):
+        print(f"File '{self.name}': {self._size} bytes")
+        return self._size
+
+class Directory(FileSystemItem):
+    def __init__(self, name):
+        super().__init__(name)
+        self.children = []  # Can contain files OR directories
+    
+    def add(self, item):
+        self.children.append(item)
+    
+    def get_size(self):
+        total = sum(child.get_size() for child in self.children)
+        print(f"Directory '{self.name}': {total} bytes total")
+        return total
+
+# Clean, uniform usage
+root = Directory("root")
+root.add(File("readme.txt", 100))
+
+src = Directory("src")
+src.add(File("main.py", 500))
+src.add(File("utils.py", 300))
+
+root.add(src)
+
+# Recursive calculation works seamlessly
+total_size = root.get_size()
+# File 'readme.txt': 100 bytes
+# File 'main.py': 500 bytes
+# File 'utils.py': 300 bytes
+# Directory 'src': 800 bytes total
+# Directory 'root': 900 bytes total
+```
+:::
+::::
+
+## React Component Tree
+
+```{.javascript code-line-numbers="|23-27|29-34"}
+// Composite pattern in React - components can contain other components
+function Button({ children, onClick }) {
+  return (
+    <button onClick={onClick}>
+      {children}
+    </button>
+  );
+}
+
+function Icon({ name }) {
+  return <i className={`icon-${name}`} />;
+}
+
+function Text({ children }) {
+  return <span>{children}</span>;
+}
+
+// Composite usage - Button can contain any combination of children
+function App() {
+  return (
+    <div>
+      {/* Leaf component */}
+      <Button onClick={() => alert('clicked')}>
+        Simple Text
+      </Button>
+      
+      {/* Composite component */}
+      <Button onClick={() => alert('saved')}>
+        <Icon name="save" />
+        <Text>Save Document</Text>
+      </Button>
+      
+      {/* Deeply nested composition */}
+      <Button onClick={() => alert('complex')}>
+        <div>
+          <Icon name="folder" />
+          <Text>Files</Text>
+          <div>
+            <Icon name="arrow-down" />
+          </div>
+        </div>
+      </Button>
+    </div>
+  );
+}
+
+// All components follow same interface - they're all React components
+// Can be composed in any configuration
+```
 
 # Chain of Responsibility
 
-<!-- TODO -->
+---
 
-## Middleware
+## Event Handling Example
 
-<!-- TODO -->
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-18|20-22"}
+# Without Chain of Responsibility - Complex if/else
+def handle_purchase(amount, user):
+    if amount < 100:
+        if user.is_vip:
+            discount = 0.2
+        else:
+            discount = 0.1
+        print(f"Small purchase: {discount*100}% discount")
+    elif amount < 1000:
+        if user.is_vip:
+            discount = 0.3
+        else:
+            discount = 0.15
+        print(f"Medium purchase: {discount*100}% discount")
+    else:
+        # Manager approval needed
+        if user.credit_score > 700:
+            print("Large purchase approved by system")
+        else:
+            print("Large purchase needs manual approval")
+
+# Hard to extend with new rules
+handle_purchase(50, regular_user)
+handle_purchase(500, vip_user)
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|8-12|14-24|41-47"}
+from abc import ABC, abstractmethod
+
+class PurchaseHandler(ABC):
+    def __init__(self):
+        self.next_handler = None
+    
+    def set_next(self, handler):
+        self.next_handler = handler
+        return handler
+    
+    @abstractmethod
+    def handle(self, amount, user):
+        if self.next_handler:
+            return self.next_handler.handle(amount, user)
+
+class SmallPurchaseHandler(PurchaseHandler):
+    def handle(self, amount, user):
+        if amount < 100:
+            discount = 0.2 if user.is_vip else 0.1
+            print(f"Small purchase: {discount*100}% discount")
+        else:
+            super().handle(amount, user)
+
+class MediumPurchaseHandler(PurchaseHandler):
+    def handle(self, amount, user):
+        if amount < 1000:
+            discount = 0.3 if user.is_vip else 0.15
+            print(f"Medium purchase: {discount*100}% discount")
+        else:
+            super().handle(amount, user)
+
+class LargePurchaseHandler(PurchaseHandler):
+    def handle(self, amount, user):
+        if user.credit_score > 700:
+            print("Large purchase approved by system")
+        else:
+            print("Large purchase needs manual approval")
+
+# Build the chain
+small = SmallPurchaseHandler()
+medium = MediumPurchaseHandler()
+large = LargePurchaseHandler()
+
+small.set_next(medium).set_next(large)
+
+# Clean usage
+small.handle(50, regular_user)
+small.handle(500, vip_user)
+small.handle(5000, vip_user)
+```
+:::
+::::
+
+## Express.js Middleware
+
+```{.javascript code-line-numbers="|4-8|10-15|17-21|24-29"}
+const express = require('express');
+const app = express();
+
+// Authentication middleware
+function authenticate(req, res, next) {
+  if (req.headers.authorization) {
+    req.user = { id: 123, name: 'John' };
+    next(); // Pass to next handler
+  } else {
+    res.status(401).send('Unauthorized');
+  }
+}
+
+// Logging middleware
+function logger(req, res, next) {
+  console.log(`${req.method} ${req.path} - ${new Date()}`);
+  next(); // Pass to next handler
+}
+
+// Rate limiting middleware
+function rateLimit(req, res, next) {
+  if (checkRateLimit(req.ip)) {
+    next(); // Pass to next handler
+  } else {
+    res.status(429).send('Too many requests');
+  }
+}
+
+// Chain middlewares together
+app.use(logger);           // First in chain
+app.use(authenticate);     // Second in chain
+app.use(rateLimit);       // Third in chain
+
+// Route handler (end of chain)
+app.get('/api/data', (req, res) => {
+  res.json({ 
+    message: 'Success',
+    user: req.user // Set by authenticate middleware
+  });
+});
+
+// Request flows through: logger → authenticate → rateLimit → route handler
+```
 
 # Command
 
-<!-- TODO -->
+---
 
-## Redux
+## Text Editor Example
 
-<!-- TODO -->
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|8-17|19-21"}
+class TextEditor:
+    def __init__(self):
+        self.content = ""
+        self.history = []  # For undo, but complex
+    
+    def type_text(self, text):
+        self.history.append(('type', text))
+        self.content += text
+    
+    def delete_text(self, length):
+        self.history.append(('delete', length))
+        self.content = self.content[:-length]
+    
+    def undo(self):
+        # Complex logic to reverse different operations
+        if self.history:
+            action, value = self.history.pop()
+            if action == 'type':
+                self.content = self.content[:-len(value)]
+            elif action == 'delete':
+                # Oops, we lost the deleted text!
+                pass
+
+# Problem: Undo is complex and buggy
+editor = TextEditor()
+editor.type_text("Hello")
+editor.delete_text(2)
+editor.undo()  # Can't restore deleted text
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-7|9-19|35-40"}
+# Command interface
+class Command:
+    def execute(self):
+        pass
+    
+    def undo(self):
+        pass
+
+class TypeCommand(Command):
+    def __init__(self, editor, text):
+        self.editor = editor
+        self.text = text
+    
+    def execute(self):
+        self.editor.content += self.text
+    
+    def undo(self):
+        length = len(self.text)
+        self.editor.content = self.editor.content[:-length]
+
+class DeleteCommand(Command):
+    def __init__(self, editor, length):
+        self.editor = editor
+        self.length = length
+        self.deleted_text = ""
+    
+    def execute(self):
+        self.deleted_text = self.editor.content[-self.length:]
+        self.editor.content = self.editor.content[:-self.length]
+    
+    def undo(self):
+        self.editor.content += self.deleted_text
+
+class TextEditor:
+    def __init__(self):
+        self.content = ""
+        self.history = []
+    
+    def execute_command(self, command):
+        command.execute()
+        self.history.append(command)
+    
+    def undo(self):
+        if self.history:
+            command = self.history.pop()
+            command.undo()
+
+# Clean usage with perfect undo
+editor = TextEditor()
+editor.execute_command(TypeCommand(editor, "Hello"))
+editor.execute_command(DeleteCommand(editor, 2))
+print(editor.content)  # "Hel"
+editor.undo()
+print(editor.content)  # "Hello"
+```
+:::
+::::
+
+## Redux Actions
+
+```{.javascript code-line-numbers="|2-11|14-24|27-38"}
+// Redux implements Command pattern with actions
+// Actions are command objects
+const INCREMENT = 'INCREMENT';
+const DECREMENT = 'DECREMENT';
+const ADD_TODO = 'ADD_TODO';
+
+// Action creators (command factories)
+function increment(amount = 1) {
+  return {
+    type: INCREMENT,
+    payload: amount
+  };
+}
+
+function addTodo(text) {
+  return {
+    type: ADD_TODO,
+    payload: {
+      id: Date.now(),
+      text,
+      completed: false
+    }
+  };
+}
+
+// Reducer (command handler)
+function reducer(state = initialState, action) {
+  switch (action.type) {
+    case INCREMENT:
+      return { ...state, count: state.count + action.payload };
+    
+    case ADD_TODO:
+      return { ...state, todos: [...state.todos, action.payload] };
+    
+    default:
+      return state;
+  }
+}
+
+// Dispatch commands
+store.dispatch(increment(5));
+store.dispatch(addTodo('Learn Command Pattern'));
+
+// Time travel debugging - Redux DevTools can replay commands
+// Undo/Redo by keeping history of dispatched actions
+```
 
 # Strategy
 
-<!-- TODO -->
+---
+
+## Sorting Example
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-13|19-21"}
+class ProductList:
+    def __init__(self, products):
+        self.products = products
+    
+    def sort_products(self, sort_type):
+        # Big if/else block for different strategies
+        if sort_type == "price":
+            return sorted(self.products, key=lambda p: p.price)
+        elif sort_type == "name":
+            return sorted(self.products, key=lambda p: p.name)
+        elif sort_type == "rating":
+            return sorted(self.products, key=lambda p: p.rating, reverse=True)
+        elif sort_type == "date":
+            return sorted(self.products, key=lambda p: p.date, reverse=True)
+        else:
+            raise ValueError("Unknown sort type")
+
+# Problem: Adding new sort requires modifying the method
+products = ProductList(product_data)
+sorted_list = products.sort_products("price")
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-7|9-27|35-39"}
+# Strategy interface
+class SortStrategy:
+    def sort(self, products):
+        raise NotImplementedError
+
+# Concrete strategies
+class PriceSortStrategy(SortStrategy):
+    def sort(self, products):
+        return sorted(products, key=lambda p: p.price)
+
+class NameSortStrategy(SortStrategy):
+    def sort(self, products):
+        return sorted(products, key=lambda p: p.name)
+
+class RatingSortStrategy(SortStrategy):
+    def sort(self, products):
+        return sorted(products, key=lambda p: p.rating, reverse=True)
+
+class PopularitySortStrategy(SortStrategy):
+    def sort(self, products):
+        # Complex sorting by views and purchases
+        return sorted(products, 
+                     key=lambda p: p.views * 0.3 + p.purchases * 0.7,
+                     reverse=True)
+
+class ProductList:
+    def __init__(self, products):
+        self.products = products
+        self.sort_strategy = None
+    
+    def set_sort_strategy(self, strategy):
+        self.sort_strategy = strategy
+    
+    def sort_products(self):
+        if self.sort_strategy:
+            return self.sort_strategy.sort(self.products)
+        return self.products
+
+# Clean usage - easy to add new strategies
+products = ProductList(product_data)
+products.set_sort_strategy(PriceSortStrategy())
+cheap_first = products.sort_products()
+
+products.set_sort_strategy(PopularitySortStrategy())
+popular_first = products.sort_products()
+```
+:::
+::::
 
 # Template Method
 
-<!-- TODO -->
+---
 
-## React Class Component
+## Data Mining Example
 
-<!-- TODO -->
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-15|17-30"}
+# Without Template Method - Duplicate code
+class CSVDataMiner:
+    def mine_data(self, path):
+        # Step 1: Open file
+        file = open(path, 'r')
+        
+        # Step 2: Extract data
+        raw_data = file.read()
+        data = self.parse_csv(raw_data)
+        
+        # Step 3: Analyze
+        result = self.analyze(data)
+        
+        # Step 4: Send report
+        self.send_report(result)
+        file.close()
+
+class JSONDataMiner:
+    def mine_data(self, path):
+        # Step 1: Open file (duplicate)
+        file = open(path, 'r')
+        
+        # Step 2: Extract data (different)
+        raw_data = file.read()
+        data = self.parse_json(raw_data)
+        
+        # Step 3: Analyze (duplicate)
+        result = self.analyze(data)
+        
+        # Step 4: Send report (duplicate)
+        self.send_report(result)
+        file.close()
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|4-18|21-25|27-31"}
+from abc import ABC, abstractmethod
+
+class DataMiner(ABC):
+    def mine_data(self, path):
+        """Template method defining the algorithm"""
+        # Step 1: Open resource
+        self.open_file(path)
+        
+        # Step 2: Extract - different per subclass
+        raw_data = self.extract_data()
+        
+        # Step 3: Parse - different per subclass
+        data = self.parse_data(raw_data)
+        
+        # Step 4: Analyze - common
+        result = self.analyze(data)
+        
+        # Step 5: Send report - common
+        self.send_report(result)
+        
+        # Step 6: Cleanup
+        self.close_file()
+    
+    def open_file(self, path):
+        self.file = open(path, 'r')
+    
+    def close_file(self):
+        self.file.close()
+    
+    @abstractmethod
+    def extract_data(self):
+        pass
+    
+    @abstractmethod
+    def parse_data(self, raw_data):
+        pass
+    
+    def analyze(self, data):
+        # Common analysis logic
+        return {"count": len(data), "data": data}
+    
+    def send_report(self, result):
+        print(f"Report: {result}")
+
+class CSVDataMiner(DataMiner):
+    def extract_data(self):
+        return self.file.read()
+    
+    def parse_data(self, raw_data):
+        # CSV-specific parsing
+        return raw_data.split(',')
+
+class JSONDataMiner(DataMiner):
+    def extract_data(self):
+        return self.file.read()
+    
+    def parse_data(self, raw_data):
+        import json
+        return json.loads(raw_data)
+
+# Usage - algorithm structure is enforced
+csv_miner = CSVDataMiner()
+csv_miner.mine_data("data.csv")
+
+json_miner = JSONDataMiner()
+json_miner.mine_data("data.json")
+```
+:::
+::::
+
+## React Class Component Lifecycle
+
+```{.javascript code-line-numbers="|3-8|10-13|15-18|20-26"}
+// React Class Components follow Template Method pattern
+// React defines the lifecycle template, you override specific methods
+class DataFetcher extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { data: null, loading: true };
+  }
+  
+  // Override: Called after component mounts
+  componentDidMount() {
+    fetch(this.props.url)
+      .then(res => res.json())
+      .then(data => this.setState({ data, loading: false }));
+  }
+  
+  // Override: Called before unmounting
+  componentWillUnmount() {
+    // Cleanup subscriptions, timers, etc.
+    this.cancelRequests();
+  }
+  
+  // Override: Define how to render
+  render() {
+    if (this.state.loading) return <div>Loading...</div>;
+    
+    return <div>{this.state.data}</div>;
+  }
+}
+
+// React calls these methods in specific order:
+// constructor → render → componentDidMount → render (on state change) → componentWillUnmount
+
+// You don't control the flow, just fill in the blanks
+```
 
 # Visitor
 
-<!-- TODO -->
+---
+
+## File System Operations Example
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|7-11|19-23"}
+# Without Visitor - Operations mixed with structure
+class File:
+    def __init__(self, name, size):
+        self.name = name
+        self.size = size
+    
+    def get_size(self):
+        return self.size
+    
+    def search(self, keyword):
+        return keyword in self.name
+    
+    def compress(self):
+        return f"Compressed {self.name}"
+
+class Directory:
+    def __init__(self, name):
+        self.name = name
+        self.children = []
+    
+    def get_size(self):
+        return sum(child.get_size() for child in self.children)
+    
+    def search(self, keyword):
+        results = []
+        if keyword in self.name:
+            results.append(self.name)
+        for child in self.children:
+            results.extend(child.search(keyword))
+        return results
+    
+    def compress(self):
+        compressed = [child.compress() for child in self.children]
+        return f"Compressed dir {self.name}: {compressed}"
+
+# Problem: Adding new operations requires changing all classes
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|13-16|18-29|43-47"}
+from abc import ABC, abstractmethod
+
+# Element classes - structure
+class FileSystemElement(ABC):
+    @abstractmethod
+    def accept(self, visitor):
+        pass
+
+class File(FileSystemElement):
+    def __init__(self, name, size):
+        self.name = name
+        self.size = size
+    
+    def accept(self, visitor):
+        return visitor.visit_file(self)
+
+class Directory(FileSystemElement):
+    def __init__(self, name):
+        self.name = name
+        self.children = []
+    
+    def accept(self, visitor):
+        return visitor.visit_directory(self)
+
+# Visitor interface
+class Visitor(ABC):
+    @abstractmethod
+    def visit_file(self, file):
+        pass
+    
+    @abstractmethod
+    def visit_directory(self, directory):
+        pass
+
+# Concrete visitors - operations
+class SizeCalculator(Visitor):
+    def visit_file(self, file):
+        return file.size
+    
+    def visit_directory(self, directory):
+        total = 0
+        for child in directory.children:
+            total += child.accept(self)
+        return total
+
+class SearchVisitor(Visitor):
+    def __init__(self, keyword):
+        self.keyword = keyword
+        self.results = []
+    
+    def visit_file(self, file):
+        if self.keyword in file.name:
+            self.results.append(file.name)
+    
+    def visit_directory(self, directory):
+        if self.keyword in directory.name:
+            self.results.append(directory.name)
+        for child in directory.children:
+            child.accept(self)
+
+# Usage - Easy to add new operations
+root = Directory("root")
+root.children.append(File("readme.txt", 100))
+src = Directory("src")
+src.children.append(File("main.py", 500))
+root.children.append(src)
+
+# Calculate size
+size_calc = SizeCalculator()
+total_size = root.accept(size_calc)  # 600
+
+# Search
+searcher = SearchVisitor("main")
+root.accept(searcher)
+print(searcher.results)  # ['main.py']
+```
+:::
+::::
 
 # Dependency Injection
 
-<!-- TODO -->
+---
 
-# DSL
+## Service Example
 
-<!-- TODO -->
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|3-5|14-16"}
+# Without DI - Hard dependencies
+class EmailService:
+    def __init__(self):
+        # Hardcoded SMTP configuration
+        self.smtp_host = "smtp.gmail.com"
+        self.smtp_port = 587
+    
+    def send(self, to, subject, body):
+        print(f"Sending email to {to}: {subject}")
+
+class UserService:
+    def __init__(self):
+        # Creates its own dependencies
+        self.email_service = EmailService()
+        self.database = PostgresDatabase()
+        self.logger = FileLogger("/var/log/app.log")
+    
+    def register_user(self, email, name):
+        # Save to database
+        user = self.database.save({"email": email, "name": name})
+        
+        # Send welcome email
+        self.email_service.send(email, "Welcome!", f"Hi {name}")
+        
+        # Log the action
+        self.logger.log(f"User registered: {email}")
+
+# Hard to test - can't mock dependencies
+# Hard to change - what if we want different email service?
+user_service = UserService()
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|12-16|35-41"}
+# With DI - Dependencies injected
+from abc import ABC, abstractmethod
+
+class EmailService(ABC):
+    @abstractmethod
+    def send(self, to, subject, body):
+        pass
+
+class SMTPEmailService(EmailService):
+    def __init__(self, host, port):
+        self.host = host
+        self.port = port
+    
+    def send(self, to, subject, body):
+        print(f"SMTP: Sending to {to} via {self.host}")
+
+class UserService:
+    def __init__(self, email_service, database, logger):
+        # Dependencies injected from outside
+        self.email_service = email_service
+        self.database = database
+        self.logger = logger
+    
+    def register_user(self, email, name):
+        # Same logic, but with injected dependencies
+        user = self.database.save({"email": email, "name": name})
+        self.email_service.send(email, "Welcome!", f"Hi {name}")
+        self.logger.log(f"User registered: {email}")
+
+# Flexible configuration
+email = SMTPEmailService("smtp.company.com", 587)
+db = PostgresDatabase(connection_string)
+logger = CloudLogger(api_key)
+
+user_service = UserService(email, db, logger)
+
+# Easy to test with mocks
+test_email = MockEmailService()
+test_db = InMemoryDatabase()
+test_logger = ConsoleLogger()
+
+test_service = UserService(test_email, test_db, test_logger)
+```
+:::
+::::
+
+# DSL (Domain-Specific Language)
+
+---
+
+## Query Builder DSL
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|2-12"}
+# Without DSL - Verbose and error-prone
+query = {
+    "collection": "users",
+    "filters": [
+        {"field": "age", "operator": ">", "value": 18},
+        {"field": "status", "operator": "=", "value": "active"}
+    ],
+    "sort": {"field": "created_at", "order": "desc"},
+    "limit": 10
+}
+
+result = database.execute(query)
+
+# SQL string concatenation - dangerous
+sql = "SELECT * FROM users WHERE age > 18 AND status = 'active' ORDER BY created_at DESC LIMIT 10"
+```
+:::
+
+::: {.column width="50%"}
+```{.python code-line-numbers="|18-20|22-27"}
+# With DSL - Readable and safe
+class Query:
+    def __init__(self, collection):
+        self.collection = collection
+        self.filters = []
+        self.sort_field = None
+        self.limit_value = None
+    
+    def where(self, field, operator, value):
+        self.filters.append((field, operator, value))
+        return self
+    
+    def order_by(self, field, direction="asc"):
+        self.sort_field = (field, direction)
+        return self
+    
+    def limit(self, count):
+        self.limit_value = count
+        return self
+    
+    def execute(self):
+        # Convert to database query safely
+        return database.execute(self._build_query())
+
+# Fluent, readable syntax
+result = (Query("users")
+    .where("age", ">", 18)
+    .where("status", "=", "active")
+    .order_by("created_at", "desc")
+    .limit(10)
+    .execute()
+)
+
+# Can extend with more domain-specific methods
+class UserQuery(Query):
+    def active_adults(self):
+        return self.where("age", ">=", 18).where("status", "=", "active")
+    
+    def recent(self, days=7):
+        cutoff = datetime.now() - timedelta(days=days)
+        return self.where("created_at", ">", cutoff)
+
+# Even more readable
+recent_active_adults = (UserQuery("users")
+    .active_adults()
+    .recent(30)
+    .limit(100)
+    .execute()
+)
+```
+:::
+::::
