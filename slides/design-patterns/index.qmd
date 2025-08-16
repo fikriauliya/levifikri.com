@@ -2281,9 +2281,66 @@ print(query)
 :::
 ::::
 
-## UI Builder Factory
+## UI Builder
 
-<!-- TODO: Android UI -->
+```{.kotlin code-line-numbers="|7,13,16,22,25,27,30,32|49-56"}
+class UIBuilder(private val context: Context) {
+    private val components = mutableListOf<View>()
+    private var layoutParams: ViewGroup.LayoutParams? = null
+    private var backgroundColor: Int? = null
+    private var padding: Int = 0
+    
+    fun addText(text: String, size: Float = 16f): UIBuilder {
+        val textView = TextView(context).apply {
+            this.text = text
+            textSize = size
+        }
+        components.add(textView)
+        return this
+    }
+    
+    fun addButton(text: String, onClick: () -> Unit): UIBuilder {
+        val button = Button(context).apply {
+            this.text = text
+            setOnClickListener { onClick() }
+        }
+        components.add(button)
+        return this
+    }
+    
+    fun setBackground(color: Int): UIBuilder {
+        backgroundColor = color
+        return this
+    }
+    
+    fun setPadding(padding: Int): UIBuilder {
+        this.padding = padding
+        return this
+    }
+    
+    fun build(): LinearLayout {
+        return LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            backgroundColor?.let { setBackgroundColor(it) }
+            if (padding > 0) setPadding(padding, padding, padding, padding)
+            
+            components.forEach { component ->
+                addView(component)
+            }
+        }
+    }
+}
+
+// Usage - Clean and readable
+val layout = UIBuilder(context)
+    .addText("Welcome to the App", 24f)
+    .addText("Please choose an option:")
+    .addButton("Start") { startProcess() }
+    .addButton("Settings") { openSettings() }
+    .setBackground(Color.WHITE)
+    .setPadding(16)
+    .build()
+```
 
 # Singleton
 
@@ -2294,7 +2351,7 @@ print(query)
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|13-15|17-19"}
+```{.python code-line-numbers="|6-8|18-19"}
 class ConfigManager:
     def __init__(self):
         print("Loading configuration...")
@@ -2318,7 +2375,7 @@ print(id(config1), id(config2))  # Different objects
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-3,5-10|23-25"}
+```{.python code-line-numbers="|12-15|17-19|25-26|29"}
 class ConfigManager:
     _instance = None
     _initialized = False
@@ -2366,7 +2423,7 @@ print(id(config1), id(config2))  # Same object ID
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-11|13-22"}
+```{.python code-line-numbers="|2-4|6|10|14|18-20"}
 # Without Decorator - Class explosion
 class Coffee:
     def cost(self):
@@ -2394,7 +2451,7 @@ print(f"Cost: ${coffee.cost()}")
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|18-22|31-35"}
+```{.python code-line-numbers="|3|8,12|19,23,27|32-35|40"}
 from abc import ABC, abstractmethod
 
 class Beverage(ABC):
@@ -2445,7 +2502,7 @@ print(f"Double milk: ${double_milk_coffee.cost()}")  # $9
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|5-7|9-11"}
+```{.python code-line-numbers="|2|5-10|15-20|22-23"}
 # Manual decoration
 def greet(name):
     return f"Hello, {name}!"
@@ -2473,7 +2530,7 @@ def greet_with_timing(name):
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-9|11-18|27|28"}
+```{.python code-line-numbers="|2-8|10-17|20-21|26-29"}
 # Decorator functions
 def log_calls(func):
     def wrapper(*args, **kwargs):
@@ -2518,7 +2575,7 @@ def farewell(name):
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.javascript code-line-numbers="|2-11|13-22"}
+```{.javascript code-line-numbers="|3-5|16-18"}
 // Repetitive authentication logic
 function UserProfile({ user }) {
   if (!user) {
@@ -2551,7 +2608,7 @@ function UserSettings({ user }) {
 :::
 
 ::: {.column width="50%"}
-```{.javascript code-line-numbers="|2-14|17-22|24-29"}
+```{.javascript code-line-numbers="|2,6-8|10-11|16,25|35-36"}
 // Higher-Order Component
 function withAuth(WrappedComponent) {
   return function AuthenticatedComponent(props) {
@@ -2598,47 +2655,7 @@ const ProtectedSettings = withAuth(UserSettings);
 
 ## Hooks (Custom Hooks as Decorators)
 
-:::: {.columns}
-
-::: {.column width="50%"}
-```{.javascript code-line-numbers="|2-16|18-32"}
-// Repetitive data fetching logic
-function UserList() {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  
-  useEffect(() => {
-    fetch('/api/users')
-      .then(res => res.json())
-      .then(data => {
-        setUsers(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        setError(err);
-        setLoading(false);
-      });
-  }, []);
-  
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
-  
-  return (
-    <ul>
-      {users.map(user => (
-        <li key={user.id}>{user.name}</li>
-      ))}
-    </ul>
-  );
-}
-
-// Similar pattern repeated in ProductList, OrderList, etc.
-```
-:::
-
-::: {.column width="50%"}
-```{.javascript code-line-numbers="|2-21|24-31"}
+```{.javascript code-line-numbers="|2|26|42"}
 // Custom Hook - Reusable data fetching logic
 function useFetch(url) {
   const [data, setData] = useState(null);
@@ -2684,8 +2701,6 @@ function ProductList() {
   // Similar UI logic
 }
 ```
-:::
-::::
 
 # Proxy
 
@@ -2696,7 +2711,7 @@ function ProductList() {
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|7-10|17-19"}
+```{.python code-line-numbers="|11|18-20"}
 import requests
 import time
 
@@ -2721,7 +2736,7 @@ print(api.get_weather("London"))  # Still slow!
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|18-28|35-38"}
+```{.python code-line-numbers="|15|22-27|30-32|35-36|38-40"}
 import requests
 import time
 from datetime import datetime, timedelta
@@ -2775,7 +2790,7 @@ print(proxy.get_weather("London"))  # Fast (cache hit)
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-8|10-16|21-27"}
+```{.python code-line-numbers="|1|2,3,7|10,11,15|22-23|26-27"}
 # Different payment gateways with different interfaces
 class PayPalGateway:
     def make_payment(self, amount):
@@ -2807,7 +2822,7 @@ stripe.charge(10000)  # $100 in cents
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|5-9|11-18|20-29|37-41"}
+```{.python code-line-numbers="|4,6,9|14,18,25|29,33,41|45-54"}
 from abc import ABC, abstractmethod
 
 # Common interface
@@ -2875,7 +2890,7 @@ for name, gateway in gateways.items():
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|17-26|28-32"}
+```{.python code-line-numbers="|6|21|22-28|30,32,33"}
 class File:
     def __init__(self, name, size):
         self.name = name
@@ -2913,7 +2928,7 @@ root.add_directory(Directory("src"))
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-7|9-16|18-30|38-42"}
+```{.python code-line-numbers="|2,6|9,14|18,26|26-29|33,36,37,39|42"}
 # Common interface
 class FileSystemItem:
     def __init__(self, name):
@@ -2967,7 +2982,7 @@ total_size = root.get_size()
 
 ## React Component Tree
 
-```{.javascript code-line-numbers="|23-27|29-34"}
+```{.javascript code-line-numbers="|18|21|23,28,34|47,48"}
 // Composite pattern in React - components can contain other components
 function Button({ children, onClick }) {
   return (
@@ -3027,7 +3042,7 @@ function App() {
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-18|20-22"}
+```{.python}
 # Without Chain of Responsibility - Complex if/else
 def handle_purchase(amount, user):
     if amount < 100:
@@ -3056,7 +3071,7 @@ handle_purchase(500, vip_user)
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|8-12|14-24|41-47"}
+```{.python}
 from abc import ABC, abstractmethod
 
 class PurchaseHandler(ABC):
@@ -3112,7 +3127,7 @@ small.handle(5000, vip_user)
 
 ## Express.js Middleware
 
-```{.javascript code-line-numbers="|4-8|10-15|17-21|24-29"}
+```{.javascript}
 const express = require('express');
 const app = express();
 
@@ -3166,7 +3181,7 @@ app.get('/api/data', (req, res) => {
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|8-17|19-21"}
+```{.python}
 class TextEditor:
     def __init__(self):
         self.content = ""
@@ -3199,7 +3214,7 @@ editor.undo()  # Can't restore deleted text
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-7|9-19|35-40"}
+```{.python}
 # Command interface
 class Command:
     def execute(self):
@@ -3260,7 +3275,7 @@ print(editor.content)  # "Hello"
 
 ## Redux Actions
 
-```{.javascript code-line-numbers="|2-11|14-24|27-38"}
+```{.javascript}
 // Redux implements Command pattern with actions
 // Actions are command objects
 const INCREMENT = 'INCREMENT';
@@ -3317,7 +3332,7 @@ store.dispatch(addTodo('Learn Command Pattern'));
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-13|19-21"}
+```{.python}
 class ProductList:
     def __init__(self, products):
         self.products = products
@@ -3342,7 +3357,7 @@ sorted_list = products.sort_products("price")
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-7|9-27|35-39"}
+```{.python}
 # Strategy interface
 class SortStrategy:
     def sort(self, products):
@@ -3401,7 +3416,7 @@ popular_first = products.sort_products()
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-15|17-30"}
+```{.python}
 # Without Template Method - Duplicate code
 class CSVDataMiner:
     def mine_data(self, path):
@@ -3438,7 +3453,7 @@ class JSONDataMiner:
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|4-18|21-25|27-31"}
+```{.python}
 from abc import ABC, abstractmethod
 
 class DataMiner(ABC):
@@ -3511,7 +3526,7 @@ json_miner.mine_data("data.json")
 
 ## React Class Component Lifecycle
 
-```{.javascript code-line-numbers="|3-8|10-13|15-18|20-26"}
+```{.javascript}
 // React Class Components follow Template Method pattern
 // React defines the lifecycle template, you override specific methods
 class DataFetcher extends React.Component {
@@ -3556,7 +3571,7 @@ class DataFetcher extends React.Component {
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|7-11|19-23"}
+```{.python}
 # Without Visitor - Operations mixed with structure
 class File:
     def __init__(self, name, size):
@@ -3597,7 +3612,7 @@ class Directory:
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|13-16|18-29|43-47"}
+```{.python}
 from abc import ABC, abstractmethod
 
 # Element classes - structure
@@ -3686,7 +3701,7 @@ print(searcher.results)  # ['main.py']
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|3-5|14-16"}
+```{.python}
 # Without DI - Hard dependencies
 class EmailService:
     def __init__(self):
@@ -3721,7 +3736,7 @@ user_service = UserService()
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|12-16|35-41"}
+```{.python}
 # With DI - Dependencies injected
 from abc import ABC, abstractmethod
 
@@ -3773,7 +3788,7 @@ test_service = UserService(test_email, test_db, test_logger)
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.javascript code-line-numbers="|4-7|14-17"}
+```{.javascript}
 // Without DI - Hard dependencies
 function UserController() {
   // Controller creates its own dependencies
@@ -3795,7 +3810,7 @@ var controller = new UserController();
 :::
 
 ::: {.column width="50%"}
-```{.javascript code-line-numbers="|2-3|8-11|17-20"}
+```{.javascript}
 // With AngularJS DI - Dependencies injected
 function UserController($http, UserService, $log) {
   // Dependencies injected by Angular
@@ -3828,7 +3843,7 @@ angular.module('myApp')
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.java code-line-numbers="|4-7|13-15"}
+```{.java}
 // Without DI - Hard dependencies
 public class OrderService {
     // Creates its own dependencies
@@ -3850,7 +3865,7 @@ OrderService service = new OrderService();
 :::
 
 ::: {.column width="50%"}
-```{.java code-line-numbers="|2-5|11-14|20-24"}
+```{.java}
 // With Spring DI - Dependencies injected
 @Service
 public class OrderService {
@@ -3902,7 +3917,7 @@ class OrderServiceTest {
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.typescript code-line-numbers="|6-9|15-17"}
+```{.typescript}
 // Without DI - Hard dependencies
 import { HttpClient } from './http';
 import { Logger } from './logger';
@@ -3925,7 +3940,7 @@ userService.getUser('123');
 :::
 
 ::: {.column width="50%"}
-```{.typescript code-line-numbers="|4-7|9-15|23-28"}
+```{.typescript}
 // With Effect TS - Dependencies as services
 import { Effect, Context } from 'effect';
 
@@ -3979,7 +3994,7 @@ Effect.runSync(program);
 :::: {.columns}
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|2-12"}
+```{.python}
 # Without DSL - Verbose and error-prone
 query = {
     "collection": "users",
@@ -3999,7 +4014,7 @@ sql = "SELECT * FROM users WHERE age > 18 AND status = 'active' ORDER BY created
 :::
 
 ::: {.column width="50%"}
-```{.python code-line-numbers="|18-20|22-27"}
+```{.python}
 # With DSL - Readable and safe
 class Query:
     def __init__(self, collection):
@@ -4056,7 +4071,7 @@ recent_active_adults = (UserQuery("users")
 
 ## LINQ (Language Integrated Query)
 
-```{.csharp code-line-numbers="|2-8|10-15"}
+```{.csharp}
 // LINQ is a DSL for querying data in C#
 var products = new List<Product> 
 {
@@ -4085,7 +4100,7 @@ var cheapItems = from p in products
 
 ## LISP (Domain-Specific Language)
 
-```{.lisp code-line-numbers="|2-5|7-10"}
+```{.lisp}
 ;; LISP itself is a DSL for symbolic computation
 ;; Code as data - homoiconicity
 (defun factorial (n)
@@ -4111,7 +4126,7 @@ var cheapItems = from p in products
 
 ## Rust Macro (DSL)
 
-```{.rust code-line-numbers="|2-8|10-17"}
+```{.rust}
 // Rust macros allow creating domain-specific languages
 // Define a macro for creating HTML
 macro_rules! html {
