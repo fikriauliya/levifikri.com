@@ -8,6 +8,10 @@ format:
     embed-resources: false
     transition: slide
     background-transition: fade
+    scroll-view:
+        progress: true
+        activate: true
+  
 ---
 
 # Design Patterns in the Age of AI
