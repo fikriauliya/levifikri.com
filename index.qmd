@@ -1,0 +1,201 @@
+---
+title: ""
+page-layout: full
+sidebar: false
+toc: false
+---
+
+```{=html}
+<style>
+.hero-section {
+  text-align: center;
+  padding: 4rem 2rem 3rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.hero-section h1 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+  color: #1a1a2e;
+}
+.hero-tagline {
+  font-size: 1.15rem;
+  color: #0d9488;
+  font-weight: 500;
+  margin-bottom: 1.2rem;
+}
+.hero-intro {
+  font-size: 1.05rem;
+  color: #555;
+  line-height: 1.7;
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 1.5rem;
+}
+.social-links {
+  display: flex;
+  gap: 1.2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.social-links a {
+  color: #0d9488;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: color 0.2s;
+}
+.social-links a:hover { color: #0f766e; }
+
+.landing-section {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+.landing-section h2 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+  text-align: left;
+  color: #1a1a2e;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.2rem;
+}
+.lp-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.4rem;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: block;
+}
+.lp-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  border-color: #0d9488;
+}
+.lp-card .card-emoji { font-size: 1.6rem; margin-bottom: 0.4rem; }
+.lp-card .card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: #1a1a2e;
+}
+.lp-card .card-desc {
+  font-size: 0.9rem;
+  color: #666;
+  text-align: left;
+}
+
+.landing-footer {
+  text-align: center;
+  padding: 3rem 1rem 2rem;
+  color: #888;
+  font-size: 0.9rem;
+}
+.landing-footer .social-links { margin-top: 0.8rem; }
+.landing-footer .social-links a { color: #888; font-size: 0.85rem; }
+.landing-footer .social-links a:hover { color: #0d9488; }
+
+/* Hide sidebar toggle on landing page */
+body.fullcontent #quarto-sidebar, body.fullcontent .sidebar-toggle { display: none; }
+</style>
+
+<div class="hero-section">
+  <h1>Hi, I'm Levi 👋</h1>
+  <p class="hero-tagline">VP of Engineering · Polymath Learner · Builder</p>
+  <p class="hero-intro">
+    Passionate about learning, teaching, and building. This is my <a href="https://harrypotter.fandom.com/wiki/Pensieve">Pensieve</a> — a place to store thoughts and knowledge.
+  </p>
+  <div class="social-links">
+    <a href="https://twitter.com/_fikri_auliya">𝕏 Twitter</a>
+    <a href="https://github.com/fikriauliya">GitHub</a>
+    <a href="https://www.linkedin.com/in/pahleviauliya/">LinkedIn</a>
+    <a href="https://adplist.org/mentors/pahlevi-fikri-auliya">ADPList</a>
+  </div>
+</div>
+
+<div class="landing-section">
+  <h2>🚀 Projects & Experiments</h2>
+  <div class="card-grid">
+    <a class="lp-card" href="https://game.levifikri.com">
+      <div class="card-emoji">🎮</div>
+      <div class="card-title">Math Games</div>
+      <div class="card-desc">14+ interactive math & logic games for kids</div>
+    </a>
+    <a class="lp-card" href="https://viz.levifikri.com">
+      <div class="card-emoji">📊</div>
+      <div class="card-title">Algorithm Visualizations</div>
+      <div class="card-desc">See algorithms come alive</div>
+    </a>
+    <a class="lp-card" href="https://learn.levifikri.com">
+      <div class="card-emoji">📚</div>
+      <div class="card-title">Family Learning Journey</div>
+      <div class="card-desc">Growing together, one topic at a time</div>
+    </a>
+    <a class="lp-card" href="https://yusuf.levifikri.com">
+      <div class="card-emoji">👦</div>
+      <div class="card-title">Yusuf's Corner</div>
+      <div class="card-desc">My 10-year-old's personal space</div>
+    </a>
+  </div>
+</div>
+
+<div class="landing-section">
+  <h2>📖 Pensieve</h2>
+  <div class="card-grid">
+    <a class="lp-card" href="fun-visual-coding/introduction.html">
+      <div class="card-emoji">🎨</div>
+      <div class="card-title">Fun Visual Coding</div>
+      <div class="card-desc">Learn programming through creative visual projects</div>
+    </a>
+    <a class="lp-card" href="competitive-programming/introduction.html">
+      <div class="card-emoji">⚡</div>
+      <div class="card-title">Competitive Programming</div>
+      <div class="card-desc">Problem solving, algorithms & data structures</div>
+    </a>
+    <a class="lp-card" href="rust/introduction.html">
+      <div class="card-emoji">🦀</div>
+      <div class="card-title">Demystifying Rust</div>
+      <div class="card-desc">Understanding Rust from the ground up</div>
+    </a>
+  </div>
+</div>
+
+<div class="landing-section">
+  <h2>🎤 Talks & Presentations</h2>
+  <div class="card-grid">
+    <a class="lp-card" href="slides/state-of-ai-2025/index.html">
+      <div class="card-emoji">🤖</div>
+      <div class="card-title">AI & Education</div>
+      <div class="card-desc">State of AI in education, 2025</div>
+    </a>
+    <a class="lp-card" href="slides/vibe-coding-2025/index.html">
+      <div class="card-emoji">🎵</div>
+      <div class="card-title">Vibe Coding @2025</div>
+      <div class="card-desc">The art of coding with vibes</div>
+    </a>
+    <a class="lp-card" href="slides/design-patterns/index.html">
+      <div class="card-emoji">🏗️</div>
+      <div class="card-title">Design Patterns</div>
+      <div class="card-desc">Software design patterns explained</div>
+    </a>
+  </div>
+</div>
+
+<div class="landing-footer">
+  <p>Built with curiosity ✨</p>
+  <div class="social-links">
+    <a href="https://twitter.com/_fikri_auliya">Twitter</a>
+    <a href="https://github.com/fikriauliya">GitHub</a>
+    <a href="https://www.linkedin.com/in/pahleviauliya/">LinkedIn</a>
+    <a href="https://adplist.org/mentors/pahlevi-fikri-auliya">ADPList</a>
+  </div>
+</div>
+```
