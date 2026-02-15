@@ -5,6 +5,7 @@ project:
     - "slides/state-of-ai-2025/app.js"
     - "slides/state-of-ai-2025/assets/"
     - "slides/state-of-ai-2025/visualizations/"
+    - "slides/openclaw-2025/index.html"
 
 website:
   title: "Levi Fikri"
@@ -32,6 +33,8 @@ website:
           href: "slides/state-of-ai-2025/index.html"
         - text: "Vibe Coding @2025"
           href: "slides/vibe-coding-2025/index.html"
+        - text: "OpenClaw"
+          href: "slides/openclaw-2025/index.html"
         - text: "Design Patterns"
           href: "slides/design-patterns/index.qmd"
       - text: "---"
