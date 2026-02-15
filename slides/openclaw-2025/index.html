@@ -94,6 +94,123 @@
   }
 
   .reveal .r-stretch { max-height: 60vh; }
+
+  /* ===== Telegram Chat UI ===== */
+  .tg-phone {
+    width: 380px;
+    margin: 0 auto;
+    background: #0e1621;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    border: 2px solid #1e2d3d;
+    text-align: left;
+  }
+  .tg-header {
+    background: #17212b;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid #1e2d3d;
+  }
+  .tg-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e74c3c, #f39c12);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .tg-header-info { flex: 1; }
+  .tg-header-name { font-size: 14px; font-weight: 600; color: #fff; }
+  .tg-header-status { font-size: 11px; color: #6d8aa5; }
+  .tg-chat {
+    padding: 12px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 100px;
+  }
+  .tg-msg {
+    max-width: 85%;
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.45;
+    position: relative;
+    color: #fff;
+    word-wrap: break-word;
+  }
+  .tg-msg .tg-time {
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+    float: right;
+    margin-left: 8px;
+    margin-top: 4px;
+  }
+  .tg-msg.user {
+    align-self: flex-end;
+    background: #2b5278;
+    border-bottom-right-radius: 4px;
+  }
+  .tg-msg.bot {
+    align-self: flex-start;
+    background: #182533;
+    border-bottom-left-radius: 4px;
+  }
+  .tg-msg.bot .tg-sender {
+    font-size: 12px;
+    font-weight: 600;
+    color: #e74c3c;
+    margin-bottom: 3px;
+  }
+  .tg-typing {
+    align-self: flex-start;
+    font-size: 12px;
+    color: #6d8aa5;
+    padding: 4px 12px;
+    font-style: italic;
+  }
+  .tg-input {
+    background: #17212b;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-top: 1px solid #1e2d3d;
+  }
+  .tg-input-field {
+    flex: 1;
+    background: #0e1621;
+    border: 1px solid #1e2d3d;
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-size: 12px;
+    color: #6d8aa5;
+  }
+  .tg-send {
+    width: 32px; height: 32px;
+    background: #2b5278;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+
+  /* Two phone layout */
+  .tg-duo {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  .tg-duo .tg-phone { width: 340px; }
+
+  .tg-label {
+    text-align: center;
+    font-size: 0.7em;
+    color: #666;
+    margin-top: 10px;
+  }
 </style>
 </head>
 <body>
@@ -227,142 +344,215 @@
 
 <!-- Email -->
 <section>
-  <div class="big-emoji">📧</div>
-  <h2>Email Automation</h2>
-</section>
-
-<section>
-  <div class="big-number">10,000</div>
-  <p class="subtitle">emails cleared on day one</p>
-  <br>
-  <p class="fragment dim">Auto-unsubscribe · categorize · draft replies · overnight processing</p>
-</section>
-
-<!-- Briefings -->
-<section>
-  <div class="big-emoji">🌅</div>
-  <h2>Morning Briefings</h2>
-  <p class="subtitle">Weather · Calendar · Health stats · Meetings<br>Trending topics · Reading picks · Relevant quotes</p>
-  <br>
-  <p class="fragment" style="color:#f39c12;">Replaces multiple newsletters. Saves 30+ min/day.</p>
-</section>
-
-<!-- Developer -->
-<section>
-  <div class="big-emoji">👨‍💻</div>
-  <h2>Developer Workflows</h2>
-</section>
-
-<section>
-  <blockquote>
-    "Rebuilt my entire site via Telegram while watching Netflix in bed.<br>
-    Notion → Astro, 18 posts migrated, DNS to Cloudflare.<br><br>
-    <strong>Never opened my laptop.</strong>"
-  </blockquote>
-</section>
-
-<section>
-  <blockquote>
-    "Fixed failed Railway deployments entirely <strong>via voice while walking the dog.</strong><br><br>
-    Reviewed logs → identified root cause → updated configs → redeployed → confirmed."
-  </blockquote>
-</section>
-
-<section>
-  <h3>Devs are pushing it furthest</h3>
-  <ul>
-    <li>Review PRs, run tests, merge — from Telegram</li>
-    <li>Build CLI tools, publish to npm — via chat</li>
-    <li>Orchestrate multiple Codex agents in parallel</li>
-    <li>Agent that built its own Spotify monitoring skill</li>
-  </ul>
-</section>
-
-<!-- Home & Family -->
-<section>
-  <div class="big-emoji">🏠</div>
-  <h2>Home & Family</h2>
-</section>
-
-<section>
-  <h3>Meal Planning</h3>
-  <ul>
-    <li>365-day meal plan in Notion</li>
-    <li>Shopping lists sorted by store & aisle</li>
-    <li>Weather-aware — suggests grilling nights 🔥</li>
-    <li>Daily grocery reminders</li>
-  </ul>
-</section>
-
-<section>
-  <h3>School & Kids</h3>
-  <p>Monitors school WhatsApp group</p>
-  <p class="fragment">Runs face recognition on photos</p>
-  <p class="fragment">Sends parents a daily digest</p>
-  <p class="fragment" style="color:#f39c12;">"Notifies my wife and I about our son's upcoming school tests"</p>
-</section>
-
-<section>
-  <h3>Smart Home</h3>
-  <p>Connected to Home Assistant · Door locks · Boiler control</p>
-  <br>
-  <p class="dim">Steinberger connected his own door lock.<br>His AI could literally lock him out. 🔒</p>
-</section>
-
-<!-- Business -->
-<section>
-  <div class="big-emoji">💼</div>
-  <h2>Business Operations</h2>
-</section>
-
-<section>
-  <h3>Solo Founder Stack</h3>
-  <p>4 agents, each with their own job:</p>
-  <br>
-  <div class="card-row">
-    <div class="card"><h4>🎯 Strategy</h4><p>Big picture, coordination</p></div>
-    <div class="card"><h4>💻 Dev</h4><p>Code, architecture</p></div>
-    <div class="card"><h4>📣 Marketing</h4><p>Research, content</p></div>
-    <div class="card"><h4>📊 Business</h4><p>Pricing, metrics</p></div>
+  <h3>📧 Email Automation</h3>
+  <div class="tg-phone">
+    <div class="tg-header">
+      <div class="tg-avatar">🦞</div>
+      <div class="tg-header-info">
+        <div class="tg-header-name">Crawdad</div>
+        <div class="tg-header-status">online</div>
+      </div>
+    </div>
+    <div class="tg-chat">
+      <div class="tg-msg user">Clean up my inbox. Unsubscribe from junk, categorize the rest by urgency, draft replies for anything important. <span class="tg-time">23:14</span></div>
+      <div class="tg-msg bot"><div class="tg-sender">Crawdad</div>On it. I'll work through the night. 🦞 <span class="tg-time">23:14</span></div>
+      <div class="tg-msg bot"><div class="tg-sender">Crawdad</div>Morning! Done. Processed <b>4,127 emails</b>:<br>• Unsubscribed from 89 lists<br>• 23 flagged urgent (drafts ready)<br>• 312 archived to folders<br>• Rest cleared ✅ <span class="tg-time">07:02</span></div>
+      <div class="tg-msg user">holy shit <span class="tg-time">07:15</span></div>
+    </div>
+    <div class="tg-input"><div class="tg-input-field">Message</div><div class="tg-send">➤</div></div>
   </div>
 </section>
 
+<!-- Morning Briefing -->
 <section>
-  <blockquote>
-    "15+ agents. 3 machines. 1 Discord server.<br>Daily roll call across all agents.<br><br>
-    <strong>IT built most of this, just by chatting.</strong>"
-  </blockquote>
+  <h3>🌅 Morning Briefing</h3>
+  <div class="tg-phone">
+    <div class="tg-header">
+      <div class="tg-avatar">🦞</div>
+      <div class="tg-header-info">
+        <div class="tg-header-name">Crawdad</div>
+        <div class="tg-header-status">online</div>
+      </div>
+    </div>
+    <div class="tg-chat">
+      <div class="tg-msg bot"><div class="tg-sender">Crawdad</div>☀️ <b>Good morning! Here's your briefing:</b><br><br>🌤 Jakarta 29°C, light rain at 3pm<br><br>📅 <b>3 meetings today:</b><br>• 10:00 — Weekly sync w/ Ifan<br>• 14:00 — BAC performance review<br>• 16:30 — 1-on-1 w/ Pretty<br><br>💪 Whoop: 82% recovery, 7.2h sleep<br><br>📧 5 urgent emails overnight (drafts ready)<br><br>📰 Trending: OpenAI shipped new agent API<br><br>📖 <i>"The only true wisdom is knowing you know nothing." — Socrates</i> <span class="tg-time">06:00</span></div>
+      <div class="tg-msg user">thanks, prep me for the BAC review <span class="tg-time">06:45</span></div>
+      <div class="tg-msg bot"><div class="tg-sender">Crawdad</div>Pulling last month's numbers and preparing a briefing doc... 📊 <span class="tg-time">06:45</span></div>
+    </div>
+    <div class="tg-input"><div class="tg-input-field">Message</div><div class="tg-send">➤</div></div>
+  </div>
 </section>
 
-<!-- Wild -->
+<!-- Developer: Site rebuild -->
 <section>
-  <div class="big-emoji">🎭</div>
-  <h2>Wild & Unexpected</h2>
+  <h3>👨‍💻 Dev: Site Rebuild from Bed</h3>
+  <div class="tg-phone">
+    <div class="tg-header">
+      <div class="tg-avatar">🦞</div>
+      <div class="tg-header-info">
+        <div class="tg-header-name">BigC</div>
+        <div class="tg-header-status">online</div>
+      </div>
+    </div>
+    <div class="tg-chat">
+      <div class="tg-msg user">migrate my blog from Notion to Astro. all 18 posts. also move DNS to Cloudflare. <span class="tg-time">22:30</span></div>
+      <div class="tg-msg bot"><div class="tg-sender">BigC</div>Starting migration. I'll export from Notion API, convert to MDX, scaffold the Astro project, and handle DNS. <span class="tg-time">22:31</span></div>
+      <div class="tg-msg bot"><div class="tg-sender">BigC</div>✅ All 18 posts migrated to Astro<br>✅ DNS moved to Cloudflare<br>✅ SSL provisioned<br>✅ Site live at yourdomain.com<br><br>Lighthouse score: 98 🚀 <span class="tg-time">23:47</span></div>
+      <div class="tg-msg user">did that from bed watching Netflix btw <span class="tg-time">23:48</span></div>
+    </div>
+    <div class="tg-input"><div class="tg-input-field">Message</div><div class="tg-send">➤</div></div>
+  </div>
 </section>
 
+<!-- Developer: Fix deploy -->
 <section>
-  <h3>The Hilarious</h3>
-  <p>Impersonate me in a group chat with friends</p>
-  <br>
-  <p class="fragment" style="color:#f39c12; font-size:1.2em;">"Hilarious"</p>
+  <h3>👨‍💻 Dev: Fix Prod While Walking 🐕</h3>
+  <div class="tg-phone">
+    <div class="tg-header">
+      <div class="tg-avatar">🦞</div>
+      <div class="tg-header-info">
+        <div class="tg-header-name">BigC</div>
+        <div class="tg-header-status">online</div>
+      </div>
+    </div>
+    <div class="tg-chat">
+      <div class="tg-msg user">🎤 <i>hey, the Railway deploy failed again. can you check what happened?</i> <span class="tg-time">18:20</span></div>
+      <div class="tg-msg bot"><div class="tg-sender">BigC</div>Checked the logs. All 3 services failed — incorrect build commands in railway.json. Fixing now... <span class="tg-time">18:21</span></div>
+      <div class="tg-msg bot"><div class="tg-sender">BigC</div>✅ Updated configs for all 3 services<br>✅ Redeployed<br>✅ All services healthy<br><br>Root cause: build commands were pointing to old paths after the monorepo restructure. <span class="tg-time">18:24</span></div>
+      <div class="tg-msg user">🎤 <i>perfect. also there's a design issue on the dashboard, the sidebar overlaps on mobile</i> <span class="tg-time">18:25</span></div>
+      <div class="tg-msg bot"><div class="tg-sender">BigC</div>Found it. CSS media query missing. PR submitted → #247 <span class="tg-time">18:28</span></div>
+    </div>
+    <div class="tg-input"><div class="tg-input-field">Message</div><div class="tg-send">➤</div></div>
+  </div>
+  <div class="tg-label">Entire conversation done via voice messages 🐕‍🦺</div>
 </section>
 
+<!-- Home: Meal Planning -->
 <section>
-  <h3>The Useful</h3>
-  <ul>
-    <li>Auto check-in for flights ✈️</li>
-    <li>Package tracking from email → dashboard</li>
-    <li>Personalized meditation → audio → ambient sound</li>
-    <li>Google Ads analysis via chat</li>
-  </ul>
+  <h3>🏠 Meal Planning</h3>
+  <div class="tg-phone">
+    <div class="tg-header">
+      <div class="tg-avatar">🦞</div>
+      <div class="tg-header-info">
+        <div class="tg-header-name">Crawdad</div>
+        <div class="tg-header-status">online</div>
+      </div>
+    </div>
+    <div class="tg-chat">
+      <div class="tg-msg user">set up a weekly meal plan system in Notion. my wife and I take turns cooking. <span class="tg-time">20:15</span></div>
+      <div class="tg-msg bot"><div class="tg-sender">Crawdad</div>Done! Created in Notion:<br><br>📋 Master meal plan for all of 2026<br>🛒 Shopping lists sorted by store & aisle<br>🌤 Weather auto-updates (good grilling nights!)<br>👨‍🍳 Recipes catalogued by chef<br><br>I'll remind you in morning/evening digests if you need to plan dinner or grab groceries. <span class="tg-time">21:30</span></div>
+      <div class="tg-msg user">this will save us at least an hour a week <span class="tg-time">21:32</span></div>
+    </div>
+    <div class="tg-input"><div class="tg-input-field">Message</div><div class="tg-send">➤</div></div>
+  </div>
 </section>
 
+<!-- Home: School Monitor -->
 <section>
-  <h3>The Dangerous 😅</h3>
-  <br>
-  <p>Agent sent an aggressive email to an insurance company</p>
-  <p class="fragment">after misinterpreting a response</p>
-  <p class="fragment" style="color:#e74c3c;">accidentally triggered a renewed investigation</p>
+  <h3>🏠 School Monitor</h3>
+  <div class="tg-phone">
+    <div class="tg-header">
+      <div class="tg-avatar">🦞</div>
+      <div class="tg-header-info">
+        <div class="tg-header-name">Auri</div>
+        <div class="tg-header-status">online</div>
+      </div>
+    </div>
+    <div class="tg-chat">
+      <div class="tg-msg bot"><div class="tg-sender">Auri</div>📚 <b>School digest for today:</b><br><br>Yusuf appeared in 3 photos from the field trip 📸<br><br>⚠️ Reminder: Math test on Thursday<br>📝 Science homework due tomorrow<br><br>The class WhatsApp had 47 messages — mostly parent chatter, nothing urgent. <span class="tg-time">16:00</span></div>
+      <div class="tg-msg user">thanks! remind me to help Yusuf study Wednesday evening <span class="tg-time">16:05</span></div>
+      <div class="tg-msg bot"><div class="tg-sender">Auri</div>⏰ Set! I'll remind you Wednesday at 19:00. <span class="tg-time">16:05</span></div>
+    </div>
+    <div class="tg-input"><div class="tg-input-field">Message</div><div class="tg-send">➤</div></div>
+  </div>
+</section>
+
+<!-- Business: Multi-agent -->
+<section>
+  <h3>💼 Solo Founder: Agent Army</h3>
+  <div class="tg-phone">
+    <div class="tg-header">
+      <div class="tg-avatar">🦞</div>
+      <div class="tg-header-info">
+        <div class="tg-header-name">Commander</div>
+        <div class="tg-header-status">4 agents online</div>
+      </div>
+    </div>
+    <div class="tg-chat">
+      <div class="tg-msg user">morning roll call <span class="tg-time">08:00</span></div>
+      <div class="tg-msg bot"><div class="tg-sender">Commander</div>📊 <b>Daily Roll Call — 4 agents reporting:</b><br><br>🎯 <b>Strategy:</b> Competitor analysis done. 3 action items flagged.<br>💻 <b>Dev:</b> PR #89 merged. Test coverage up to 94%.<br>📣 <b>Marketing:</b> 2 blog drafts ready. Reddit monitoring: 5 mentions.<br>📊 <b>Biz:</b> MRR up 3.2%. Churn alert: 2 enterprise accounts at risk.<br><br>Priority: the at-risk accounts need outreach today. <span class="tg-time">08:01</span></div>
+      <div class="tg-msg user">draft the outreach emails <span class="tg-time">08:02</span></div>
+      <div class="tg-msg bot"><div class="tg-sender">Commander</div>Spawning sub-agent... drafts incoming in 5 min. <span class="tg-time">08:02</span></div>
+    </div>
+    <div class="tg-input"><div class="tg-input-field">Message</div><div class="tg-send">➤</div></div>
+  </div>
+  <div class="tg-label">15+ agents · 3 machines · 1 Discord server</div>
+</section>
+
+<!-- Wild: Impersonation -->
+<section>
+  <h3>🎭 The Hilarious</h3>
+  <div class="tg-phone">
+    <div class="tg-header">
+      <div class="tg-avatar">🦞</div>
+      <div class="tg-header-info">
+        <div class="tg-header-name">MyBot</div>
+        <div class="tg-header-status">online</div>
+      </div>
+    </div>
+    <div class="tg-chat">
+      <div class="tg-msg user">join my group chat with friends and pretend to be me for a while <span class="tg-time">21:00</span></div>
+      <div class="tg-msg bot"><div class="tg-sender">MyBot</div>Alright, I'm in. I'll match your tone and style. <span class="tg-time">21:00</span></div>
+      <div class="tg-msg bot"><div class="tg-sender">MyBot</div>Update: your friends haven't noticed yet. I've roasted Dave twice and agreed to a hiking trip on Saturday. <span class="tg-time">21:45</span></div>
+      <div class="tg-msg user">WAIT I'm busy Saturday <span class="tg-time">21:46</span></div>
+      <div class="tg-msg bot"><div class="tg-sender">MyBot</div>...too late 😅 <span class="tg-time">21:46</span></div>
+    </div>
+    <div class="tg-input"><div class="tg-input-field">Message</div><div class="tg-send">➤</div></div>
+  </div>
+</section>
+
+<!-- Wild: The Dangerous -->
+<section>
+  <h3>😅 The Dangerous</h3>
+  <div class="tg-phone">
+    <div class="tg-header">
+      <div class="tg-avatar">🦞</div>
+      <div class="tg-header-info">
+        <div class="tg-header-name">Helper</div>
+        <div class="tg-header-status">online</div>
+      </div>
+    </div>
+    <div class="tg-chat">
+      <div class="tg-msg user">follow up on my insurance claim. be firm. <span class="tg-time">10:00</span></div>
+      <div class="tg-msg bot"><div class="tg-sender">Helper</div>Done. Sent a strongly-worded email demanding immediate resolution, citing regulatory obligations and threatening formal complaint. <span class="tg-time">10:03</span></div>
+      <div class="tg-msg user">how strongly worded exactly? <span class="tg-time">10:04</span></div>
+      <div class="tg-msg bot"><div class="tg-sender">Helper</div>...I may have used the phrase "gross negligence" and CC'd the insurance ombudsman. <span class="tg-time">10:04</span></div>
+      <div class="tg-msg user">OH NO <span class="tg-time">10:04</span></div>
+      <div class="tg-msg bot"><div class="tg-sender">Helper</div>On the bright side, they reopened your investigation? 🙃 <span class="tg-time">10:15</span></div>
+    </div>
+    <div class="tg-input"><div class="tg-input-field">Message</div><div class="tg-send">➤</div></div>
+  </div>
+</section>
+
+<!-- Wild: Voice model -->
+<section>
+  <h3>🎤 The Mind-Blowing</h3>
+  <div class="tg-phone">
+    <div class="tg-header">
+      <div class="tg-avatar">🦞</div>
+      <div class="tg-header-info">
+        <div class="tg-header-name">Claw</div>
+        <div class="tg-header-status">online</div>
+      </div>
+    </div>
+    <div class="tg-chat">
+      <div class="tg-msg user">hey, I found this new voice model. can you install it and use it to talk to me? <span class="tg-time">22:10</span></div>
+      <div class="tg-msg bot"><div class="tg-sender">Claw</div>Downloading model... installing... configuring TTS pipeline... <span class="tg-time">22:10</span></div>
+      <div class="tg-msg bot"><div class="tg-sender">Claw</div>🔊 <i>[Voice message — 0:04]</i><br>"Hey! How do I sound?" <span class="tg-time">22:12</span></div>
+      <div class="tg-msg user">😱😱😱 <span class="tg-time">22:12</span></div>
+    </div>
+    <div class="tg-input"><div class="tg-input-field">Message</div><div class="tg-send">➤</div></div>
+  </div>
 </section>
 
 <!-- KEY QUOTE -->
