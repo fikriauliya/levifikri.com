@@ -324,14 +324,251 @@
   <p class="fragment dim">It checks on things without being asked.</p>
 </section>
 
-<!-- ===== ARCHITECTURE ===== -->
+<!-- ===== CONCEPTS DEEP DIVE ===== -->
 <section>
-  <h2>Architecture</h2>
+  <h2>Concepts</h2>
+  <p class="subtitle">The building blocks of OpenClaw</p>
+</section>
+
+<!-- Install -->
+<section>
+  <div class="big-emoji">📦</div>
+  <h3>Install</h3>
+  <p>One command. That's it.</p>
+  <br>
+  <div class="highlight-box" style="text-align:left; font-family:monospace; font-size:0.85em;">
+    curl -fsSL https://openclaw.ai/install.sh | bash
+  </div>
+  <br>
+  <p class="dim">Node 22+ required. Works on macOS, Linux, Windows (WSL2).<br>Also: npm, Docker, Fly.io, Hetzner, GCP.</p>
+</section>
+
+<!-- Channels -->
+<section>
+  <div class="big-emoji">💬</div>
+  <h3>Channels</h3>
+  <p>Your <strong style="color:#e74c3c;">existing chat apps</strong> become the UI.</p>
+</section>
+
+<section>
+  <h3>21+ Channels Supported</h3>
+  <div style="font-size:0.75em; line-height:2; max-width:800px; margin:0 auto; text-align:center;">
+    <span style="color:#25D366;">● WhatsApp</span> · 
+    <span style="color:#0088cc;">● Telegram</span> · 
+    <span style="color:#5865F2;">● Discord</span> · 
+    <span style="color:#3AB7F0;">● Signal</span> · 
+    <span style="color:#4A154B;">● Slack</span> · 
+    <span style="color:#00A1F1;">● iMessage</span> · 
+    <span style="color:#5059C9;">● Teams</span> · 
+    <span style="color:#34A853;">● Google Chat</span> · 
+    <span style="color:#555;">● Matrix</span> · 
+    <span style="color:#555;">● IRC</span> · 
+    <span style="color:#555;">● LINE</span> · 
+    <span style="color:#0068FF;">● Zalo</span> · 
+    <span style="color:#555;">● Feishu/Lark</span> · 
+    <span style="color:#555;">● Mattermost</span> · 
+    <span style="color:#9146FF;">● Twitch</span> · 
+    <span style="color:#555;">● Nostr</span> · 
+    <span style="color:#555;">● Nextcloud Talk</span> · 
+    <span style="color:#555;">● WebChat</span> · 
+    <span style="color:#555;">● and more...</span>
+  </div>
+  <br>
+  <p class="fragment dim">Channels run simultaneously. Route different chats to different agents.</p>
+</section>
+
+<section>
+  <h3>How Channels Work</h3>
+  <div class="highlight-box" style="text-align:left; font-size:0.85em;">
+    <strong>You</strong> → send message on Telegram/WhatsApp/...<br>
+    → <strong>Channel adapter</strong> receives it<br>
+    → Routes to <strong>Gateway</strong><br>
+    → Gateway runs <strong>Agent</strong><br>
+    → Agent replies back through the <strong>same channel</strong>
+  </div>
+  <br>
+  <p class="dim">Text everywhere. Media & reactions vary by channel.</p>
+</section>
+
+<!-- Agents -->
+<section>
+  <div class="big-emoji">🤖</div>
+  <h3>Agents</h3>
+  <p>The <strong style="color:#e74c3c;">personality</strong> behind the chat.</p>
+</section>
+
+<section>
+  <h3>Agent = Workspace + Persona + Memory</h3>
+  <div style="text-align:left; max-width:700px; margin:0 auto; font-size:0.85em; line-height:2;">
+    📂 <strong>AGENTS.md</strong> — operating instructions<br>
+    🎭 <strong>SOUL.md</strong> — persona, tone, values<br>
+    👤 <strong>USER.md</strong> — who you are, preferences<br>
+    🪪 <strong>IDENTITY.md</strong> — agent name, vibe, emoji<br>
+    🔧 <strong>TOOLS.md</strong> — your tool-specific notes<br>
+    📝 <strong>MEMORY.md</strong> — long-term curated memory
+  </div>
+  <br>
+  <p class="fragment dim">All plain markdown files. You edit them. The agent reads them every turn.</p>
+</section>
+
+<section>
+  <h3>Multi-Agent Routing</h3>
+  <p>Different agents for different contexts:</p>
+  <br>
   <div class="card-row">
-    <div class="card"><h4>🧠 Gateway</h4><p>The brain. Sessions, tools, memory, events.</p></div>
-    <div class="card"><h4>💬 Channels</h4><p>Your chat apps as the UI.</p></div>
-    <div class="card"><h4>🔧 Skills</h4><p>Pluggable abilities from ClawHub.</p></div>
-    <div class="card"><h4>📱 Nodes</h4><p>Phone/device pairing — camera, location, screen.</p></div>
+    <div class="card"><h4>🏠 Family Agent</h4><p>WhatsApp family group</p></div>
+    <div class="card"><h4>💼 Work Agent</h4><p>Telegram work chat</p></div>
+    <div class="card"><h4>💻 Dev Agent</h4><p>Discord dev server</p></div>
+  </div>
+  <br>
+  <p class="fragment dim">Each agent has its own workspace, memory, and personality.</p>
+</section>
+
+<!-- Tools -->
+<section>
+  <div class="big-emoji">🔧</div>
+  <h3>Tools</h3>
+  <p>What the agent can <strong style="color:#e74c3c;">actually do</strong>.</p>
+</section>
+
+<section>
+  <h3>Built-in Tool Groups</h3>
+  <div style="text-align:left; max-width:750px; margin:0 auto; font-size:0.8em; line-height:2;">
+    📁 <strong>group:fs</strong> — read, write, edit files<br>
+    ⚡ <strong>group:runtime</strong> — exec shell commands, manage processes<br>
+    🌐 <strong>group:web</strong> — web search (Brave), fetch URLs<br>
+    🖥️ <strong>group:ui</strong> — browser automation, canvas<br>
+    ⏰ <strong>group:automation</strong> — cron jobs, gateway control<br>
+    💬 <strong>group:messaging</strong> — send messages across channels<br>
+    📱 <strong>group:nodes</strong> — phone camera, location, screen<br>
+    🧠 <strong>group:memory</strong> — search & read memory files<br>
+    🔄 <strong>group:sessions</strong> — manage sessions, spawn sub-agents
+  </div>
+</section>
+
+<section>
+  <h3>Tool Policy: Fine-Grained Control</h3>
+  <p>Allow/deny tools globally, per-agent, or per-model:</p>
+  <br>
+  <div class="highlight-box" style="text-align:left; font-size:0.8em; font-family:monospace;">
+    // Support agent: messaging only<br>
+    tools: { profile: "messaging" }<br><br>
+    // Dev agent: full coding access<br>
+    tools: { profile: "coding" }<br><br>
+    // Lock it down completely<br>
+    tools: { profile: "minimal" }
+  </div>
+  <br>
+  <p class="fragment dim">Profiles: minimal · coding · messaging · full</p>
+</section>
+
+<!-- Skills (ClawHub) -->
+<section>
+  <div class="big-emoji">🧩</div>
+  <h3>Skills = Pluggable Abilities</h3>
+  <p>Like apps for your agent. Install from <strong style="color:#f39c12;">ClawHub</strong>.</p>
+  <br>
+  <div style="font-size:0.85em; color:#aaa;">
+    Gmail · GitHub · Google Calendar · Weather · Obsidian<br>
+    Coding Agent · WhatsApp · Smart Home · Trading · TTS · ...
+  </div>
+  <br>
+  <p class="fragment dim">1,700+ skills. Three locations: bundled · managed · workspace.</p>
+</section>
+
+<!-- Models -->
+<section>
+  <div class="big-emoji">🧠</div>
+  <h3>Models</h3>
+  <p>Bring your own brain.</p>
+</section>
+
+<section>
+  <h3>14+ Providers</h3>
+  <div style="text-align:left; max-width:700px; margin:0 auto; font-size:0.8em; line-height:2;">
+    🟣 <strong>Anthropic</strong> — Claude Opus, Sonnet<br>
+    🟢 <strong>OpenAI</strong> — GPT-5, Codex<br>
+    🔵 <strong>OpenRouter</strong> — access to 100+ models<br>
+    🌙 <strong>Moonshot</strong> — Kimi models<br>
+    🔒 <strong>Venice AI</strong> — privacy-first inference<br>
+    ☁️ <strong>AWS Bedrock</strong> · <strong>Vercel AI</strong> · <strong>Cloudflare AI</strong><br>
+    🇨🇳 <strong>GLM</strong> · <strong>MiniMax</strong> · <strong>Qianfan</strong> (DeepSeek etc.)<br>
+    ⚡ <strong>xAI</strong> · <strong>Groq</strong> · <strong>Mistral</strong> (via full catalog)
+  </div>
+  <br>
+  <p class="fragment dim">Format: provider/model — e.g. "anthropic/claude-opus-4-6"</p>
+</section>
+
+<!-- Platforms -->
+<section>
+  <div class="big-emoji">💻</div>
+  <h3>Platforms</h3>
+  <p>Runs anywhere.</p>
+</section>
+
+<section>
+  <h3>Every Major Platform</h3>
+  <div class="card-row">
+    <div class="card"><h4>🍎 macOS</h4><p>Menu bar app + LaunchAgent daemon</p></div>
+    <div class="card"><h4>🐧 Linux</h4><p>systemd service, Raspberry Pi, VPS</p></div>
+    <div class="card"><h4>🪟 Windows</h4><p>WSL2 (native planned)</p></div>
+  </div>
+  <div class="card-row" style="margin-top:15px;">
+    <div class="card"><h4>📱 iOS</h4><p>Companion node app</p></div>
+    <div class="card"><h4>🤖 Android</h4><p>Companion node app</p></div>
+    <div class="card"><h4>☁️ Cloud</h4><p>Docker, Fly.io, Hetzner, GCP</p></div>
+  </div>
+</section>
+
+<!-- Gateway & Ops -->
+<section>
+  <div class="big-emoji">⚙️</div>
+  <h3>Gateway & Ops</h3>
+  <p>The <strong style="color:#e74c3c;">always-on control plane</strong>.</p>
+</section>
+
+<section>
+  <h3>Gateway = The Brain</h3>
+  <div style="text-align:left; max-width:750px; margin:0 auto; font-size:0.85em; line-height:1.8;">
+    <p>Single process that manages everything:</p>
+    <br>
+    🔌 <strong>Channel connections</strong> — keeps WhatsApp/Telegram/etc. alive<br>
+    🧠 <strong>Agent sessions</strong> — routes messages to the right agent<br>
+    ⏰ <strong>Cron & heartbeats</strong> — proactive scheduled tasks<br>
+    🔐 <strong>Auth & security</strong> — token/password, DM pairing, allowlists<br>
+    🔄 <strong>Hot reload</strong> — config changes without restart<br>
+    📊 <strong>WebSocket + HTTP API</strong> — OpenAI-compatible endpoints
+  </div>
+</section>
+
+<section>
+  <h3>Operator Toolkit</h3>
+  <div class="highlight-box" style="text-align:left; font-size:0.8em; font-family:monospace;">
+    openclaw gateway status &nbsp;&nbsp;# health check<br>
+    openclaw gateway restart &nbsp;# restart service<br>
+    openclaw logs --follow &nbsp;&nbsp;&nbsp;# live logs<br>
+    openclaw doctor &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# diagnose issues<br>
+    openclaw channels status &nbsp;# channel health<br>
+    openclaw status &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# everything at a glance
+  </div>
+  <br>
+  <p class="dim">Default port: 18789 · Bind: loopback · Auth: required</p>
+</section>
+
+<!-- Summary architecture -->
+<section>
+  <h2>Putting It All Together</h2>
+  <div class="card-row">
+    <div class="card"><h4>⚙️ Gateway</h4><p>Always-on brain. Routes, schedules, controls.</p></div>
+    <div class="card"><h4>💬 Channels</h4><p>21+ chat apps as your UI.</p></div>
+    <div class="card"><h4>🤖 Agents</h4><p>Persona + memory + workspace.</p></div>
+    <div class="card"><h4>🔧 Tools</h4><p>Shell, files, browser, APIs.</p></div>
+  </div>
+  <div class="card-row" style="margin-top:15px;">
+    <div class="card"><h4>🧩 Skills</h4><p>1,700+ installable abilities.</p></div>
+    <div class="card"><h4>🧠 Models</h4><p>14+ providers. Your choice.</p></div>
+    <div class="card"><h4>💻 Platforms</h4><p>Mac, Linux, Win, iOS, Android, Cloud.</p></div>
+    <div class="card"><h4>📱 Nodes</h4><p>Phone pairing — camera, location.</p></div>
   </div>
 </section>
 
